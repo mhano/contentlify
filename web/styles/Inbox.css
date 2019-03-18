@@ -1,0 +1,129 @@
+﻿.EPATaskbox_Container {
+  /* Bottom-right point of the widget. All positionings are relative to it */
+  z-index: 99;
+  position: fixed;
+  bottom: 95px;
+  right: 51px;
+  font-family: 'lucida sans unicode', 'lucida sans', 'lucida grande', 'helvetica nueue', arial, helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: normal;
+  color: black;
+}
+
+.EPATaskbox_ExtraStylesContainer {
+  position: absolute;
+}
+
+.EPATaskbox_IconifiedContainer {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  left: -32px;
+  top: -32px;
+}
+
+.EPATaskbox_ActivityCount {
+  position: absolute;
+  width: 32px;
+  top: 6px;
+
+  font-size: 16px;
+  text-align: center;
+  font-weight: bold;
+  color: #cc0000;
+  cursor: default;
+}
+
+
+.EPATaskbox_ExpandedContainer {
+  position: absolute;
+  width: 250px;
+  height: 32px;
+  left: -250px;
+  top: -32px;
+}
+
+.EPATaskbox_ExpandedText {
+  position: absolute;
+  width: 100%;
+  line-height: 31px;
+
+  color: #444444;
+  text-align: center;
+  font-weight: bold;
+  font-size: 13px;
+  cursor: default;
+}
+
+
+.EPATaskbox_OpenedContainer {
+  position: absolute;  
+  width: 258px;
+  height: 365px;
+  left: -258px;
+  top: -365px;
+
+  background: url(/EPA_Taskbox/img/inbox_frame.png?7) no-repeat;
+  _background: url(/EPA_Taskbox/img/inbox_frame_ie.gif?7) no-repeat;
+}
+
+.EPATaskbox_FrameContainer {
+  position: absolute;
+  margin: 11px 12px;
+  width: 224px;
+  height: 338px;
+}
+
+.EPATaskbox_FrameContainer iframe {
+  width: 100%;
+  height: 100%
+}
+
+.EPATaskbox_IconifiedContainer,
+.EPATaskbox_ExpandedContainer,
+.EPATaskbox_OpenedContainer {
+  /* Defaults to all states to be hidden */
+  display: none;
+}
+
+.EPATaskbox_Icon_EPATaskbox_NotGlowing {
+  position: absolute;
+  background: url(/EPA_Taskbox/img/inbox.png?7) no-repeat;
+  _background: url(/EPA_Taskbox/img/inbox_ie.gif?7) no-repeat;
+  *background: url(/EPA_Taskbox/img/inbox_ie.gif?7) no-repeat;
+  
+  width: 32px;
+  height: 32px;
+}
+
+.EPATaskbox_Icon_EPATaskbox_Glowing {
+  display: none;
+  position: absolute;
+  background: url(/EPA_Taskbox/img/inboxglow.png?7) no-repeat;
+  _background: url(/EPA_Taskbox/img/inboxglow_ie.gif?7) no-repeat;
+  *background: url(/EPA_Taskbox/img/inboxglow_ie.gif?7) no-repeat;  
+  
+  width: 32px;
+  height: 32px;
+}
+
+.EPATaskbox_ExpandedIcon_EPATaskbox_NotGlowing {
+  position: absolute;
+  background: url(/EPA_Taskbox/img/inbox_expand.png?7) no-repeat;
+  _background: url(/EPA_Taskbox/img/inbox_expand_ie.gif?7) no-repeat;
+  *background: url(/EPA_Taskbox/img/inbox_expand_ie.gif?7) no-repeat;  
+  
+  width: 250px;
+  height: 32px;
+}
+
+.EPATaskbox_ExpandedIcon_EPATaskbox_Glowing {
+  display: none;
+  position: absolute;
+  background: url(/EPA_Taskbox/img/inboxglow_expand.png?7) no-repeat;
+  _background: url(/EPA_Taskbox/img/inboxglow_expand_ie.gif?7) no-repeat;
+  *background: url(/EPA_Taskbox/img/inboxglow_expand_ie.gif?7) no-repeat; 
+   
+  width: 250px;
+  height: 32px;
+}

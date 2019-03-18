@@ -1,0 +1,113 @@
+html .body{
+    color: #BD1C0E;
+}
+
+html .page-wrapper>:container:before 
+{
+    background: #fff;
+}
+
+
+html .h2, .h3, .main-content {
+    color: #BD1C0E;
+}
+
+
+html .product-name,
+html .page-title {
+    background: #BD1C0E;
+    color: #fff;
+}
+
+
+
+html .sub-title {
+    color: #BD1C0E;
+}
+
+
+html .page-button {
+    background: #BD1C0E;
+    color: #fff;
+}
+
+html .page-button:hover, 
+html .page-button:focus,
+html .page-button-big
+{
+    background-color: #485D33;
+}
+
+html .page-button-big:hover, .page-button-big:focus
+{
+    background-color: #E28A24;   
+}
+
+
+html .tabs a {
+    border: 1px solid #bbb;
+    background: #fff;
+    color: #bbb;
+}
+
+html .tabs a.active {
+    border-color: #BD1C0E;
+    border-bottom-color: #fff;
+    color: #BD1C0E;
+}
+
+html .tabs a:before {
+    color: #fff;
+    background: #bbb;
+}
+
+
+html .tabs a.active:before {
+    background: #BD1C0E;
+}
+
+
+html .tabs a.active:before {
+    background: #BD1C0E;
+}
+
+
+html .tab-content.active {
+    border: 1px solid #BD1C0E;
+    background: #fff;
+}
+
+html .process-steps li {
+    background: #BD1C0E;
+}
+
+html .process-steps, .process-steps-title {
+    color: #fff;  
+}
+
+html .process-steps li:before {
+    color: #fff;
+}
+
+html .process-steps li:after {
+    border-left: 30px solid #BD1C0E;
+}
+
+html .process-callout {
+    background: #E28A24;
+}
+
+html .site-nav a {
+    color:  #fff;
+    background: #BD1C0E;
+}
+
+html .site-nav a:focus, .site-nav a:hover,
+html .site-nav .nav-join a:hover, .site-nav .nav-join a:focus {
+    background-color: #E28A24;   
+}
+
+html .site-nav .active a {
+    background: #E28A24; 
+}
+
