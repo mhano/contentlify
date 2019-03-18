@@ -1,29 +1,62 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>
-	How It Works
-</title><link type="text/css" rel="stylesheet" href="./styles/portal.css" charset="UTF-8">
-    <meta http-equiv="Content-Script-Type" content="text/javascript"><meta http-equiv="Content-Style-Type" content="text/css">
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>
+        How It Works
+    </title>
+    <link type="text/css" rel="stylesheet" href="./styles/portal.css" charset="UTF-8">
+    <meta http-equiv="Content-Script-Type" content="text/javascript">
+    <meta http-equiv="Content-Style-Type" content="text/css">
     <link href="./styles/Theme.gespp_microsite.css" type="text/css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/contentful@latest/dist/contentful.browser.min.js"></script>
+    <script src="https://unpkg.com/vue"></script>
+    <script language="javascript" type="text/javascript">
+        var client = contentful.createClient({
+            space: '1mv2u22omsld',
+            accessToken: '899769f9000215ba2d755e43bb5c4e525282c18553ec28b6faccf820f7a38258'
+        });
+
+        var companyCode = '4iB5Ogb9L3IH2fyUNi5IXs';
+
+        function render(data) {
+            new Vue({
+                el: '#app',
+                data: data.fields
+            });
+        }
+
+        function renderError(data) {
+            
+        }
+
+        client.getEntry(companyCode)
+            .then(render, renderError);
+
+    </script>
 </head>
 <body>
-<div class="page-wrapper"><div class="container">
-	<div id="wtWhat" class="main-content">
-		<h1 class="page-title">A message from the CEO&nbsp;</h1>
-		<div class="main-content clearfix"><img class="img-left" alt="" src="./styles/ceo.png"><div>
-			Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum euismod nisi in turpis aliquam molestie. Donec pharetra accumsan magna, sed sagittis ex convallis ut. Nullam nec faucibus ante, non lobortis metus. Aenean in convallis dui. Maecenas sit amet turpis magna. Quisque nec gravida sapien. Aliquam in sagittis turpis.
-			<br/><br/>
-			Fusce egestas condimentum justo ac suscipit. Etiam laoreet tincidunt quam sit amet dignissim. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Suspendisse non sem facilisis, pharetra lectus sit amet, lacinia tortor. Aliquam risus mi, ullamcorper vitae purus et, mollis facilisis quam. Nulla nisl lorem, condimentum eget rhoncus eu, porttitor a dolor. Curabitur faucibus ut metus quis semper. Etiam faucibus interdum lorem. Praesent vehicula gravida dignissim.
-		</div></div>
-	</div>
-	
-	<ul id="wtNavContainer" class="site-nav">
-		<li id="wtlistitem1" class="active"><div><a id="wt12" href="#">What is it?</a></div></li>
-		<li id="wtlistitem2" class="inactive"><a id="wt16" href="#">How it works</a></li>
-		<li id="wtlistitem3" class="inactive"><a id="wt13" href="#">What are the risks?</a></li>
-		<li id="wtlistitem4" class="inactive"><a id="wt19" href="#">How to Join</a></li>
-		<li id="wtlistitem5" class="inactive"><a id="wt3" href="#">FAQs</a></li>
-		<li id="wtlistitem6" class="nav-join"><a id="wt8" href="#">Join now</a></li>
-	</ul>
-</div></div>
+    <div class="page-wrapper">
+        <div class="container" id="app">
+            <div id="wtWhat" class="main-content">
+                <h1 class="page-title" id="">{{ heroMessageTitle }}</h1>
+                <div class="main-content clearfix"><img class="img-left" alt="" src="./styles/ceo.png">
+                    <div>
+                       {{ blurb }}
+                    </div>
+                </div>
+            </div>
+
+            <ul id="wtNavContainer" class="site-nav">
+                <li id="wtlistitem1" class="active">
+                    <div><a id="wt12" href="#">What is it?</a>
+                    </div></li>
+                <li id="wtlistitem2" class="inactive"><a id="wt16" href="#">How it works</a></li>
+                <li id="wtlistitem3" class="inactive"><a id="wt13" href="#">What risks?</a></li>
+                <li id="wtlistitem4" class="inactive"><a id="wt19" href="#">How to Join</a></li>
+                <li id="wtlistitem5" class="inactive"><a id="wt3" href="#">FAQs</a></li>
+                <li id="wtlistitem6" class="nav-join"><a id="wt8" href="#">Join now</a></li>
+            </ul>
+        </div>
+    </div>
 </body>
 </html>

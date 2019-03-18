@@ -123,6 +123,7 @@ body {
     font-family: 'Roboto Light', sans-serif;
     margin: 27px 0;
     display: block;
+    padding: 4px 14px;
 }
 
 .sub-title {
@@ -327,7 +328,7 @@ p, .para {
     margin-top: 60px;
     position: absolute;
     bottom: 0;
-    width: 1093px;
+    width: 820px;
 }
 .site-nav li {
     list-style: none;
