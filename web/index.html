@@ -34,7 +34,7 @@
             for (var f in data.fields) {
                 if (data.fields[f].nodeType === "document") {
                     data.fields[f] = documentToHtmlString(data.fields[f]);
-                } else if (typeof (data.fields[f]) === "string" && (data.fields[f].indexOf('\r') || data.fields[f].indexOf('\n'))) {
+                } else if (typeof (data.fields[f]) === "string" && (data.fields[f].indexOf('\r') > -1 || data.fields[f].indexOf('\n') > -1)) {
                     data.fields[f] = markDownToHtmlString(data.fields[f]);
                 }
             }
