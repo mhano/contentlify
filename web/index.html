@@ -12,18 +12,33 @@
     <script src="https://unpkg.com/vue"></script>
     <script src="https://cdn.jsdelivr.net/npm/showdown/dist/showdown.min.js"></script>
     <script language="javascript" type="text/javascript">
+        var exports = {}; // quick fix because 'exports' is not defined in rich-text bundle below
+    </script>
+    <script
+        src="https://unpkg.com/@contentful/rich-text-html-renderer@12.0.0/dist/rich-text-html-renderer.es5.js"
+        charset="utf-8"
+    ></script>
+    <script language="javascript" type="text/javascript">
+        function markDownToHtmlString(markdown) {
+            return new showdown.Converter().makeHtml(markdown);
+        }
+
         var client = contentful.createClient({
             space: '1mv2u22omsld',
             accessToken: '899769f9000215ba2d755e43bb5c4e525282c18553ec28b6faccf820f7a38258',
-            
         });
 
         var companyCode = '4iB5Ogb9L3IH2fyUNi5IXs';
 
         function render(data) {
-            //var msg = documentToHtmlString(data.fields.heroMessage);
-            data.fields.longText = new showdown.Converter().makeHtml(data.fields.longText);
-            console.log(JSON.stringify(data));
+            for (var f in data.fields) {
+                if (data.fields[f].nodeType === "document") {
+                    data.fields[f] = documentToHtmlString(data.fields[f]);
+                } else if (typeof (data.fields[f]) === "string" && (data.fields[f].indexOf('\r') || data.fields[f].indexOf('\n'))) {
+                    data.fields[f] = markDownToHtmlString(data.fields[f]);
+                }
+            }
+
             vm.$set(vm, 'content', data.fields);
             vm.$set(vm, 'loading', false);
             
@@ -42,7 +57,6 @@
 
         function setLocales(data) {
             vm.$set(vm, 'locales', data);
-            console.log(JSON.stringify(data));
         }
 
         client.getLocales()
@@ -64,12 +78,13 @@
             <h1 class="page-title" id="">{{ content.heroMessageTitle }}</h1>
             <div class="main-content clearfix">
                 <img class="img-left" alt=""
-                     v-bind:src="'https:' + content.heroImage.fields.file.url"
+                     v-bind:src="content.heroImage.fields.file.url"
                      v-bind:width="content.heroImage.fields.file.details.image.width"
                      v-bind:height="content.heroImage.fields.file.details.image.height"/>
                 <div>
-                    <p>{{ content.heroMessage }}</p>
+                    <p v-html="content.heroMessage"></p>
                     <p v-html="content.longText"></p>
+                    <p v-html="content.markDown"></p>
                     <p style="margin-bottom: 10px;" v-for="para in content.heroMessage.content">{{ para.content[0].value }}</p>
                 </div>
             </div>
@@ -88,14 +103,14 @@
     </div>
 </div>
 <script language="javascript" type="text/javascript">
-var vm = new Vue({
-    el: '#app',
-    data: {
-        loading: true,
-        content: {},
-        locales: []
-    }
-});
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            loading: true,
+            content: {},
+            locales: []
+        }
+    });
 </script>
 </body>
 </html>
