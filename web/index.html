@@ -165,12 +165,12 @@
                     <a href="#">{{content.labelWhatIsIt}}</a>
                 </div>
             </li>
-            <li class="inactive"><a href="#">{{content.labelHowItWorks}}</a></li>
-            <li class="inactive" v-if="content.planHasBonusShares"><a href="#">{{content.labelBonusShares}} ${{ content.bonusSharesAmount }}</a></li>
-            <li class="inactive" v-if="content.showPlanRisks"><a href="#">{{content.labelWhatAreTheRisks}}</a></li>
-            <li class="inactive"><a href="#">{{content.labelHowToJoin}}</a></li>
-            <li class="inactive"><a href="#">{{content.labelFaQs}}</a></li>
-            <li class="nav-join"><a href="#">{{content.labelJoin}}</a></li>
+            <li class="inactive"><a href="#" onclick="event.preventDefault();">{{content.labelHowItWorks}}</a></li>
+            <li class="inactive" v-if="content.planHasBonusShares"><a href="#" onclick="event.preventDefault();">{{content.labelBonusShares}} ${{ content.bonusSharesAmount }}</a></li>
+            <li class="inactive" v-if="content.showPlanRisks"><a href="#" onclick="event.preventDefault();">{{content.labelWhatAreTheRisks}}</a></li>
+            <li class="inactive"><a href="#" onclick="event.preventDefault();">{{content.labelHowToJoin}}</a></li>
+            <li class="inactive"><a href="#" onclick="event.preventDefault();">{{content.labelFaQs}}</a></li>
+            <li class="nav-join"><a href="#" onclick="event.preventDefault();">{{content.labelJoin}}</a></li>
         </ul>
     </div>
     <div v-if="showDiagnostics">
