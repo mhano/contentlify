@@ -23,8 +23,15 @@
             return new showdown.Converter().makeHtml(markdown);
         }
 
+        var anchor = window.location.hash.split('/');
+
         var loadingRenderLock = 0;
         var vm;
+        var entryType = "eep";
+
+        // TODO: ensure we white-list these inputs
+        var entryCode = anchor[1];
+        var startLocale = anchor[2];
 
         var contentfulClient = contentful.createClient({
             space: '1mv2u22omsld',
@@ -43,7 +50,8 @@
                     data.fields[f] = markDownToHtmlString(data.fields[f]);
                 }
             }
-            
+
+            vm.showDiagnostics = true
             vm.errorDetails = {};
             vm.content = data.fields;
             vm.loading = false;
@@ -66,7 +74,7 @@
 
         function showLoadingOnSlowNetworksAfterMs(delay) {
             var rlock = loadingRenderLock;
-            setTimeout(() => {
+            setTimeout(function(){
                 if (rlock === loadingRenderLock) {
                     vm.loading = true;
                 }
@@ -75,9 +83,21 @@
 
         function loadContent(locale) {
             showLoadingOnSlowNetworksAfterMs(1500);
-            
-            contentfulClient.getEntry(companyCode, { locale: locale })
-                .then(contentLoaded, contentLoadError);
+
+            contentfulClient.getEntries({
+                content_type: entryType,
+                locale: locale,
+                'fields.companyCode[in]': entryCode
+                })
+                .then(function(data){
+                    if (data.items && data.items.length > 0) {
+                        contentLoaded(data.items[0]);
+                    } else {
+                        contentLoadError({ response: { data: {message: "Content not found: " + entryType + " / " + entryCode, entries: data} } });
+                    }
+                }, contentLoadError);
+
+            // contentfulClient.getEntry(companyCode, { locale: locale }).then(content, contentLoadError);
         }
 
         function init() {
@@ -87,6 +107,7 @@
                 data: {
                     loading: true,
                     error: false,
+                    showDiagnostics: false,
                     errorMessage: "",
                     errorDetails: {},
                     errorCount: 0,
@@ -95,64 +116,70 @@
                 }
             });
 
-            contentfulClient.getLocales().then((data) => {
+            contentfulClient.getLocales().then(function (data){
                 data.items.push({ code: 'en-CA', name: 'English (Canada)' }); // TODO: delete this one line of demo code
                 vm.locales = data.items;
-            }, (error) => {
+            }, function (error){
                 vm.locales = [{ code: 'en-US', name: 'English' }];
             });
 
-            loadContent();
+            loadContent(startLocale);
         }
     </script>
 </head>
 <body>
-    <div class="page-wrapper" id="app">
-        <div class="container" v-if="error">
-            Error loading content (attempt {{errorCount}})... trying again...<br /><br />
-            <pre>Details: {{errorMessage}}</pre>
-            <pre>JSON: {{JSON.stringify(errorDetails, null, 2)}}</pre>
-        </div>
-        <div class="container" v-else-if="loading">
-            Loading...
-        </div>
-        <div class="container" v-else>
-            <div id="wtWhat" class="main-content">
-                <div style="text-align: center;">
-                    <span v-for="locale in locales"><a href="#" v-bind:onclick="'loadContent(\'' + locale.code + '\');'">{{ locale.name }}</a> &nbsp;</span>
-                </div>
-                <h1 class="page-title" >{{ content.heroMessageTitle }}</h1>
-                <div class="main-content clearfix">
-                    <img class="img-left" alt=""
-                         v-bind:src="content.heroImage.fields.file.url"
-                         v-bind:width="content.heroImage.fields.file.details.image.width"
-                         v-bind:height="content.heroImage.fields.file.details.image.height" />
-                    <div>
-                        <p v-html="content.heroMessage"></p>
-                        <p v-html="content.longText"></p>
-                        <p v-html="content.markDown"></p>
-                        <p style="margin-bottom: 10px;" v-for="para in content.heroMessage.content">{{ para.content[0].value }}</p>
-                    </div>
+<div class="page-wrapper" id="app">
+    <div class="container" v-if="error">
+        Error loading content (attempt {{errorCount}})... trying again...<br /><br />
+        <pre>Details: {{errorMessage}}</pre>
+        <pre>JSON: {{JSON.stringify(errorDetails, null, 2)}}</pre>
+    </div>
+    <div class="container" v-else-if="loading">
+        Loading...
+    </div>
+    <div class="container" v-else>
+        <div id="wtWhat" class="main-content">
+            <div style="text-align: center;">
+                <span v-for="locale in locales"><a href="#" v-bind:onclick="'loadContent(\'' + locale.code + '\'); event.preventDefault();'">{{ locale.name }}</a> &nbsp; </span>
+            </div>
+            <h1 class="page-title" >{{ content.heroMessageTitle }}</h1>
+            <div class="main-content clearfix">
+                <img class="img-left" 
+                     v-bind:alt="content.heroImage.fields.title" 
+                     v-bind:title="content.heroImage.fields.title"
+                     v-bind:src="content.heroImage.fields.file.url"
+                     v-bind:width="content.heroImage.fields.file.details.image.width"
+                     v-bind:height="content.heroImage.fields.file.details.image.height" />
+                <div>
+                    <p v-html="content.heroMessage"></p>
+                    <p v-html="content.longText"></p>
+                    <p v-html="content.markDown"></p>
+                    <p style="margin-bottom: 10px;" v-for="para in content.heroMessage.content">{{ para.content[0].value }}</p>
                 </div>
             </div>
-
-            <ul id="wtNavContainer" class="site-nav">
-                <li class="active">
-                    <div>
-                        <a href="#">{{content.labelWhatIsIt}}</a>
-                    </div>
-                </li>
-                <li class="inactive"><a href="#">{{content.labelHowItWorks}}</a></li>
-                <li class="inactive" v-if="content.planHasBonusShares"><a href="#">{{content.labelBonusShares}} ${{ content.bonusSharesAmount }}</a></li>
-                <li class="inactive" v-if="content.showPlanRisks"><a href="#">{{content.labelWhatAreTheRisks}}</a></li>
-                <li class="inactive"><a href="#">{{content.labelHowToJoin}}</a></li>
-                <li class="inactive"><a href="#">{{content.labelFaQs}}</a></li>
-                <li class="nav-join"><a href="#">{{content.labelJoin}}</a></li>
-            </ul>
         </div>
+
+        <ul id="wtNavContainer" class="site-nav">
+            <li class="active">
+                <div>
+                    <a href="#">{{content.labelWhatIsIt}}</a>
+                </div>
+            </li>
+            <li class="inactive"><a href="#">{{content.labelHowItWorks}}</a></li>
+            <li class="inactive" v-if="content.planHasBonusShares"><a href="#">{{content.labelBonusShares}} ${{ content.bonusSharesAmount }}</a></li>
+            <li class="inactive" v-if="content.showPlanRisks"><a href="#">{{content.labelWhatAreTheRisks}}</a></li>
+            <li class="inactive"><a href="#">{{content.labelHowToJoin}}</a></li>
+            <li class="inactive"><a href="#">{{content.labelFaQs}}</a></li>
+            <li class="nav-join"><a href="#">{{content.labelJoin}}</a></li>
+        </ul>
     </div>
-    <script language="javascript" type="text/javascript">
-        init();
-    </script>
+    <div v-if="showDiagnostics">
+        <h1>Diagnostics</h1>
+        <pre>{{JSON.stringify(content, null, 2)}}</pre>
+    </div>
+</div>
+<script language="javascript" type="text/javascript">
+    init();
+</script>
 </body>
 </html>
