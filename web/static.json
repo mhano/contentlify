@@ -1,0 +1,111 @@
+{
+  "sys": {
+    "space": {
+      "sys": {
+        "type": "Link",
+        "linkType": "Space",
+        "id": "1mv2u22omsld"
+      }
+    },
+    "id": "4iB5Ogb9L3IH2fyUNi5IXs",
+    "type": "Entry",
+    "createdAt": "2019-03-17T23:31:13.106Z",
+    "updatedAt": "2019-03-19T01:25:34.613Z",
+    "environment": {
+      "sys": {
+        "id": "master",
+        "type": "Link",
+        "linkType": "Environment"
+      }
+    },
+    "revision": 10,
+    "contentType": {
+      "sys": {
+        "type": "Link",
+        "linkType": "ContentType",
+        "id": "eep"
+      }
+    },
+    "locale": "en-US"
+  },
+  "fields": {
+    "companyCode": "YCC",
+    "title": "GESPP",
+    "heroMessageTitle": "A message from your CEO",
+    "companyName": "Your Company",
+    "heroMessage": {
+      "data": {},
+      "content": [
+        {
+          "data": {},
+          "content": [
+            {
+              "data": {},
+              "marks": [],
+              "value": "Donec rhoncus gravida diam sed consectetur. Aenean cursus lacinia ex. Maecenas ut enim quam. Donec ornare enim ut erat lobortis feugiat. Nullam eget lorem quis orci condimentum gravida. Nam imperdiet, sapien et mollis consequat, nunc neque interdum arcu, eget pharetra diam nulla et ante. Nulla dolor nisi, mollis ut est vel, gravida pharetra ipsum. Nunc id velit massa. Fusce feugiat augue non dolor facilisis finibus.",
+              "nodeType": "text"
+            }
+          ],
+          "nodeType": "paragraph"
+        },
+        {
+          "data": {},
+          "content": [
+            {
+              "data": {},
+              "marks": [],
+              "value": "Nam luctus ligula vel ultrices lobortis. Praesent quis nisi sed purus aliquet vulputate a sed elit. Donec vitae massa vel ligula placerat interdum vitae ut arcu. Suspendisse eget convallis ipsum, eget mattis mi. Pellentesque non bibendum mauris. Nulla facilisi. In pretium laoreet magna ut dictum. Phasellus interdum blandit enim, ut pharetra orci interdum commodo. Aliquam erat volutpat. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Suspendisse viverra arcu non urna vestibulum, at porttitor est consectetur. Praesent efficitur turpis lacinia diam venenatis mollis.",
+              "nodeType": "text"
+            }
+          ],
+          "nodeType": "paragraph"
+        }
+      ],
+      "nodeType": "document"
+    },
+    "heroImage": {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "1mv2u22omsld"
+          }
+        },
+        "id": "5w2kXHwqU6QGHh1sWzLiLP",
+        "type": "Asset",
+        "createdAt": "2019-03-18T04:34:42.625Z",
+        "updatedAt": "2019-03-18T04:34:42.625Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "revision": 1,
+        "locale": "en-US"
+      },
+      "fields": {
+        "title": "Your Company CEO",
+        "description": "Your Company - CEO Cool Dude",
+        "file": {
+          "url": "//images.ctfassets.net/1mv2u22omsld/5w2kXHwqU6QGHh1sWzLiLP/fcf023857db644aaa01ab0981b03391c/ceo.png",
+          "details": {
+            "size": 6239,
+            "image": {
+              "width": 141,
+              "height": 181
+            }
+          },
+          "fileName": "ceo.png",
+          "contentType": "image/png"
+        }
+      }
+    },
+    "signUpLink": "https://www.netlify.com/pricing/",
+    "footnote": "Copyright Notice",
+    "planHasFeatureX": true,
+    "longText": "<p><strong>Donec rhoncus gravida</strong> diam sed consectetur. Aenean cursus lacinia ex. Maecenas ut enim quam. Donec ornare enim ut erat lobortis feugiat. Nullam eget lorem quis orci condimentum gravida. Nam imperdiet, sapien et mollis consequat, nunc neque interdum arcu, eget pharetra diam nulla et ante. Nulla dolor nisi, mollis ut est vel, gravida pharetra ipsum. Nunc id velit massa. Fusce feugiat augue non dolor facilisis finibus.</p>\n<p>Nam luctus ligula vel ultrices lobortis. Praesent quis nisi sed purus aliquet vulputate a sed elit. Donec vitae massa vel ligula placerat interdum vitae ut arcu. Suspendisse eget convallis ipsum, eget mattis mi. Pellentesque non bibendum mauris. Nulla facilisi. In pretium laoreet magna ut dictum. Phasellus interdum blandit enim, ut pharetra orci interdum commodo. Aliquam erat volutpat. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Suspendisse viverra arcu non urna vestibulum, at porttitor est consectetur. Praesent efficitur turpis lacinia diam venenatis mollis.</p>\n<p><img src=\"//images.ctfassets.net/1mv2u22omsld/5w2kXHwqU6QGHh1sWzLiLP/fcf023857db644aaa01ab0981b03391c/ceo.png\" alt=\"Your Company CEO\" /></p>"
+  }
+}
