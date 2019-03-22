@@ -57,11 +57,12 @@
                 "</style>";
         }
 
+        // fires only when new content entity has been loaded (company code change, locale change, but not spa-page/anchor/scroll changes)
         var contentlifyUpdateCallback = function () {
             document.title = contentlifyViewModel.content.title;
         }
 
-        // var contentlifyNavigationCallback = function () { }
+        // var contentlifyNavigationCallback = function () { /* fires per page/route/anchor change */ }
     </script>
     <script src="contentlify.js"></script>
 
