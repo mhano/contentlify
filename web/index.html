@@ -8,129 +8,74 @@
     <meta http-equiv="Content-Script-Type" content="text/javascript">
     <meta http-equiv="Content-Style-Type" content="text/css">
     <link href="./styles/Theme.gespp_microsite.css" type="text/css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/contentful@latest/dist/contentful.browser.min.js"></script>
-    <script src="https://unpkg.com/vue"></script>
-    <script src="https://cdn.jsdelivr.net/npm/showdown/dist/showdown.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/contentful@7.4.3/dist/contentful.legacy.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.9/dist/vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-router@3.0.2/dist/vue-router.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/showdown@1.9.0/dist/showdown.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/zenscroll@4.0.2/zenscroll-min.js"></script> -->
     <script language="javascript" type="text/javascript">
         var exports = {}; // quick fix because 'exports' is not defined in rich-text bundle below
     </script>
-    <script
-        src="https://unpkg.com/@contentful/rich-text-html-renderer@12.0.0/dist/rich-text-html-renderer.es5.js"
-        charset="utf-8"
-    ></script>
+    <script src="https://unpkg.com/@contentful/rich-text-html-renderer@13.1.0/dist/rich-text-html-renderer.es5.js" charset="utf-8"></script>
+
     <script language="javascript" type="text/javascript">
-        function markDownToHtmlString(markdown) {
-            return new showdown.Converter().makeHtml(markdown);
-        }
-
-        var anchor = window.location.hash.split('/');
-
-        var loadingRenderLock = 0;
-        var vm;
-        var entryType = "eep";
-
-        // TODO: ensure we white-list these inputs
-        var entryCode = anchor[1];
-        var startLocale = anchor[2];
-
+        
+        // TODO: support contentful preview api key
         var contentfulClient = contentful.createClient({
             space: '1mv2u22omsld',
             accessToken: '899769f9000215ba2d755e43bb5c4e525282c18553ec28b6faccf820f7a38258',
         });
 
-        var companyCode = '4iB5Ogb9L3IH2fyUNi5IXs';
+        var contentlifyViewModel;
+        var contentlifyEntityType = "eep";
 
-        function contentLoaded(data) {
-            loadingRenderLock++;
+        var contentlifyStyleOverrides = function (contentObject) {
+            return "<style>\r\n" +
+                // primaryBackgroundColor
+                "html .page-title { background: " + contentObject.primaryBackgroundColor + "; }\r\n" +
+                "html .site-nav a { background: " + contentObject.primaryBackgroundColor + "; }\r\n" +
 
-            for (var f in data.fields) {
-                if (data.fields[f].nodeType === "document") {
-                    data.fields[f] = documentToHtmlString(data.fields[f]);
-                } else if (typeof (data.fields[f]) === "string" && (data.fields[f].indexOf('\r') > -1 || data.fields[f].indexOf('\n') > -1)) {
-                    data.fields[f] = markDownToHtmlString(data.fields[f]);
-                }
-            }
+                // secondaryBackgroundColor
+                ".site-nav .active a, .page-button-big:hover, .page-button-big:focus, .site-nav a:focus, .site-nav a:hover, .site-nav .nav-join a:hover, .site-nav .nav-join a:focus  { background: " + contentObject.secondaryBackgroundColor + "; }\r\n" +
 
-            vm.showDiagnostics = true
-            vm.errorDetails = {};
-            vm.content = data.fields;
-            vm.loading = false;
-            vm.error = false;
-            vm.errorCount = 0;
+                // tertiaryBackgroundColor
+                "html .site-nav .active a, html .page-button-big:hover, .page-button-big:focus, html .process-callout, html .site-nav a:focus, .site-nav a:hover, html .site-nav .nav-join a:hover, .site-nav .nav-join a:focus  { background: " + contentObject.tertiaryBackgroundColor + "; }\r\n" +
+
+                // primaryTextColor
+                "html .body, html .h2, .h3, .main-content, html .product-name, html .page-title, html .sub-title, html .page-button, html .tabs a.active  { color: " + contentObject.primaryTextColor + "; }\r\n" +
+
+                // secondaryTextColor
+                "html .site-nav a, html .product-name, html .page-title { color: " + contentObject.secondaryTextColor + "; }\r\n" +
+
+                "</style>";
         }
 
-        function contentLoadError(error) {
-            vm.error = true;
-            vm.errorCount++;
-            vm.errorDetails = error;
-            if (error.response && error.response.data && typeof(error.response.data.message) === "string") {
-                vm.errorMessage = error.response.data.message;
-            } else {
-                vm.errorMessage = "Unexpected / unknown error.";
-            }
-            setTimeout(loadContent, 1000);
-        }
-
-
-        function showLoadingOnSlowNetworksAfterMs(delay) {
-            var rlock = loadingRenderLock;
-            setTimeout(function(){
-                if (rlock === loadingRenderLock) {
-                    vm.loading = true;
-                }
-            }, delay);
-        }
-
-        function loadContent(locale) {
-            showLoadingOnSlowNetworksAfterMs(1500);
-
-            contentfulClient.getEntries({
-                content_type: entryType,
-                locale: locale,
-                'fields.companyCode[in]': entryCode
-                })
-                .then(function(data){
-                    if (data.items && data.items.length > 0) {
-                        contentLoaded(data.items[0]);
-                    } else {
-                        contentLoadError({ response: { data: {message: "Content not found: " + entryType + " / " + entryCode, entries: data} } });
-                    }
-                }, contentLoadError);
-
-            // contentfulClient.getEntry(companyCode, { locale: locale }).then(content, contentLoadError);
-        }
-
-        function init() {
-            vm = new Vue( {
-                el: '#app',
-
-                data: {
-                    loading: true,
-                    error: false,
-                    showDiagnostics: false,
-                    errorMessage: "",
-                    errorDetails: {},
-                    errorCount: 0,
-                    content: {},
-                    locales: []
-                }
-            });
-
-            contentfulClient.getLocales().then(function (data){
-                data.items.push({ code: 'en-CA', name: 'English (Canada)' }); // TODO: delete this one line of demo code
-                vm.locales = data.items;
-            }, function (error){
-                vm.locales = [{ code: 'en-US', name: 'English' }];
-            });
-
-            loadContent(startLocale);
-        }
     </script>
+    <script src="contentlify.js"></script>
+    
+    <!-- TODO: delete -->
+    <style>
+        .demo { color: black; }
+        .router-link-exact-active { color: red; }
+        .router-link-active { color: red; }
+
+        pre {
+            white-space: pre-wrap;       /* css-3 */
+            white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+            white-space: -pre-wrap;      /* Opera 4-6 */
+            white-space: -o-pre-wrap;    /* Opera 7 */
+            word-wrap: break-word;       /* Internet Explorer 5.5+ */
+        }
+    </style>
 </head>
 <body>
 <div class="page-wrapper" id="app">
-    <div class="container" v-if="error">
-        Error loading content (attempt {{errorCount}})... trying again...<br /><br />
+    <div v-html="styles"></div>
+    <div class="container" v-if="entryCode === undefined || entryCode === ''">
+        Nothing to see here...
+    </div>
+    <div class="container" v-else-if="error">
+        Error loading content (attempt {{errorCount}})... <span v-if="willTryErrorAgain">trying again...</span><span v-else>given up.</span><br/><br/>
         <pre>Details: {{errorMessage}}</pre>
         <pre>JSON: {{JSON.stringify(errorDetails, null, 2)}}</pre>
     </div>
@@ -138,25 +83,50 @@
         Loading...
     </div>
     <div class="container" v-else>
+
         <div id="wtWhat" class="main-content">
-            <div style="text-align: center;">
-                <span v-for="locale in locales"><a href="#" v-bind:onclick="'loadContent(\'' + locale.code + '\'); event.preventDefault();'">{{ locale.name }}</a> &nbsp; </span>
+            <div style="text-align: center; color: #333;">
+                Company:
+                <router-link class="demo" v-bind:to="'/ycc/' + localeCode + '/' + pageCode">ycc</router-link> &nbsp;
+                <router-link class="demo" v-bind:to="'/xe3/' + localeCode + '/' + pageCode">xe3</router-link> &nbsp;
+            </div><br/>
+            <div style="text-align: center; color: #333;">
+                Language (ca broken):
+                <span v-for="locale in locales"><router-link class="demo" v-bind:to="'/' + entryCode + '/' + locale.code + '/' + pageCode">{{ locale.name }}</router-link> &nbsp; </span>
+            </div><br/>
+            <div style="text-align: center; color: #333;">
+                Page / anchor:
+                <router-link class="demo" v-bind:to="pageLink('Home')">Home</router-link> &nbsp;
+                <router-link class="demo" v-bind:to="anchorLink('Home', 'anchor1')">Home # anchor1</router-link> &nbsp;
+                <router-link class="demo" v-bind:to="anchorLink('Home', 'anchor2')">Home # anchor2</router-link> &nbsp;
+                <router-link class="demo" v-bind:to="pageLink('FAQ')">FAQ</router-link> &nbsp;
             </div>
-            <h1 class="page-title" >{{ content.heroMessageTitle }}</h1>
-            <div class="main-content clearfix">
-                <img class="img-left" 
-                     v-bind:alt="content.heroImage.fields.title" 
-                     v-bind:title="content.heroImage.fields.title"
-                     v-bind:src="content.heroImage.fields.file.url"
-                     v-bind:width="content.heroImage.fields.file.details.image.width"
-                     v-bind:height="content.heroImage.fields.file.details.image.height" />
+
+            <div id="faqPage" v-if="pageCode == 'FAQ'">
+                <h1 class="page-title">{{content.faqTitle}}</h1>
                 <div>
-                    <p v-html="content.heroMessage"></p>
-                    <p v-html="content.longText"></p>
-                    <p v-html="content.markDown"></p>
-                    <p style="margin-bottom: 10px;" v-for="para in content.heroMessage.content">{{ para.content[0].value }}</p>
+                    <p v-html="content.faqContent"></p>
                 </div>
             </div>
+
+            <div id="homePage" v-else>
+                <h1 class="page-title">{{ content.heroMessageTitle }}</h1>
+                <div class="main-content clearfix">
+                    <img class="img-left"
+                         v-bind:src="content.heroImage.fields.file.url"
+                         v-bind:width="content.heroImage.fields.file.details.image.width"
+                         v-bind:height="content.heroImage.fields.file.details.image.height"
+                         v-bind:alt="content.heroImage.fields.description"
+                         v-bind:title="content.heroImage.fields.title"/>
+                    <div>
+                        <p v-html="content.heroMessage"></p>
+                        <p id="anchor1" v-html="content.longText"></p>
+                        <p id="anchor2" v-html="content.markDown"></p>
+                        <p style="margin-bottom: 10px;" v-for="para in content.heroMessage.content">{{ para.content[0].value }}</p>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <ul id="wtNavContainer" class="site-nav">
@@ -173,13 +143,18 @@
             <li class="nav-join"><a href="#" onclick="event.preventDefault();">{{content.labelJoin}}</a></li>
         </ul>
     </div>
+
+    <!-- TODO: delete -->
     <div v-if="showDiagnostics">
         <h1>Diagnostics</h1>
         <pre>{{JSON.stringify(content, null, 2)}}</pre>
     </div>
+
 </div>
+
 <script language="javascript" type="text/javascript">
-    init();
+    contentlifyInit();
 </script>
+
 </body>
 </html>

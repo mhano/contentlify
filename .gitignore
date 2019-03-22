@@ -4,3 +4,4 @@
 
 /netlify.toml
 .vs/**
+.local/**
