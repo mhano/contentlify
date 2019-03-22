@@ -1,8 +1,0 @@
-﻿/*page customisations*/
-body .page-wrapper {
-    background-size: contain;
-}
-body .page-wrapper>.container:before {
-    display: none;   
-}
-/*end page customisations*/

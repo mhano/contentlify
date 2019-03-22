@@ -3,24 +3,36 @@
     <meta name="robots" content="noindex, nofollow" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title></title>
-    <link type="text/css" rel="stylesheet" href="./styles/portal.css" charset="UTF-8">
     <meta http-equiv="Content-Script-Type" content="text/javascript">
     <meta http-equiv="Content-Style-Type" content="text/css">
+
+    <link type="text/css" rel="stylesheet" href="./styles/portal.css">
     <link href="./styles/Theme.gespp_microsite.css" type="text/css" rel="stylesheet">
-    <!-- TODO add hashes to js urls and bundle local alternative -->
-    <script src="https://cdn.jsdelivr.net/npm/contentful@7.4.3/dist/contentful.legacy.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.9/dist/vue.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue-router@3.0.2/dist/vue-router.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/showdown@1.9.0/dist/showdown.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/zenscroll@4.0.2/zenscroll-min.js"></script>
+
+    <!-- TODO: add SRI hashes and fall-back to local webpacked version -->
+    <script src="https://cdn.jsdelivr.net/npm/contentful@7.4.3/dist/contentful.legacy.min.js" 
+            crossorigin="anonymous" integrity="sha256-9AdqXm29mEIhGt6EDOdCHtmSWMH3gW3jj8xJGYQXFQs="></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.9/dist/vue.min.js" 
+            crossorigin="anonymous" integrity="sha256-pfXWzm1MRINMGCDZtp94lO2+OYNFFiQ4oZihf5+FapQ="></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-router@3.0.2/dist/vue-router.min.js" 
+            crossorigin="anonymous" integrity="sha256-DbgluxFcJqBgeVJwF1idcvA2aeayczQBWJPGn4KZIEc="></script>
+    <script src="https://cdn.jsdelivr.net/npm/showdown@1.9.0/dist/showdown.min.js" 
+            crossorigin="anonymous" integrity="sha256-LSUpTY0kkXGKvcBC9kbmgibmx3NVVgJvAEfTZbs51mU="></script>
+    <script src="https://cdn.jsdelivr.net/npm/zenscroll@4.0.2/zenscroll-min.js" 
+            crossorigin="anonymous"  integrity="sha256-P3WAuks0zjjUNJHAQsa3qo5fMU1+d3flCMCI9vGK9So="></script>
+
     <script language="javascript" type="text/javascript">
-        var exports = {}; // quick fix because 'exports' is not defined in rich-text bundle below
+        var exports = {}; // quick fix because 'exports' is not defined in 'rich-text-html-renderer' below
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/@contentful/rich-text-html-renderer@13.1.0/dist/rich-text-html-renderer.es5.js" charset="utf-8"></script>
-    
+
+    <!-- TODO: add SRI hashes and fall-back to local webpacked version -->
+    <script src="https://cdn.jsdelivr.net/npm/@contentful/rich-text-html-renderer@13.1.0/dist/rich-text-html-renderer.es5.js" 
+            crossorigin="anonymous" integrity="sha256-2RWAhYMukzDFe9G0HItQccfrU5jOBItdJ5+JMiQgJ30="></script>
+
     <script language="javascript" type="text/javascript">
-        
-        // TODO: support contentful preview api key
+
+        // TODO: support using contentful preview api - dedicated secret host?
+
         var contentfulClient = contentful.createClient({
             space: '1mv2u22omsld',
             accessToken: '899769f9000215ba2d755e43bb5c4e525282c18553ec28b6faccf820f7a38258',
@@ -34,19 +46,14 @@
                 // primaryBackgroundColor
                 "html .page-title { background: " + contentObject.primaryBackgroundColor + "; }\r\n" +
                 "html .site-nav a { background: " + contentObject.primaryBackgroundColor + "; }\r\n" +
-
                 // secondaryBackgroundColor
                 ".site-nav .active a, .page-button-big:hover, .page-button-big:focus, .site-nav a:focus, .site-nav a:hover, .site-nav .nav-join a:hover, .site-nav .nav-join a:focus  { background: " + contentObject.secondaryBackgroundColor + "; }\r\n" +
-
                 // tertiaryBackgroundColor
                 "html .site-nav .active a, html .page-button-big:hover, .page-button-big:focus, html .process-callout, html .site-nav a:focus, .site-nav a:hover, html .site-nav .nav-join a:hover, .site-nav .nav-join a:focus  { background: " + contentObject.tertiaryBackgroundColor + "; }\r\n" +
-
                 // primaryTextColor
                 "html .body, html .h2, .h3, .main-content, html .product-name, html .page-title, html .sub-title, html .page-button, html .tabs a.active  { color: " + contentObject.primaryTextColor + "; }\r\n" +
-
                 // secondaryTextColor
                 "html .site-nav a, html .product-name, html .page-title { color: " + contentObject.secondaryTextColor + "; }\r\n" +
-
                 "</style>";
         }
 
@@ -55,19 +62,27 @@
         }
     </script>
     <script src="contentlify.js"></script>
-    
+
     <!-- TODO: delete -->
     <style>
-        .demo { color: black; }
-        .router-link-exact-active { color: red; }
-        .router-link-active { color: red; }
+        .demo {
+            color: black;
+        }
+
+        .router-link-exact-active {
+            color: red;
+        }
+
+        .router-link-active {
+            color: red;
+        }
 
         pre {
-            white-space: pre-wrap;       /* css-3 */
-            white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
-            white-space: -pre-wrap;      /* Opera 4-6 */
-            white-space: -o-pre-wrap;    /* Opera 7 */
-            word-wrap: break-word;       /* Internet Explorer 5.5+ */
+            white-space: pre-wrap; /* css-3 */
+            white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+            white-space: -pre-wrap; /* Opera 4-6 */
+            white-space: -o-pre-wrap; /* Opera 7 */
+            word-wrap: break-word; /* Internet Explorer 5.5+ */
         }
     </style>
 </head>

@@ -37,16 +37,19 @@ var contentlifyRichTextOptions = {
             img.setAttribute('width', fields.file.details.image.width);
             img.setAttribute('width', fields.file.details.image.width);
             img.setAttribute('height', fields.file.details.image.height);
-            img.setAttribute('title', fields.title);
-            img.setAttribute('alt', fields.description);
-            var str = img.outerHTML;
-            img = undefined;
 
-            return str; /* "<img src=\"" + fields.file.url +
-                "\" height=\"" + fields.file.details.image.height +
-                "\" width=\"" + fields.file.details.image.width +
-                "\" title=\"" + fields.title +
-                "\" alt=\"" + fields.description + "\"/>"; */
+            if (fields.title) {
+                img.setAttribute('title', fields.title);
+            }
+
+            if (fields.description) {
+                img.setAttribute('alt', fields.description);
+            }
+
+            var str = img.outerHTML;
+            str = str.substring(0, str.length - 1) + "/>";
+
+            return str;
         }
     }
 };
