@@ -119,7 +119,7 @@ function contentlifyLoadContent() {
             if (data.items && data.items.length > 0) {
                 contentlifyContentLoaded(data.items[0]);
             } else {
-                contentlifyContentLoadError({ response: { data: { message: "Content not found: " + entryType + " / " + contentlifyViewModel.entryCode, entries: data } } });
+                contentlifyContentLoadError({ response: { data: { message: "Content not found: " + contentlifyEntityType + " / " + contentlifyViewModel.entryCode, entries: data } } });
             }
         }, contentlifyContentLoadError);
 }

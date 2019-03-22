@@ -101,17 +101,20 @@
         Loading...
     </div>
     <div class="container" v-else>
-
+        
         <div id="wtWhat" class="main-content">
+            <!-- TODO DELETE ALL THIS DEMO STUFF -->
             <div style="text-align: center; color: #333;">
                 Company:
-                <router-link class="demo" v-bind:to="'/ycc/' + localeCode + '/' + pageCode">ycc</router-link> &nbsp;
-                <router-link class="demo" v-bind:to="'/xe3/' + localeCode + '/' + pageCode">xe3</router-link> &nbsp;
-            </div><br/>
+                <router-link class="demo" v-bind:to="'/ycc/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">ycc</router-link> &nbsp;
+                <router-link class="demo" v-bind:to="'/xe3/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">xe3</router-link> &nbsp;
+                <router-link class="demo" v-bind:to="'/xe4/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">xe4 (broken)</router-link> &nbsp;
+            </div><br />
             <div style="text-align: center; color: #333;">
-                Language (ca broken):
-                <span v-for="locale in locales"><router-link class="demo" v-bind:to="'/' + entryCode + '/' + locale.code + '/' + pageCode">{{ locale.name }}</router-link> &nbsp; </span>
-            </div><br/>
+                Language:
+                <span v-for="locale in locales"><router-link class="demo" v-bind:to="'/' + entryCode + '/' + locale.code + '/' + (pageCode ? pageCode : 'Home')">{{ locale.name }}</router-link> &nbsp; </span>
+                (ca broken)
+            </div><br />
             <div style="text-align: center; color: #333;">
                 Page / anchor:
                 <router-link class="demo" v-bind:to="pageLink('Home')">Home</router-link> &nbsp;
@@ -126,7 +129,6 @@
                     <p v-html="content.faqContent"></p>
                 </div>
             </div>
-
             <div id="homePage" v-else>
                 <h1 class="page-title">{{ content.heroMessageTitle }}</h1>
                 <div class="main-content clearfix">
@@ -135,7 +137,7 @@
                          v-bind:width="content.heroImage.fields.file.details.image.width"
                          v-bind:height="content.heroImage.fields.file.details.image.height"
                          v-bind:alt="content.heroImage.fields.description"
-                         v-bind:title="content.heroImage.fields.title"/>
+                         v-bind:title="content.heroImage.fields.title" />
                     <div>
                         <p v-html="content.heroMessage"></p>
                         <p id="anchor1" v-html="content.longText"></p>
