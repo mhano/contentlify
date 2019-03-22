@@ -74,11 +74,15 @@ function contentlifyContentLoaded(data) {
     contentlifyViewModel.errorCount = 0;
 
     if (typeof (window.contentlifyStyleOverrides) === 'function') {
-        contentlifyViewModel.styles = contentlifyStyleOverrides(data.fields);
+        contentlifyViewModel.styles = window.contentlifyStyleOverrides(data.fields);
     }
 
     if (typeof(window.contentlifyUpdateCallback) === 'function') {
-        window.contentlifyUpdateCallback(data.fields);
+        window.contentlifyUpdateCallback();
+    }
+
+    if (typeof (window.contentlifyNavigationCallback) === 'function') {
+        window.contentlifyNavigationCallback();
     }
 }
 
@@ -129,10 +133,10 @@ function contentlifyInit() {
         el: '#app',
         router: contentlifyRouter,
         watch: {
-            '$route': 'fetchData'
+            '$route': 'routeUpdated'
         },
         methods: {
-            fetchData: function () {
+            routeUpdated: function () {
                 var old_entryCode = this.entryCode;
                 var old_localeCode = this.localeCode;
                 this.entryCode = this.$route.params.entryCode;
@@ -144,6 +148,9 @@ function contentlifyInit() {
                 // only company code and locale would trigger reload of content
                 if (!(old_entryCode == this.entryCode && old_localeCode == this.localeCode)) {
                     contentlifyLoadContent();
+                }
+                else if (typeof (window.contentlifyNavigationCallback) === 'function') {
+                    window.contentlifyNavigationCallback();
                 }
             },
             anchorLink: function (page, anchor) {
@@ -187,7 +194,7 @@ function contentlifyInit() {
         }
     });
 
-    contentlifyViewModel.fetchData();
+    contentlifyViewModel.routeUpdated();
 
     // TODO: this will be replaced with content entry specific locales (rather than global contentful ones)
     contentfulClient.getLocales().then(function (data) {

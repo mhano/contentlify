@@ -57,9 +57,11 @@
                 "</style>";
         }
 
-        var contentlifyUpdateCallback = function (contentObject) {
-            document.title = contentObject.title;
+        var contentlifyUpdateCallback = function () {
+            document.title = contentlifyViewModel.content.title;
         }
+
+        // var contentlifyNavigationCallback = function () { }
     </script>
     <script src="contentlify.js"></script>
 
