@@ -4,6 +4,12 @@ function contentlifyMarkDownToHtmlString(markdown) {
 
 var contentlifyLoadingRenderLock = 0;
 
+var contentLifyOriginalScrollTo;
+function contentlifyScrollTo(x, y) {
+    window.scrollTo = contentLifyOriginalScrollTo;
+    zenscroll.toY(y);
+}
+
 var contentlifyRouter = new VueRouter({
     mode: 'hash',
     routes: [
@@ -13,6 +19,10 @@ var contentlifyRouter = new VueRouter({
     ],
     scrollBehavior: function(to, from, savedPosition) {
         if (to.hash) {
+            // replace one window.scrollTo call to call zenscroll
+            contentLifyOriginalScrollTo = window.scrollTo;
+            window.scrollTo = contentlifyScrollTo;
+
             return { selector: to.hash };
         }
     }
@@ -52,7 +62,6 @@ function contentlifyContentLoaded(data) {
         }
     }
 
-    contentlifyViewModel.styles = contentlifyStyleOverrides(data.fields);
     contentlifyViewModel.pageCode = contentlifyViewModel.pageCode;
     contentlifyViewModel.showDiagnostics = true;
     contentlifyViewModel.errorDetails = {};
@@ -60,6 +69,14 @@ function contentlifyContentLoaded(data) {
     contentlifyViewModel.loading = false;
     contentlifyViewModel.error = false;
     contentlifyViewModel.errorCount = 0;
+
+    if (typeof (window.contentlifyStyleOverrides) === 'function') {
+        contentlifyViewModel.styles = contentlifyStyleOverrides(data.fields);
+    }
+
+    if (typeof(window.contentlifyUpdateCallback) === 'function') {
+        window.contentlifyUpdateCallback(data.fields);
+    }
 }
 
 function contentlifyContentLoadError(error) {
