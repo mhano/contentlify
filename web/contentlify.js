@@ -11,7 +11,7 @@ var contentlifyRouter = new VueRouter({
             path: '/:entryCode/:localeCode?/:pageCode?/:anchorTick?'
         }
     ],
-    scrollBehavior(to, from, savedPosition) {
+    scrollBehavior: function(to, from, savedPosition) {
         if (to.hash) {
             return { selector: to.hash };
         }
