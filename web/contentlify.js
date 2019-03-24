@@ -4,6 +4,19 @@ function contentlifyMarkDownToHtmlString(markdown) {
 
 var contentlifyLoadingRenderLock = 0;
 
+var contentfulClientLive = contentful.createClient({
+    space: "1mv2u22omsld",
+    accessToken: "899769f9000215ba2d755e43bb5c4e525282c18553ec28b6faccf820f7a38258"
+});
+
+var contentfulClientPreview = contentful.createClient({
+    space: "1mv2u22omsld",
+    accessToken: "93a721fc09d37876ff1ef30c4af0f28dfb2dfc7e5d30c799c28e175a1c4c08fe",
+    host: "preview.contentful.com"
+});
+
+var contentfulClient = contentfulClientLive;
+
 var contentLifyOriginalScrollTo;
 function contentlifyScrollTo(x, y) {
     window.scrollTo = contentLifyOriginalScrollTo;
@@ -114,7 +127,9 @@ function contentlifyShowLoadingOnSlowNetworksAfterMs(delay) {
 function contentlifyLoadContent() {
     contentlifyShowLoadingOnSlowNetworksAfterMs(1500);
 
-    contentfulClient.getEntries({
+    var client = contentlifyViewModel.previewMode ? contentfulClientPreview : contentfulClientLive;
+
+    client.getEntries({
             content_type: contentlifyEntityType,
             locale: contentlifyViewModel.localeCode,
             'fields.slug[in]': contentlifyViewModel.entryCode
@@ -133,10 +148,14 @@ function contentlifyInit() {
         el: '#app',
         router: contentlifyRouter,
         watch: {
-            '$route': 'routeUpdated'
+            '$route': 'reloadContentOrRoute',
+            'previewMode': 'previewModeUpdate'
         },
         methods: {
-            routeUpdated: function () {
+            previewModeUpdate: function() {
+                contentlifyLoadContent();
+            },
+            reloadContentOrRoute: function () {
                 var old_entryCode = this.entryCode;
                 var old_localeCode = this.localeCode;
                 this.entryCode = this.$route.params.entryCode;
@@ -188,13 +207,14 @@ function contentlifyInit() {
             willTryErrorAgain: true,
             content: {},
             locales: [],
-            styles: '<style></style>'
+            styles: '<style></style>',
+            previewMode: false
         },
         computed: {
         }
     });
 
-    contentlifyViewModel.routeUpdated();
+    contentlifyViewModel.reloadContentOrRoute();
 
     // TODO: this will be replaced with content entry specific locales (rather than global contentful ones)
     contentfulClient.getLocales().then(function (data) {

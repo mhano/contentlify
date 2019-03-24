@@ -33,11 +33,6 @@
 
         // TODO: support using contentful preview api - dedicated secret host?
 
-        var contentfulClient = contentful.createClient({
-            space: '1mv2u22omsld',
-            accessToken: '899769f9000215ba2d755e43bb5c4e525282c18553ec28b6faccf820f7a38258',
-        });
-
         var contentlifyViewModel;
         var contentlifyEntityType = "eep";
 
@@ -107,23 +102,28 @@
         
         <div id="wtWhat" class="main-content">
             <!-- TODO DELETE ALL THIS DEMO STUFF -->
-            <div style="text-align: center; color: #333;">
+            <div style="text-align: center; color: #333; padding: 3px;">
                 Company:
                 <router-link class="demo" v-bind:to="'/ycc/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">ycc</router-link> &nbsp;
                 <router-link class="demo" v-bind:to="'/xe3/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">xe3</router-link> &nbsp;
                 <router-link class="demo" v-bind:to="'/xe4/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">xe4 (broken)</router-link> &nbsp;
-            </div><br />
-            <div style="text-align: center; color: #333;">
+            </div>
+            <div style="text-align: center; color: #333; padding: 3px;">
                 Language:
                 <span v-for="locale in locales"><router-link class="demo" v-bind:to="'/' + entryCode + '/' + locale.code + '/' + (pageCode ? pageCode : 'Home')">{{ locale.name }}</router-link> &nbsp; </span>
                 (ca broken)
-            </div><br />
-            <div style="text-align: center; color: #333;">
+            </div>
+            <div style="text-align: center; color: #333; padding: 3px;">
                 Page / anchor:
                 <router-link class="demo" v-bind:to="pageLink('Home')">Home</router-link> &nbsp;
                 <router-link class="demo" v-bind:to="anchorLink('Home', 'anchor1')">Home # anchor1</router-link> &nbsp;
                 <router-link class="demo" v-bind:to="anchorLink('Home', 'anchor2')">Home # anchor2</router-link> &nbsp;
                 <router-link class="demo" v-bind:to="pageLink('FAQ')">FAQ</router-link> &nbsp;
+            </div>
+
+            <div style="text-align: center; color: #333; padding: 3px;">
+                View Draft Content:
+                <input type="checkbox" v-model="previewMode" />
             </div>
 
             <div id="faqPage" v-if="pageCode == 'FAQ'">
