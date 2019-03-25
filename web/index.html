@@ -106,7 +106,7 @@
                 Company:
                 <router-link class="demo" v-bind:to="'/ycc/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">ycc</router-link> &nbsp;
                 <router-link class="demo" v-bind:to="'/xe3/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">xe3</router-link> &nbsp;
-                <router-link class="demo" v-bind:to="'/xe4/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">xe4 (broken)</router-link> &nbsp;
+                <router-link class="demo" v-bind:to="'/xe4/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">xe4 (unpublished)</router-link> &nbsp;
             </div>
             <div style="text-align: center; color: #333; padding: 3px;">
                 Language:
@@ -135,7 +135,7 @@
             <div id="homePage" v-else>
                 <h1 class="page-title">{{ content.heroMessageTitle }}</h1>
                 <div class="main-content clearfix">
-                    <img class="img-left"
+                    <img v-if="content.heroImage" class="img-left"
                          v-bind:src="content.heroImage.fields.file.url"
                          v-bind:width="content.heroImage.fields.file.details.image.width"
                          v-bind:height="content.heroImage.fields.file.details.image.height"
@@ -145,7 +145,6 @@
                         <p v-html="content.heroMessage"></p>
                         <p id="anchor1" v-html="content.longText"></p>
                         <p id="anchor2" v-html="content.markDown"></p>
-                        <p style="margin-bottom: 10px;" v-for="para in content.heroMessage.content">{{ para.content[0].value }}</p>
                     </div>
                 </div>
             </div>
