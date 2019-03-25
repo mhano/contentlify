@@ -214,6 +214,10 @@ function contentlifyInit() {
         }
     });
 
+    if (contentlifyViewModel.$route.query.preview) {
+        contentlifyViewModel.previewMode = true;
+    }
+
     contentlifyViewModel.reloadContentOrRoute();
 
     // TODO: this will be replaced with content entry specific locales (rather than global contentful ones)
