@@ -89,6 +89,8 @@
     <div v-html="styles"></div>
     <div class="container" v-if="entryCode === undefined || entryCode === ''">
         Nothing to see here...
+        <!-- TODO DELETE ALL THIS DEMO STUFF -->
+        <router-link class="demo" v-bind:to="'/template/en-US/Home'">Template</router-link>
     </div>
     <div class="container" v-else-if="error">
         Error loading content (attempt {{errorCount}})... <span v-if="willTryErrorAgain">trying again...</span><span v-else>given up.</span><br/><br/>
@@ -104,6 +106,7 @@
             <!-- TODO DELETE ALL THIS DEMO STUFF -->
             <div style="text-align: center; color: #333; padding: 3px;">
                 Company:
+                <router-link class="demo" v-bind:to="'/template/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">template</router-link> &nbsp;
                 <router-link class="demo" v-bind:to="'/ycc/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">ycc</router-link> &nbsp;
                 <router-link class="demo" v-bind:to="'/xe3/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">xe3</router-link> &nbsp;
                 <router-link class="demo" v-bind:to="'/xe4/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">xe4 (unpublished)</router-link> &nbsp;
