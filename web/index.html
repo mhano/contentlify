@@ -115,7 +115,7 @@
     <div v-html="styles"></div>
 
     <div style="padding-top: 20px;" v-if="entryCode === undefined || entryCode === ''">
-        Loading...
+        Nothing to see here, something went wrong with the link you followed (clicked)...
     </div>
     <div style="padding-top: 20px;" v-else-if="error">
         Error loading content (attempt {{errorCount}})... <span v-if="willTryErrorAgain">trying again...</span><span v-else>given up.</span><br/><br/>
