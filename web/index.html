@@ -471,7 +471,11 @@
     if (contentlifyViewModel.entryCode == undefined) {
         var hostSplit = document.location.hostname.split('.')[0].split('-');
 
-        contentlifyRouter.push('/' + hostSplit[hostSplit.length-1] + '/en-US/Home');
+        var company = hostSplit[hostSplit.length - 1];
+
+        if (!(company === "eep")) {
+            contentlifyRouter.push('/' + hostSplit[hostSplit.length - 1] + '/en-US/Home');
+        }
     }
 </script>
 </body>
