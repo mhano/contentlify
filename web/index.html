@@ -138,10 +138,13 @@
             <div id="homePage" v-else>
                 <h1 class="page-title">{{ content.heroMessageTitle }}</h1>
                 <div class="main-content clearfix">
+                    <!--
+                        v-bind:width="content.heroImage.fields.file.details.image.width"
+                        v-bind:height="content.heroImage.fields.file.details.image.height"    
+                    -->
                     <img v-if="content.heroImage" class="img-left"
                          v-bind:src="content.heroImage.fields.file.url"
-                         v-bind:width="content.heroImage.fields.file.details.image.width"
-                         v-bind:height="content.heroImage.fields.file.details.image.height"
+                         height="181"
                          v-bind:alt="content.heroImage.fields.description"
                          v-bind:title="content.heroImage.fields.title" />
                     <div>
