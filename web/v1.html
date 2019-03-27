@@ -1,0 +1,188 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+    <meta name="robots" content="noindex, nofollow" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title></title>
+    <meta http-equiv="Content-Script-Type" content="text/javascript">
+    <meta http-equiv="Content-Style-Type" content="text/css">
+
+    <link type="text/css" rel="stylesheet" href="./styles/portal.css">
+    <link href="./styles/Theme.gespp_microsite.css" type="text/css" rel="stylesheet">
+
+    <!-- TODO: add SRI hashes and fall-back to local webpacked version -->
+    <script src="https://cdn.jsdelivr.net/npm/contentful@7.4.3/dist/contentful.legacy.min.js" 
+            crossorigin="anonymous" integrity="sha256-9AdqXm29mEIhGt6EDOdCHtmSWMH3gW3jj8xJGYQXFQs="></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.9/dist/vue.min.js" 
+            crossorigin="anonymous" integrity="sha256-pfXWzm1MRINMGCDZtp94lO2+OYNFFiQ4oZihf5+FapQ="></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-router@3.0.2/dist/vue-router.min.js" 
+            crossorigin="anonymous" integrity="sha256-DbgluxFcJqBgeVJwF1idcvA2aeayczQBWJPGn4KZIEc="></script>
+    <script src="https://cdn.jsdelivr.net/npm/showdown@1.9.0/dist/showdown.min.js" 
+            crossorigin="anonymous" integrity="sha256-LSUpTY0kkXGKvcBC9kbmgibmx3NVVgJvAEfTZbs51mU="></script>
+    <script src="https://cdn.jsdelivr.net/npm/zenscroll@4.0.2/zenscroll-min.js" 
+            crossorigin="anonymous"  integrity="sha256-P3WAuks0zjjUNJHAQsa3qo5fMU1+d3flCMCI9vGK9So="></script>
+
+    <script language="javascript" type="text/javascript">
+        var exports = {}; // quick fix because 'exports' is not defined in 'rich-text-html-renderer' below
+    </script>
+
+    <!-- TODO: add SRI hashes and fall-back to local webpacked version -->
+    <script src="https://cdn.jsdelivr.net/npm/@contentful/rich-text-html-renderer@13.1.0/dist/rich-text-html-renderer.es5.js" 
+            crossorigin="anonymous" integrity="sha256-2RWAhYMukzDFe9G0HItQccfrU5jOBItdJ5+JMiQgJ30="></script>
+
+    <script language="javascript" type="text/javascript">
+        var contentlifyViewModel;
+
+        var contentlifySlugField = 'slug';
+        var contentlifyBaseTemplateSlug = 'template';
+        var contentlifyEntityTypes = ["eep"];
+
+        var contentlifyStyleOverrides = function (content) {
+            return "<style>\r\n" +
+                // primaryBackgroundColor
+                "html .page-title { background: " + content.eep.primaryBackgroundColor + "; }\r\n" +
+                "html .site-nav a { background: " + content.eep.primaryBackgroundColor + "; }\r\n" +
+                // secondaryBackgroundColor
+                ".site-nav .active a, .page-button-big:hover, .page-button-big:focus, .site-nav a:focus, .site-nav a:hover, .site-nav .nav-join a:hover, .site-nav .nav-join a:focus  { background: " + content.eep.secondaryBackgroundColor + "; }\r\n" +
+                // tertiaryBackgroundColor
+                "html .site-nav .active a, html .page-button-big:hover, .page-button-big:focus, html .process-callout, html .site-nav a:focus, .site-nav a:hover, html .site-nav .nav-join a:hover, .site-nav .nav-join a:focus  { background: " + content.eep.tertiaryBackgroundColor + "; }\r\n" +
+                // primaryTextColor
+                "html .body, html .h2, .h3, .main-content, html .product-name, html .page-title, html .sub-title, html .page-button, html .tabs a.active  { color: " + content.eep.primaryTextColor + "; }\r\n" +
+                // secondaryTextColor
+                "html .site-nav a, html .product-name, html .page-title { color: " + content.eep.secondaryTextColor + "; }\r\n" +
+                "</style>";
+        }
+
+        // fires only when new content entity has been loaded (company code change, locale change, but not spa-page/anchor/scroll changes)
+        var contentlifyUpdateCallback = function () {
+            document.title = contentlifyViewModel.content.eep.title;
+        }
+
+        // var contentlifyNavigationCallback = function () { /* fires per page/route/anchor change */ }
+    </script>
+    <script src="contentlify.js"></script>
+
+    <!-- TODO: delete -->
+    <style>
+        .demo {
+            color: black;
+        }
+
+        .router-link-exact-active {
+            color: red;
+        }
+
+        .router-link-active {
+            color: red;
+        }
+
+        pre {
+            white-space: pre-wrap; /* css-3 */
+            white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+            white-space: -pre-wrap; /* Opera 4-6 */
+            white-space: -o-pre-wrap; /* Opera 7 */
+            word-wrap: break-word; /* Internet Explorer 5.5+ */
+        }
+    </style>
+</head>
+<body>
+<div class="page-wrapper" id="app">
+    <div v-html="styles"></div>
+    <div class="container" v-if="entryCode === undefined || entryCode === ''">
+        Nothing to see here...
+        <!-- TODO DELETE ALL THIS DEMO STUFF -->
+        <router-link class="demo" v-bind:to="'/template/en-US/Home'">Template</router-link>
+    </div>
+    <div class="container" v-else-if="error">
+        Error loading content (attempt {{errorCount}})... <span v-if="willTryErrorAgain">trying again...</span><span v-else>given up.</span><br/><br/>
+        <pre>Details: {{errorMessage}}</pre>
+        <pre>JSON: {{JSON.stringify(errorDetails, null, 2)}}</pre>
+    </div>
+    <div class="container" v-else-if="loading">
+        Loading...
+    </div>
+    <div class="container" v-else>
+        
+        <div id="wtWhat" class="main-content">
+            <!-- TODO DELETE ALL THIS DEMO STUFF -->
+            <div style="text-align: center; color: #333; padding: 3px;">
+                Company:
+                <router-link class="demo" v-bind:to="'/template/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">template</router-link> &nbsp;
+                <router-link class="demo" v-bind:to="'/ycc/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">ycc</router-link> &nbsp;
+                <router-link class="demo" v-bind:to="'/xe3/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">xe3</router-link> &nbsp;
+                <router-link class="demo" v-bind:to="'/xe4/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">xe4 (unpublished)</router-link> &nbsp;
+            </div>
+            <div style="text-align: center; color: #333; padding: 3px;">
+                Language:
+                <span v-for="locale in locales"><router-link class="demo" v-bind:to="'/' + entryCode + '/' + locale.code + '/' + (pageCode ? pageCode : 'Home')">{{ locale.name }}</router-link> &nbsp; </span>
+                (ca broken)
+            </div>
+            <div style="text-align: center; color: #333; padding: 3px;">
+                Page / anchor:
+                <router-link class="demo" v-bind:to="pageLink('Home')">Home</router-link> &nbsp;
+                <router-link class="demo" v-bind:to="anchorLink('Home', 'anchor1')">Home # anchor1</router-link> &nbsp;
+                <router-link class="demo" v-bind:to="anchorLink('Home', 'anchor2')">Home # anchor2</router-link> &nbsp;
+                <router-link class="demo" v-bind:to="pageLink('FAQ')">FAQ</router-link> &nbsp;
+            </div>
+
+            <div style="text-align: center; color: #333; padding: 3px;">
+                View Draft Content:
+                <input type="checkbox" v-model="previewMode" />
+            </div>
+
+            <div id="faqPage" v-if="pageCode == 'FAQ'">
+                <h1 class="page-title">{{content.eep.faqTitle}}</h1>
+                <div>
+                    <p v-html="content.eep.faqContent"></p>
+                </div>
+            </div>
+            <div id="homePage" v-else>
+                <h1 class="page-title">{{ content.eep.heroMessageTitle }}</h1>
+                <div class="main-content clearfix">
+                    <!-- 
+                        v-bind:width="content.eep.heroImage.fields.file.details.image.width"
+                        v-bind:height="content.eep.heroImage.fields.file.details.image.height"
+                    -->
+                    <img v-if="content.eep.heroImage" class="img-left"
+                         v-bind:src="content.eep.heroImage.fields.file.url"
+                         height="181"
+                         v-bind:alt="content.eep.heroImage.fields.description"
+                         v-bind:title="content.eep.heroImage.fields.title"/>
+                    <div>
+                        <p v-html="content.eep.heroMessage"></p>
+                        <p id="anchor1" v-html="content.eep.longText"></p>
+                        <p id="anchor2" v-html="content.eep.markDown"></p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <ul id="wtNavContainer" class="site-nav">
+            <li class="active">
+                <div>
+                    <a href="#">{{content.eep.labelWhatIsIt}}</a>
+                </div>
+            </li>
+            <li class="inactive"><a href="#" onclick="event.preventDefault();">{{content.eep.labelHowItWorks}}</a></li>
+            <li class="inactive" v-if="content.eep.planHasBonusShares"><a href="#" onclick="event.preventDefault();">{{content.eep.labelBonusShares}} ${{ content.eep.bonusSharesAmount }}</a></li>
+            <li class="inactive" v-if="content.eep.showPlanRisks"><a href="#" onclick="event.preventDefault();">{{content.eep.labelWhatAreTheRisks}}</a></li>
+            <li class="inactive"><a href="#" onclick="event.preventDefault();">{{content.eep.labelHowToJoin}}</a></li>
+            <li class="inactive"><a href="#" onclick="event.preventDefault();">{{content.eep.labelFaQs}}</a></li>
+            <li class="nav-join"><a href="#" onclick="event.preventDefault();">{{content.eep.labelJoin}}</a></li>
+        </ul>
+    </div>
+
+    <!-- TODO: delete -->
+    <div v-if="showDiagnostics">
+        <h1>Diagnostics</h1>
+        <pre>{{JSON.stringify(content, null, 2)}}</pre>
+    </div>
+
+</div>
+
+<script language="javascript" type="text/javascript">
+    contentlifyInit();
+</script>
+
+</body>
+</html>

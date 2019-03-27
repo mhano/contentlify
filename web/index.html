@@ -1,60 +1,82 @@
-﻿<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <meta name="robots" content="noindex, nofollow" />
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title></title>
-    <meta http-equiv="Content-Script-Type" content="text/javascript">
-    <meta http-equiv="Content-Style-Type" content="text/css">
-
-    <link type="text/css" rel="stylesheet" href="./styles/portal.css">
-    <link href="./styles/Theme.gespp_microsite.css" type="text/css" rel="stylesheet">
-
+    <title>ShareSave 2019</title>
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="styles/styles.css" />
     <!-- TODO: add SRI hashes and fall-back to local webpacked version -->
-    <script src="https://cdn.jsdelivr.net/npm/contentful@7.4.3/dist/contentful.legacy.min.js" 
+    <script src="https://cdn.jsdelivr.net/npm/contentful@7.4.3/dist/contentful.legacy.min.js"
             crossorigin="anonymous" integrity="sha256-9AdqXm29mEIhGt6EDOdCHtmSWMH3gW3jj8xJGYQXFQs="></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.9/dist/vue.min.js" 
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.9/dist/vue.min.js"
             crossorigin="anonymous" integrity="sha256-pfXWzm1MRINMGCDZtp94lO2+OYNFFiQ4oZihf5+FapQ="></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue-router@3.0.2/dist/vue-router.min.js" 
+    <script src="https://cdn.jsdelivr.net/npm/vue-router@3.0.2/dist/vue-router.min.js"
             crossorigin="anonymous" integrity="sha256-DbgluxFcJqBgeVJwF1idcvA2aeayczQBWJPGn4KZIEc="></script>
-    <script src="https://cdn.jsdelivr.net/npm/showdown@1.9.0/dist/showdown.min.js" 
+    <script src="https://cdn.jsdelivr.net/npm/showdown@1.9.0/dist/showdown.min.js"
             crossorigin="anonymous" integrity="sha256-LSUpTY0kkXGKvcBC9kbmgibmx3NVVgJvAEfTZbs51mU="></script>
-    <script src="https://cdn.jsdelivr.net/npm/zenscroll@4.0.2/zenscroll-min.js" 
-            crossorigin="anonymous"  integrity="sha256-P3WAuks0zjjUNJHAQsa3qo5fMU1+d3flCMCI9vGK9So="></script>
+    <script src="https://cdn.jsdelivr.net/npm/zenscroll@4.0.2/zenscroll-min.js"
+            crossorigin="anonymous" integrity="sha256-P3WAuks0zjjUNJHAQsa3qo5fMU1+d3flCMCI9vGK9So="></script>
 
     <script language="javascript" type="text/javascript">
         var exports = {}; // quick fix because 'exports' is not defined in 'rich-text-html-renderer' below
     </script>
 
     <!-- TODO: add SRI hashes and fall-back to local webpacked version -->
-    <script src="https://cdn.jsdelivr.net/npm/@contentful/rich-text-html-renderer@13.1.0/dist/rich-text-html-renderer.es5.js" 
+    <script src="https://cdn.jsdelivr.net/npm/@contentful/rich-text-html-renderer@13.1.0/dist/rich-text-html-renderer.es5.js"
             crossorigin="anonymous" integrity="sha256-2RWAhYMukzDFe9G0HItQccfrU5jOBItdJ5+JMiQgJ30="></script>
 
     <script language="javascript" type="text/javascript">
 
-        // TODO: support using contentful preview api - dedicated secret host?
-
         var contentlifyViewModel;
-        var contentlifyEntityType = "eep";
 
-        var contentlifyStyleOverrides = function (contentObject) {
+        var contentlifySlugField = 'slug';
+        var contentlifyBaseTemplateSlug = 'template';
+        var contentlifyEntityTypes = ["eep", "eepfaq", "eephowitworks", "eephowtojoin"];
+
+        // TODO: delete temporary hack? can we really just calculate color offsets statically regardless of original colors?
+        // suspect we will end up just having additional colors specified on the brand?
+        function hexToRgb(hex) {
+            // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+            var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+            hex = hex.replace(shorthandRegex, function (m, r, g, b) {
+                return r + r + g + g + b + b;
+            });
+
+            var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : null;
+        }
+
+        var contentlifyStyleOverrides = function (content) {
+            // here we calculate some styles for the purpose of the demo
+            // this could be allowing a user to specify a small block of style overrides in the CMS
+
+            var primary = hexToRgb(content.eep.primaryBackgroundColor === undefined ? "#e97325" : content.eep.primaryBackgroundColor);
+            var secondary = hexToRgb(content.eep.secondaryBackgroundColor === undefined ? "#00afe5" : content.eep.secondaryBackgroundColor);
+
             return "<style>\r\n" +
-                // primaryBackgroundColor
-                "html .page-title { background: " + contentObject.primaryBackgroundColor + "; }\r\n" +
-                "html .site-nav a { background: " + contentObject.primaryBackgroundColor + "; }\r\n" +
-                // secondaryBackgroundColor
-                ".site-nav .active a, .page-button-big:hover, .page-button-big:focus, .site-nav a:focus, .site-nav a:hover, .site-nav .nav-join a:hover, .site-nav .nav-join a:focus  { background: " + contentObject.secondaryBackgroundColor + "; }\r\n" +
-                // tertiaryBackgroundColor
-                "html .site-nav .active a, html .page-button-big:hover, .page-button-big:focus, html .process-callout, html .site-nav a:focus, .site-nav a:hover, html .site-nav .nav-join a:hover, .site-nav .nav-join a:focus  { background: " + contentObject.tertiaryBackgroundColor + "; }\r\n" +
-                // primaryTextColor
-                "html .body, html .h2, .h3, .main-content, html .product-name, html .page-title, html .sub-title, html .page-button, html .tabs a.active  { color: " + contentObject.primaryTextColor + "; }\r\n" +
-                // secondaryTextColor
-                "html .site-nav a, html .product-name, html .page-title { color: " + contentObject.secondaryTextColor + "; }\r\n" +
+                // TODO: add in branding color styles - e.g. primaryBackgroundColor
+
+                // TODO: MOVE COMPANY LOGO TO TEMPLATED HTML ELEMENT WITH ALT/DESCRIPTION FROM CMS ETC.
+                // TODO: EASIER TEMPLATE EDITING AND BETTER ACCESSIBILITY
+                // skips configuring if not in CMS, alternatively make mandatory in CMS
+                (content.eep.headerLogo === undefined ? "" : ":root { --company-logo: url('" + content.eep.headerLogo.fields.file.url + "');}\r\n") + "" +
+                (content.eep.headerGraphic === undefined ? "" : ":root { --header-img-01: url('" + content.eep.headerGraphic.fields.file.url + "');}\r\n") + "" +
+                (content.eep.heroImage === undefined ? "" : ":root { --content-img-01: url('" + content.eep.heroImage.fields.file.url + "');}\r\n") + "" +
+                (content.eep.contentImage === undefined ? "" : ":root { --content-img-02: url('" + content.eep.contentImage.fields.file.url + "');}\r\n") + "" +
+                (content.eep.secondaryContentImage === undefined ? "" : ":root { --content-img-03: url('" + content.eep.secondaryContentImage.fields.file.url + "');}\r\n") + "" +
+                
+                ":root { --primary-R: " + primary.r + "; --primary-G: " + primary.g + "; --primary-B: " + primary.b + "; --secondary-R: " + secondary.r + "; --secondary-G: " + secondary.g + "; --secondary-B: " + secondary.b + "; }\r\n" +
+
                 "</style>";
         }
 
         // fires only when new content entity has been loaded (company code change, locale change, but not spa-page/anchor/scroll changes)
         var contentlifyUpdateCallback = function () {
-            document.title = contentlifyViewModel.content.title;
+            document.title = contentlifyViewModel.content.eep.title;
         }
 
         // var contentlifyNavigationCallback = function () { /* fires per page/route/anchor change */ }
@@ -75,6 +97,10 @@
             color: red;
         }
 
+        .router-link {
+            white-space: nowrap;
+        }
+
         pre {
             white-space: pre-wrap; /* css-3 */
             white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
@@ -85,104 +111,373 @@
     </style>
 </head>
 <body>
-<div class="page-wrapper" id="app">
+<div id="app">
     <div v-html="styles"></div>
-    <div class="container" v-if="entryCode === undefined || entryCode === ''">
-        Nothing to see here...
-        <!-- TODO DELETE ALL THIS DEMO STUFF -->
-        <router-link class="demo" v-bind:to="'/template/en-US/Home'">Template</router-link>
+
+    <div style="padding-top: 20px;" v-if="entryCode === undefined || entryCode === ''">
+        Nothing to see here, something went wrong with the link you followed (clicked)...
     </div>
-    <div class="container" v-else-if="error">
+    <div style="padding-top: 20px;" v-else-if="error">
         Error loading content (attempt {{errorCount}})... <span v-if="willTryErrorAgain">trying again...</span><span v-else>given up.</span><br/><br/>
         <pre>Details: {{errorMessage}}</pre>
         <pre>JSON: {{JSON.stringify(errorDetails, null, 2)}}</pre>
     </div>
-    <div class="container" v-else-if="loading">
+    <div style="padding-top: 20px;" v-else-if="loading">
         Loading...
     </div>
-    <div class="container" v-else>
-        
-        <div id="wtWhat" class="main-content">
-            <!-- TODO DELETE ALL THIS DEMO STUFF -->
-            <div style="text-align: center; color: #333; padding: 3px;">
-                Company:
-                <router-link class="demo" v-bind:to="'/template/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">template</router-link> &nbsp;
-                <router-link class="demo" v-bind:to="'/ycc/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">ycc</router-link> &nbsp;
-                <router-link class="demo" v-bind:to="'/xe3/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">xe3</router-link> &nbsp;
-                <router-link class="demo" v-bind:to="'/xe4/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">xe4 (unpublished)</router-link> &nbsp;
-            </div>
-            <div style="text-align: center; color: #333; padding: 3px;">
-                Language:
-                <span v-for="locale in locales"><router-link class="demo" v-bind:to="'/' + entryCode + '/' + locale.code + '/' + (pageCode ? pageCode : 'Home')">{{ locale.name }}</router-link> &nbsp; </span>
-                (ca broken)
-            </div>
-            <div style="text-align: center; color: #333; padding: 3px;">
-                Page / anchor:
-                <router-link class="demo" v-bind:to="pageLink('Home')">Home</router-link> &nbsp;
-                <router-link class="demo" v-bind:to="anchorLink('Home', 'anchor1')">Home # anchor1</router-link> &nbsp;
-                <router-link class="demo" v-bind:to="anchorLink('Home', 'anchor2')">Home # anchor2</router-link> &nbsp;
-                <router-link class="demo" v-bind:to="pageLink('FAQ')">FAQ</router-link> &nbsp;
-            </div>
+    <div v-else>
 
-            <div style="text-align: center; color: #333; padding: 3px;">
-                View Draft Content:
-                <input type="checkbox" v-model="previewMode" />
-            </div>
+        <svg style="position: absolute; width: 0; height: 0; overflow: hidden" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <defs>
+        <symbol id="icon-chevron-right" viewBox="0 0 1024 1024">
+	        <path d="M79.003 960l-79.003-79.003 433.503-433.503-433.503-432.491 79.003-79.003 512.506 511.494-512.506 512.506z" />
+        </symbol>
+        <symbol id="icon-chevron-left" viewBox="0 0 1024 1024">
+	        <path d="M591.509 880.997l-79.003 79.003-512.506-512.506 512.506-511.494 79.003 79.003-433.503 432.491 433.503 433.503z" />
+        </symbol>
+        <symbol id="icon-tick" viewBox="0 0 1024 1024">
+	        <path d="M428.748 287.509l-129.041 135.978-37.001-35.151 165.579-174.367 375.559 388.047-36.538 35.613-338.558-350.121zM512 960.925c-282.77 0-512-229.23-512-512s229.23-512 512-512c282.77 0 512 229.23 512 512-0.263 282.664-229.336 511.737-511.975 512zM974.511 448.925c0-255.438-207.073-462.511-462.511-462.511s-462.511 207.073-462.511 462.511c0 255.438 207.073 462.511 462.511 462.511 254.642-1.051 460.662-207.72 460.662-462.508 0-0.327 0-0.653-0.001-0.98z" />
+        </symbol>
+        </defs>
+        </svg>
 
-            <div id="faqPage" v-if="pageCode == 'FAQ'">
-                <h1 class="page-title">{{content.faqTitle}}</h1>
-                <div>
-                    <p v-html="content.faqContent"></p>
+
+        <nav class="main-menu">
+            <div class="container flex-row flex-center">
+                <router-link class="company-logo" v-bind:to="anchorLink('Home', 'Top')">{{ content.eep.labelHome }}</router-link>
+                <div class="badge-wrapper">
+                    <a class="badge badge-square" href="#">
+                        <div class="badge__content">
+                            <span class="badge-text-xlg">{{ content.eep.discountBadgeXlg }}</span>
+                            <span class="badge-text-lge">{{ content.eep.discountBadgeLg }}</span>
+                            <span class="badge-text-sml">{{ content.eep.discountBadgeSml }}</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="dropdown">
+                    <router-link class="router-link" v-bind:to="anchorLink('Home', 'Top')">{{ content.eep.labelHome }}</router-link>
+                    <ul>
+                        <li><a href="#">SIP</a></li>
+                        <li><a href="#">GESPP</a></li>
+                        <li><a href="#">OTHER</a></li>
+                    </ul>
+                </div>
+                <ul class="menu-list">
+                    <li><router-link class="router-link" v-bind:to="anchorLink('Home', 'Benefits')">{{ content.eep.labelBenefits }}</router-link></li>
+                    <li><router-link class="router-link" v-bind:to="anchorLink('Home', 'HowItWorks')">{{ content.eep.labelHowItWorks }}</router-link></li>
+                    <li><router-link class="router-link" v-bind:to="anchorLink('Home', 'Testimonials')">{{ content.eep.labelTestimonials }}</router-link></li>
+                    <li><router-link class="router-link" v-bind:to="anchorLink('Home', 'HowToJoin')">{{ content.eep.labelHowToJoin }}</router-link></li>
+                    <li><router-link class="router-link" v-bind:to="anchorLink('Home', 'FAQs')">{{ content.eep.labelFaQs }}</router-link></li>
+                </ul>
+                <router-link class="btn btn-narrow router-link" v-bind:to="anchorLink('Home', 'Top')">{{ content.eep.labelJoin }}</router-link>
+            </div>
+        </nav>
+        <header class="header">
+            <div class="container">
+                <!-- TODO: review - moved anchor for scrolling to from menu links -->
+                <div style="position: relative; display: block; top: -170px;" id="Top"></div>
+
+                <h1 class="mb-0">{{ content.eep.title }}</h1>
+                <h2 class="mt-0" v-html="content.eep.titleSubText"></h2>
+                <a class="badge badge-circle" href="#">
+                    <div class="badge__content">
+                        <span class="badge-text-lge">{{ content.eep.joinByBadge1 }}</span>
+                        <span class="badge-text-lge">{{ content.eep.joinByBadge2 }}</span>
+                        <span class="badge-text-lge">{{ content.eep.joinByBadge3 }}</span>
+                    </div>
+                </a>
+                <div class="text-center">
+                    <router-link class="btn btn-lge" v-bind:to="anchorLink('Home', 'Top')">{{ content.eep.labelJoin }}</router-link>
                 </div>
             </div>
-            <div id="homePage" v-else>
-                <h1 class="page-title">{{ content.heroMessageTitle }}</h1>
-                <div class="main-content clearfix">
-                    <!--
-                        v-bind:width="content.heroImage.fields.file.details.image.width"
-                        v-bind:height="content.heroImage.fields.file.details.image.height"    
-                    -->
-                    <img v-if="content.heroImage" class="img-left"
-                         v-bind:src="content.heroImage.fields.file.url"
-                         height="181"
-                         v-bind:alt="content.heroImage.fields.description"
-                         v-bind:title="content.heroImage.fields.title" />
+        </header>
+        <main class="main">
+        <section class="container text-center">
+            <h3>{{ content.eep.heroMessageTitle }}</h3>
+
+	        <p class="narrow" v-html="content.eep.heroMessage"></p>
+
+        </section>
+
+        <section class="container waypoint" tabindex="-1">
+            <!-- TODO: review - moved anchor for scrolling to from menu links -->
+            <div style="position: relative; display: block; top: -100px;" id="Benefits"></div>
+
+            <h2 class="text-center">{{ content.eep.titleBenefits }}</h2>
+            <div class="flex-row">
+
+                <div class="block-img content-img-01 mr-5">
+                </div>
+
+                <div v-html="content.eep.benefitsContent"></div>
+            </div>
+
+            <div v-html="content.eep.benefitsContentFooter"></div>
+
+        </section>
+
+        <section class="carousel dark-bg waypoint" aria-labeledby="CarouselHeading" tabindex="-1">
+            <!-- TODO: review - moved anchor for scrolling to from menu links -->
+            <div style="position: relative; display: block; top: -70px;" id="HowItWorks"></div>
+
+            <h2 class="sr-only" id="CarouselHeading">Plan overview carousel</h2>
+            <span id="A11yUpdates" class="sr-only a11y-updates" aria-live="polite">slide 1 is currently active</span>
+
+            <div class="container">
+                <div id="CarouselContent" class="carousel-content" tabindex="-1">
+                    <div class="carousel-item active" id="slide01">
+                        <div class="text-center">
+                            <h2 class="mb-0">{{ content.eephowitworks.title}}</h2>
+                            <h3 class="mt-0">{{ content.eephowitworks.subTitle}}</h3>
+                        </div>
+                        <div class="flex-row">
+                            <div class="block-img content-img-02"></div>
+                            <div class="step-block">
+                                <h2 class="mb-0"><span class="step-number"><span>1</span></span>{{content.eephowitworks.step1Label}}</h2>
+                                <ul class="step-list lead">
+                                    <li><svg class="icon icon-tick"><use xlink:href="#icon-tick"></use></svg>{{content.eephowitworks.step1Point1Label}}</li>
+                                    <li><svg class="icon icon-tick"><use xlink:href="#icon-tick"></use></svg>{{content.eephowitworks.step1Point2Label}}</li>
+                                    <li><span class="text-primary">{{content.eephowitworks.step1KeyFact}}</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item hidden" id="slide02">
+                        <div class="text-center">
+                            <h2 class="mb-0">{{ content.eephowitworks.title}}</h2>
+                            <h3 class="mt-0">{{ content.eephowitworks.subTitle}}</h3>
+                        </div>
+                        <div class="flex-row">
+                            <div class="block-img content-img-02"></div>
+                            <div class="step-block">
+                                <h2 class="mb-0"><span class="step-number"><span>2</span></span>You save money for 3 years</h2>
+                                <ul class="step-list lead">
+                                    <li><svg class="icon icon-tick"><use xlink:href="#icon-tick"></use></svg>You can save from &#163;5 - &#163;500 per month</li>
+                                    <li><svg class="icon icon-tick"><use xlink:href="#icon-tick"></use></svg>Choose an amount you'll be comfortable with - <span class="text-primary">You can't change it</span></li>
+                                    <li>
+                                        <span class="text-primary">Want to take a payment break?</span><br>
+                                        You can delay making up to twelve monthly payments
+                                    </li>
+                                    <li>
+                                        <span class="text-primary">Need your money back?</span><br>
+                                        You can get your money back in full at any time
+                                    </li>
+                                    <li>
+                                        <span class="text-primary">Already in ShareSave?</span><br>
+                                        You can't save more than &#163;500 per month across all your plans
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="carousel-item hidden" id="slide03">
+                        <div class="text-center">
+                            <h2 class="mb-0">{{ content.eephowitworks.title}}</h2>
+                            <h3 class="mt-0">{{ content.eephowitworks.subTitle}}</h3>
+                        </div>
+                        <div class="flex-row">
+                            <div class="block-img content-img-02"></div>
+                            <div class="step-block">
+                                <h2 class="mb-0"><span class="step-number"><span>3</span></span>You choose whether to buy discounted shares</h2>
+                                <ul class="step-list lead">
+                                    <li>
+                                        <svg class="icon icon-tick"><use xlink:href="#icon-tick"></use></svg>After 3 years you choose whether to use your savings to buy discounted shares. <br>
+                                        If our share price is...
+                                        <ul>
+                                            <li>
+                                                <span class="text-primary">Higher than the Option Price</span><br>
+                                                You can buy the shares and be in profit
+                                            </li>
+                                            <li>
+                                                <span class="text-primary">Lower than the Option Price</span><br>
+                                                You can simply take back all the money you've saved
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div aria-controls="CarouselContent">
+                    <div class="carousel-nav">
+                        <button class="btn-carousel carousel-back"><span class="sr-only">Previous slide</span><svg class="icon"><use xlink:href="#icon-chevron-left"></use></svg></button>
+                        <button class="btn-carousel carousel-next"><span class="sr-only">Next slide</span><svg class="icon"><use xlink:href="#icon-chevron-right"></use></svg></a></button>
+                    </div>
                     <div>
-                        <p v-html="content.heroMessage"></p>
-                        <p id="anchor1" v-html="content.longText"></p>
-                        <p id="anchor2" v-html="content.markDown"></p>
+                        <ul class="carousel-dots">
+                            <li><a href="#slide01" class="active">Slide 1</a></li>
+                            <li><a href="#slide02">Slide 2</a></li>
+                            <li><a href="#slide03">Slide 3</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="waypoint testimonials" tabindex="-1">
+            <!-- TODO: review - moved anchor for scrolling to from menu links -->
+            <div style="position: relative; display: block; top: -70px;" id="Testimonials"></div>
+
+            <div class="container">
+                <div class="flex-row flex-end">
+                    <div class="content-box">
+                        <blockquote class="text-secondary-darker" v-html="content.eep.testimonialText">
+                        </blockquote>
+
+                        <cite class="text-primary">{{content.eep.testimonialFooter}}</cite>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <section class="carousel dark-bg waypoint" aria-labeledby="HowToJoinHeading" tabindex="-1">
+            <!-- TODO: review - moved anchor for scrolling to from menu links -->
+            <div style="position: relative; display: block; top: -100px;" id="HowToJoin"></div>
+
+            <h2 class="sr-only" id="HowToJoinHeading">How to Join carousel</h2>
+            <span id="A11yUpdates" class="sr-only a11y-updates" aria-live="polite">slide 1 is currently active</span>
+            <div class="container">
+                <div id="CarouselContent" class="carousel-content" tabindex="-1">
+                    <div class="carousel-item active" id="slide01">
+                        <div class="text-center">
+                            <h2>{{ content.eephowtojoin.title }}</h2>
+                            <h3>{{ content.eephowtojoin.subTitle }}</h3>
+                        </div>
+
+                        <h2 class="mb-0"><span class="step-number"><span>1</span></span>Online</h2>
+                        <ul class="step-list">
+                            <li><svg class="icon icon-tick"><use xlink:href="#icon-tick"></use></svg><span class="join-options-text" v-html="content.eephowtojoin.option1Point1"></span></li>
+                            <li><svg class="icon icon-tick"><use xlink:href="#icon-tick"></use></svg><span class="join-options-text" v-html="content.eephowtojoin.option1Point2"></span></li>
+                            <li><svg class="icon icon-tick"><use xlink:href="#icon-tick"></use></svg><span class="join-options-text" v-html="content.eephowtojoin.option1Point3"></span></li>
+                        </ul>
+
+                        <div v-html="content.eephowtojoin.option1Footer"></div>
+                        <div v-html="content.eephowtojoin.footer2"></div>
+                    </div>
+                    <div class="carousel-item hidden" id="slide02">
+                        <div class="text-center">
+                            <h2>It's easy to join... with two simple options</h2>
+                            <h3>It will only take a couple of minutes</h3>
+                        </div>
+
+                        <h2 class="mb-0"><span class="step-number"><span>2</span></span>By text</h2>
+                        <ul class="step-list">
+                            <li><svg class="icon icon-tick"><use xlink:href="#icon-tick"></use></svg>SAYE followed by a space.</li>
+                            <li><svg class="icon icon-tick"><use xlink:href="#icon-tick"></use></svg>Your SRN followed by a space. Your SRN is shown on your invitation.</li>
+                            <li><svg class="icon icon-tick"><use xlink:href="#icon-tick"></use></svg>The number 3 followed by a space. This confirms that your saving period is three years.</li>
+                            <li><svg class="icon icon-tick"><use xlink:href="#icon-tick"></use></svg>How much you want to save each month in pounds.</li>
+                            <li><svg class="icon icon-tick"><use xlink:href="#icon-tick"></use></svg>Send your message to 076860 xxxxx*</li>
+                        </ul>
+
+                        <div class="fineprint">
+                            <p>Text messages will be charged at your standard network rate. You will receive a text message confirming that your application has been accepted. If you have not received a text confirmation within two hours, please call +44 (0)XXX - XXXXX. The helpline is open 8:30 - 5:30 (UK time) Monday to Friday excluding UK public holidays.
+                        </div>
+                    </div>
+                </div>
+                <div aria-controls="CarouselContent">
+                    <div class="carousel-nav">
+                        <button class="btn-carousel carousel-back"><span class="sr-only">Previous slide</span><svg class="icon"><use xlink:href="#icon-chevron-left"></use></svg></button>
+                        <button class="btn-carousel carousel-next"><span class="sr-only">Next slide</span><svg class="icon"><use xlink:href="#icon-chevron-right"></use></svg></a></button>
+                    </div>
+                    <div>
+                        <ul class="carousel-dots">
+                            <li><a href="#slide01" class="active">Slide 1</a></li>
+                            <li><a href="#slide02">Slide 2</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="text-center">
+	        <h2>{{content.eep.calculatorSectionTitle}}</h2>
+            <button class="btn btn-primary btn-block">{{content.eep.calculatorLinkText}}</button>
+	
+        </section>
+
+        <section class="container waypoint" tabindex="-1">
+            <!-- TODO: review - moved anchor for scrolling to from menu links -->
+            <div style="position: relative; display: block; top: -110px;" id="FAQs"></div>
+
+            <div class="flex-row">
+                <div class="content-box dark-bg">
+                    <h2>{{content.eepfaq.faqKeyDatesTitle}}</h2>
+                    <div v-html="content.eepfaq.faqKeyDatesHeroMessage"></div>
+                    <div class="text-center">
+                        <router-link v-bind:to="anchorLink('FAQ', 'FAQDates')" class="btn btn-inverse btn-block text-primary">{{ content.eepfaq.faqMoreDatesLabel }}</router-link>
+                    </div>
+                </div>
+
+                <div class="content-box primary-bg">
+                    <h2>{{ content.eep.labelFaQs }}</h2>
+                    <ul class="step-list">
+                        <li>
+                            <router-link style="color: #fff;" v-bind:to="anchorLink('FAQ', 'Top')">{{ content.eepfaq.heroFaq1Label }}</router-link>
+                        </li>
+                        <li>
+                            <router-link style="color: #fff;" v-bind:to="anchorLink('FAQ', 'Top')">{{ content.eepfaq.heroFaq2Label }}</router-link>
+                        </li>
+                        <li>
+                            <router-link style="color: #fff;" v-bind:to="anchorLink('FAQ', 'Top')">{{ content.eepfaq.heroFaq3Label }}</router-link>
+                        </li>
+                    </ul>
+                    <div class="text-center">
+                        <router-link v-bind:to="anchorLink('FAQ', 'Top')" class="btn btn-inverse btn-block text-primary">{{ content.eepfaq.readFAQsLabel }}</router-link>
                     </div>
                 </div>
             </div>
 
-        </div>
+            <div class="text-center">
+                <div v-html="content.eep.footerText"></div>
+                <a href="#" class="btn btn-primary btn-block">{{ content.eep.labelJoin }}</a>
+            </div>
+        </section>
 
-        <ul id="wtNavContainer" class="site-nav">
-            <li class="active">
-                <div>
-                    <a href="#">{{content.labelWhatIsIt}}</a>
+
+
+        </main>
+        <footer class="footer">
+
+            <!-- TODO: delete -->
+            <div v-if="showDiagnostics">
+                <h3>Diagnostics</h3>
+                <div style="text-align: center; color: #333; padding: 3px;">
+                    Company:
+                    <router-link class="demo" v-bind:to="'/template/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">template</router-link> &nbsp;
+                    <router-link class="demo" v-bind:to="'/ycc/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">ycc</router-link> &nbsp;
+                    <router-link class="demo" v-bind:to="'/xe3/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">xe3</router-link> &nbsp;
+                    <router-link class="demo" v-bind:to="'/xe4/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">xe4 (unpublished)</router-link> &nbsp;
                 </div>
-            </li>
-            <li class="inactive"><a href="#" onclick="event.preventDefault();">{{content.labelHowItWorks}}</a></li>
-            <li class="inactive" v-if="content.planHasBonusShares"><a href="#" onclick="event.preventDefault();">{{content.labelBonusShares}} ${{ content.bonusSharesAmount }}</a></li>
-            <li class="inactive" v-if="content.showPlanRisks"><a href="#" onclick="event.preventDefault();">{{content.labelWhatAreTheRisks}}</a></li>
-            <li class="inactive"><a href="#" onclick="event.preventDefault();">{{content.labelHowToJoin}}</a></li>
-            <li class="inactive"><a href="#" onclick="event.preventDefault();">{{content.labelFaQs}}</a></li>
-            <li class="nav-join"><a href="#" onclick="event.preventDefault();">{{content.labelJoin}}</a></li>
-        </ul>
-    </div>
+                <div style="text-align: center; color: #333; padding: 3px;">
+                    Language:
+                    <span v-for="locale in locales"><router-link class="demo" v-bind:to="'/' + entryCode + '/' + locale.code + '/' + (pageCode ? pageCode : 'Home')">{{ locale.name }}</router-link> &nbsp; </span>
+                    (ca broken)
+                </div>
+                <div style="text-align: center; color: #333; padding: 3px;">
+                    View Draft Content:
+                    <input type="checkbox" v-model="previewMode" />
+                </div>
+                <pre>{{JSON.stringify(content, null, 2)}}</pre>
+            </div>
 
-    <!-- TODO: delete -->
-    <div v-if="showDiagnostics">
-        <h1>Diagnostics</h1>
-        <pre>{{JSON.stringify(content, null, 2)}}</pre>
+        </footer>
     </div>
-
 </div>
-
 <script language="javascript" type="text/javascript">
     contentlifyInit();
-</script>
 
+    if (contentlifyViewModel.entryCode == undefined) {
+        var hostSplit = document.location.hostname.split('.')[0].split('-');
+
+        var company = hostSplit[hostSplit.length - 1];
+
+        if (!(company === "eep")) {
+            contentlifyRouter.push('/' + hostSplit[hostSplit.length - 1] + '/en-AU/Home');
+        }
+    }
+</script>
 </body>
 </html>
