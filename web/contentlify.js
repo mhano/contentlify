@@ -1,3 +1,4 @@
+// Copyright Computershare 2019
 // TODO: support loading both a base set of template content and company specific overrides
 
 function contentlifyMarkDownToHtmlString(markdown) {
