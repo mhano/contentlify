@@ -148,11 +148,7 @@
                 <router-link class="company-logo" v-bind:to="anchorLink('Home', 'Top')">{{ content.eep.labelHome }}</router-link>
                 <div class="badge-wrapper" v-if="content.eep.planHasBonusShares">
                     <a class="badge badge-square" href="#">
-                        <div class="badge__content">
-                            <span class="badge-text-xlg">{{ content.eep.discountBadgeXlg }}</span>
-                            <span class="badge-text-lge">{{ content.eep.discountBadgeLg }}</span>
-                            <span class="badge-text-sml">{{ content.eep.discountBadgeSml }}</span>
-                        </div>
+                        <div class="badge__content badge-text" v-html="content.eep.discountBadgeText"></div>
                     </a>
                 </div>
                 <div class="dropdown">
