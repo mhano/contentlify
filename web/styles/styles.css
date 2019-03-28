@@ -352,6 +352,7 @@ content-box dark-bg a {
 }
 .badge-square .badge__content {
 	height: 100%;
+	padding-top: 15px;
 }
 .badge__content {
 	display: flex;
@@ -360,7 +361,6 @@ content-box dark-bg a {
 	flex-direction: column;
 	color: #fff;
 	text-align: center;
-	padding-top: 12px;
 }
 
 .badge-text h1, .badge-text h2, .badge-text h3, .badge-text h4 {
@@ -371,19 +371,19 @@ content-box dark-bg a {
     margin-block-end: 2;
 }
 
-.badge-text {
+.badge-text h4, .badge-text-sml{
 	font-size: 1.4rem;
 	font-weight: 700;
 }
-.badge-text h3 {
+.badge-text h3, .badge-text-med {
 	font-size: 2.2rem;
 	font-weight: 500;
 }
-.badge-text h2 {
+.badge-text h2, .badge-text-lge {
 	font-size: 2.8rem;
 	font-weight: 500;
 }
-.badge-text h1 {
+.badge-text h1, .badge-text-xlg {
 	font-size: 3.2rem;
 	font-weight: 500;
 	line-height: 0.8;
