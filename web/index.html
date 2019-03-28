@@ -146,7 +146,7 @@
         <nav class="main-menu">
             <div class="container flex-row flex-center">
                 <router-link class="company-logo" v-bind:to="anchorLink('Home', 'Top')">{{ content.eep.labelHome }}</router-link>
-                <div class="badge-wrapper">
+                <div class="badge-wrapper" v-if="content.eep.planHasBonusShares">
                     <a class="badge badge-square" href="#">
                         <div class="badge__content">
                             <span class="badge-text-xlg">{{ content.eep.discountBadgeXlg }}</span>
