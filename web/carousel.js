@@ -9,7 +9,7 @@ const carousel = {
 			default: 3
 		}
     },
-    render() {
+    render: function() {
         return this.$scopedSlots.default({
             index: this.currentState,
             next: this.next,
@@ -18,33 +18,28 @@ const carousel = {
 			curIndex: this.curIndex
         })
     },
-    data() {
+    data: function() {
         return { index: this.index }
     },
     methods: {
-        next() {
-            //this.currentState = this.index++;
-			console.log('clicked next ' + this.index);
+        next: function() {
 			if(this.index == this.slides-1){
 				this.index = 0;
 			} else {
 				this.index++;
 			}
         },
-        back() {
-			console.log('clicked back ' + this.index);
+        back: function() {
             if(this.index == 0){
 				this.index = this.slides-1;
 			} else {
 				this.index--;
 			}
         },
-        jump(slideIndex) {
-			console.log('clicked jump ' + slideIndex);
+        jump: function(slideIndex) {
             this.index = slideIndex;
-			console.log(this.index);
         },
-		curIndex(){
+		curIndex: function(){
 			return this.index;
 		}
 		
