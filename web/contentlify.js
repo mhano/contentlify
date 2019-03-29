@@ -1,4 +1,3 @@
-// Copyright Computershare 2019
 // TODO: support loading both a base set of template content and company specific overrides
 
 function contentlifyMarkDownToHtmlString(markdown) {
@@ -220,6 +219,7 @@ function contentlifyInit() {
 
     contentlifyViewModel = new Vue({
         el: '#app',
+		components: { carousel },
         router: contentlifyRouter,
         watch: {
             '$route': 'reloadContentOrRoute',
@@ -254,13 +254,19 @@ function contentlifyInit() {
                 return '/' + this.entryCode + '/' +
                     (this.localeCode ? this.localeCode : 'en-US') + '/' +
                     (page ? page : this.pageCode ? this.pageCode : 'Home');
-            }
+            },
+			hamburgerClick: function(){
+				this.hamburgerActive == false ? this.hamburgerActive = true : this.hamburgerActive = false;
+
+			}
         },
         data: {
             loading: true, error: false, showDiagnostics: false, errorMessage: "", entryCode: undefined,
             localeCode: undefined, pageCode: undefined, anchor: undefined, anchorTick: 0, errorDetails: {},
             errorCount: 0, willTryErrorAgain: true, content: {}, locales: [], styles: '<style></style>',
-            previewMode: false
+            previewMode: false,
+			
+			hamburgerActive: false
         }
     });
 
