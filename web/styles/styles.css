@@ -340,7 +340,7 @@ content-box dark-bg a {
 .badge-square {
 	background: var(--primary-darker);
 	display: block;
-	width: 12rem;
+	width: 18rem;
 	height: 12rem;
 	border-radius: .4rem;
 
