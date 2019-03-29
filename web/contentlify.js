@@ -219,7 +219,7 @@ function contentlifyInit() {
 
     contentlifyViewModel = new Vue({
         el: '#app',
-		components: { carousel },
+		components: { 'carousel': carousel },
         router: contentlifyRouter,
         watch: {
             '$route': 'reloadContentOrRoute',
