@@ -3,6 +3,7 @@
 <head>
     <meta name="robots" content="noindex, nofollow" />
     <title>ShareSave 2019</title>
+	<meta http-equiv="x-ua-compatible" content="IE=Edge">
     <meta name="viewport" content="width=device-width" />
     <link rel="stylesheet" href="styles/styles.css" />
     <!-- TODO: add SRI hashes and fall-back to local webpacked version -->
@@ -55,12 +56,37 @@
             } : null;
         }
 
+		
+		//use to calculate tints and shades from hex colours
+		function ColorLuminance(hex, lum) {
+			// validate hex string
+			hex = String(hex).replace(/[^0-9a-f]/gi, '');
+			if (hex.length < 6) {
+				hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+			}
+			lum = lum || 0;
+			// convert to decimal and change luminosity
+			var rgb = "#", c, i;
+			for (i = 0; i < 3; i++) {
+				c = parseInt(hex.substr(i*2,2), 16);
+				c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);
+				rgb += ("00"+c).substr(c.length);
+			}
+			return rgb;
+		}
+
+		
+		
         var contentlifyStyleOverrides = function (content) {
             // here we calculate some styles for the purpose of the demo
             // this could be allowing a user to specify a small block of style overrides in the CMS
 
             var primary = hexToRgb(content.eep.primaryBackgroundColor === undefined ? "#e97325" : content.eep.primaryBackgroundColor);
             var secondary = hexToRgb(content.eep.secondaryBackgroundColor === undefined ? "#00afe5" : content.eep.secondaryBackgroundColor);
+			var primaryLighter = ColorLuminance(content.eep.primaryBackgroundColor, 0.25);
+			var primaryDarker = ColorLuminance(content.eep.primaryBackgroundColor, -0.05);
+			var secondaryLighter = ColorLuminance(content.eep.secondaryBackgroundColor, 0.25);
+			var secondaryDarker = ColorLuminance(content.eep.secondaryBackgroundColor, -0.05);
 
             return "<style>\r\n" +
                 // TODO: add in branding color styles - e.g. primaryBackgroundColor
@@ -74,8 +100,8 @@
                 (content.eep.contentImage === undefined ? "" : ":root { --content-img-02: url('https:" + content.eep.contentImage.fields.file.url + "');}\r\n") + "" +
                 (content.eep.secondaryContentImage === undefined ? "" : ":root { --content-img-03: url('https:" + content.eep.secondaryContentImage.fields.file.url + "');}\r\n") + "" +
                 
-                ":root { --primary-R: " + primary.r + "; --primary-G: " + primary.g + "; --primary-B: " + primary.b + "; --secondary-R: " + secondary.r + "; --secondary-G: " + secondary.g + "; --secondary-B: " + secondary.b + "; }\r\n" +
-
+                ":root { --primary-R: " + primary.r + "; --primary-G: " + primary.g + "; --primary-B: " + primary.b + "; --secondary-R: " + secondary.r + "; --secondary-G: " + secondary.g + "; --secondary-B: " + secondary.b + "; \r\n" +
+				"--primary-lighter: " + primaryLighter + "; --primary-darker: " + primaryDarker +  "; --secondary-lighter: " + secondaryLighter + "; --seoncdary-darker: " + secondaryDarker + "; } \r\n" +
                 "</style>";
         }
 
@@ -179,11 +205,7 @@
                 <router-link class="company-logo" v-bind:to="anchorLink('Home', 'Top')">{{ content.eep.labelHome }}</router-link>
                 <div class="badge-wrapper">
                     <a class="badge badge-square" href="#">
-                        <div class="badge__content">
-                            <span class="badge-text-xlg">{{ content.eep.discountBadgeXlg }}</span>
-                            <span class="badge-text-lge">{{ content.eep.discountBadgeLg }}</span>
-                            <span class="badge-text-sml">{{ content.eep.discountBadgeSml }}</span>
-                        </div>
+                        <div class="badge__content badge-text" v-html="content.eep.discountBadgeText"></div>
                     </a>
                 </div>
                 <div class="dropdown">
@@ -217,10 +239,10 @@
                 <h1 class="mb-0">{{ content.eep.title }}</h1>
                 <div class="page-sub-heading" v-html="content.eep.titleSubText"></div>
                 <a class="badge badge-circle" href="#">
-                    <div class="badge__content">
-                        <span class="badge-text-lge">{{ content.eep.joinByBadge1 }}</span>
-                        <span class="badge-text-lge">{{ content.eep.joinByBadge2 }}</span>
-                        <span class="badge-text-lge">{{ content.eep.joinByBadge3 }}</span>
+                    <div class="badge__content badge-text">
+                        <h2>{{ content.eep.joinByBadge1 }}</h2>
+                        <h2>{{ content.eep.joinByBadge2 }}</h2>
+                        <h2>{{ content.eep.joinByBadge3 }}</h2>
                     </div>
                 </a>
                 <router-link class="btn btn-lge" v-bind:to="anchorLink('Home', 'Top')">{{ content.eep.labelJoin }}</router-link>
@@ -252,15 +274,15 @@
 
         </section>
 		<carousel>
-        <section class="carousel dark-bg waypoint" slot-scope="{back,next,jump,curIndex}" aria-labeledby="HowItWorksCarouselHeading" id="HowItWorksCarousel" tabindex="-1">
+        <section class="carousel dark-bg waypoint" slot-scope="state" aria-labeledby="HowItWorksCarouselHeading" id="HowItWorksCarousel" tabindex="-1">
             <!-- TODO: review - moved anchor for scrolling to from menu links -->
             <div style="position: relative; display: block; top: -70px;" id="HowItWorks"></div>
 
             <h2 class="sr-only" id="HowItWorksCarouselHeading">Plan overview carousel</h2>
-            <span class="sr-only a11y-updates" aria-live="polite">slide {{curIndex() + 1}} is currently active</span>
+            <span class="sr-only a11y-updates" aria-live="polite">slide {{state.curIndex() + 1}} is currently active</span>
             <div class="container">
                 <div id="HowItWorksCarouselContent" class="carousel-content">
-                    <div class="carousel-item" v-bind:class="{ active: curIndex() == 0 }" v-focus="curIndex() == 0" tabindex="-1" id="slide01">
+                    <div class="carousel-item" v-bind:class="{ active: state.curIndex() == 0 }" v-focus="state.curIndex() == 0" tabindex="-1">
                         <div class="text-center">
                             <h2 class="mb-0">{{ content.eephowitworks.title}}</h2>
                             <h3 class="mt-0">{{ content.eephowitworks.subTitle}}</h3>
@@ -287,7 +309,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="carousel-item" v-bind:class="{ active: curIndex() == 1 }" v-focus="curIndex() == 1" tabindex="-1" id="slide02">
+                    <div class="carousel-item" v-bind:class="{ active: state.curIndex() == 1 }" v-focus="state.curIndex() == 1" tabindex="-1">
                         <div class="text-center">
                             <h2 class="mb-0">{{ content.eephowitworks.title}}</h2>
                             <h3 class="mt-0">{{ content.eephowitworks.subTitle}}</h3>
@@ -328,7 +350,7 @@
                         </div>
 
                     </div>
-                    <div class="carousel-item" v-bind:class="{ active: curIndex() == 2 }" v-focus="curIndex() == 2" tabindex="-1" id="slide03">
+                    <div class="carousel-item" v-bind:class="{ active: state.curIndex() == 2 }" v-focus="state.curIndex() == 2" tabindex="-1">
                         <div class="text-center">
                             <h2 class="mb-0">{{ content.eephowitworks.title}}</h2>
                             <h3 class="mt-0">{{ content.eephowitworks.subTitle}}</h3>
@@ -371,14 +393,14 @@
                 </div>
                 <div aria-controls="HowItWorksCarouselContent">
                     <div class="carousel-nav">
-                        <button class="btn-carousel carousel-back" v-if="curIndex() > 0" v-on:click="back"><span class="sr-only">Previous slide</span><svg class="icon"><use xlink:href="#icon-chevron-left"></use></svg></button>
-                        <button class="btn-carousel carousel-next" v-if="curIndex() < 2" v-on:click="next"><span class="sr-only">Next slide</span><svg class="icon"><use xlink:href="#icon-chevron-right"></use></svg></a></button>
+                        <button class="btn-carousel carousel-back" v-if="state.curIndex() > 0" v-on:click="state.back"><span class="sr-only">Previous slide</span><svg class="icon"><use xlink:href="#icon-chevron-left"></use></svg></button>
+                        <button class="btn-carousel carousel-next" v-if="state.curIndex() < 2" v-on:click="state.next"><span class="sr-only">Next slide</span><svg class="icon"><use xlink:href="#icon-chevron-right"></use></svg></a></button>
                     </div>
                     <div>
                         <ul class="carousel-dots">
-                            <li><a href="#slide01" v-on:click.stop.prevent="jump(0)" v-bind:class="{ active: curIndex() == 0 }">Slide 1</a></li>
-                            <li><a href="#slide02" v-on:click.stop.prevent="jump(1)" v-bind:class="{ active: curIndex() == 1 }">Slide 2</a></li>
-                            <li><a href="#slide03" v-on:click.stop.prevent="jump(2)" v-bind:class="{ active: curIndex() == 2 }">Slide 3</a></li>
+                            <li><a href="#slide01" v-on:click.stop.prevent="state.jump(0)" v-bind:class="{ active: state.curIndex() == 0 }">Slide 1</a></li>
+                            <li><a href="#slide02" v-on:click.stop.prevent="state.jump(1)" v-bind:class="{ active: state.curIndex() == 1 }">Slide 2</a></li>
+                            <li><a href="#slide03" v-on:click.stop.prevent="state.jump(2)" v-bind:class="{ active: state.curIndex() == 2 }">Slide 3</a></li>
                         </ul>
                     </div>
                 </div>
@@ -404,15 +426,15 @@
         </section>
 
 		<carousel slides="2">
-        <section class="carousel dark-bg waypoint" id="HowToJoinCarousel" slot-scope="{back,next,jump,curIndex}" aria-labeledby="HowToJoinCarouselHeading" tabindex="-1">
+        <section class="carousel dark-bg waypoint" id="HowToJoinCarousel" slot-scope="state" aria-labeledby="HowToJoinCarouselHeading" tabindex="-1">
             <!-- TODO: review - moved anchor for scrolling to from menu links -->
             <div style="position: relative; display: block; top: -100px;" id="HowToJoin"></div>
 
             <h2 class="sr-only" id="HowToJoinCarouselHeading">How to Join carousel</h2>
-            <span class="sr-only a11y-updates" aria-live="polite">slide {{curIndex() -1}} is currently active</span>
+            <span class="sr-only a11y-updates" aria-live="polite">slide {{state.curIndex() -1}} is currently active</span>
             <div class="container">
                 <div id="HowToJoinCarouselContent" class="carousel-content">
-                    <div class="carousel-item" v-bind:class="{ active: curIndex() == 0 }" v-focus="curIndex() == 0" tabindex="-1">
+                    <div class="carousel-item" v-bind:class="{ active: state.curIndex() == 0 }" v-focus="state.curIndex() == 0" tabindex="-1">
                         <div class="text-center">
                             <h2>{{ content.eephowtojoin.title }}</h2>
                             <h3>{{ content.eephowtojoin.subTitle }}</h3>
@@ -444,7 +466,7 @@
 						</div>
                         <div class="fineprint" v-html="content.eephowtojoin.footer2"></div>
                     </div>
-                    <div class="carousel-item" v-bind:class="{ active: curIndex() == 1 }" v-focus="curIndex() == 1" tabindex="-1">
+                    <div class="carousel-item" v-bind:class="{ active: state.curIndex() == 1 }" v-focus="state.curIndex() == 1" tabindex="-1">
                         <div class="text-center">
                             <h2>It's easy to join... with two simple options</h2>
                             <h3>It will only take a couple of minutes</h3>
@@ -484,13 +506,13 @@
                 </div>
                 <div aria-controls="HowToJoinCarouselContent">
                     <div class="carousel-nav">
-                        <button class="btn-carousel carousel-back" v-if="curIndex() > 0" v-on:click="back"><span class="sr-only">Previous slide</span><svg class="icon"><use xlink:href="#icon-chevron-left"></use></svg></button>
-                        <button class="btn-carousel carousel-next" v-if="curIndex() < 1" v-on:click="next"><span class="sr-only">Next slide</span><svg class="icon"><use xlink:href="#icon-chevron-right"></use></svg></a></button>
+                        <button class="btn-carousel carousel-back" v-if="state.curIndex() > 0" v-on:click="state.back"><span class="sr-only">Previous slide</span><svg class="icon"><use xlink:href="#icon-chevron-left"></use></svg></button>
+                        <button class="btn-carousel carousel-next" v-if="state.curIndex() < 1" v-on:click="state.next"><span class="sr-only">Next slide</span><svg class="icon"><use xlink:href="#icon-chevron-right"></use></svg></a></button>
                     </div>
                     <div>
                         <ul class="carousel-dots">
-                            <li><a href="#" v-on:click.stop.prevent="jump(0)" v-bind:class="{ active: curIndex() == 0 }">Slide 1</a></li>
-                            <li><a href="#" v-on:click.stop.prevent="jump(1)" v-bind:class="{ active: curIndex() == 1 }">Slide 2</a></li>
+                            <li><a href="#" v-on:click.stop.prevent="state.jump(0)" v-bind:class="{ active: state.curIndex() == 0 }">Slide 1</a></li>
+                            <li><a href="#" v-on:click.stop.prevent="state.jump(1)" v-bind:class="{ active: state.curIndex() == 1 }">Slide 2</a></li>
                         </ul>
                     </div>
                 </div>
@@ -590,8 +612,10 @@
         }
     }
 	
-	/*call polyfill for CSS variables
-	cssVars();*/
+	/*call polyfill for CSS variables*/
+	setTimeout(function(){
+		cssVars();
+	},1000);
 </script>
 </body>
 </html>
