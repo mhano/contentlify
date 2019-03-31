@@ -1,4 +1,4 @@
-const carousel = {
+var carousel = {
     props: {
         index: { 
 			type: Number, 
