@@ -120,11 +120,6 @@ function contentlifyContentLoaded(results) {
     if (typeof (window.contentlifyNavigationCallback) === 'function') {
         window.contentlifyNavigationCallback();
     }
-	
-	/*call polyfill for CSS variables*/
-	cssVars();
-	
-	
 }
 
 function contentlifyContentLoadError(error) {
