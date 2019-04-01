@@ -15,7 +15,8 @@ var carousel = {
             next: this.next,
             back: this.back,
             jump: this.jump,
-			curIndex: this.curIndex
+			curIndex: this.curIndex,
+			hasFocus: this.hasFocus,
         })
     },
     data: function() {
@@ -28,6 +29,7 @@ var carousel = {
 			} else {
 				this.index++;
 			}
+			this.hasFocus == true;
         },
         back: function() {
             if(this.index == 0){
@@ -35,26 +37,36 @@ var carousel = {
 			} else {
 				this.index--;
 			}
+			this.hasFocus == true;
         },
         jump: function(slideIndex) {
             this.index = slideIndex;
+			this.hasFocus == true;
         },
 		curIndex: function(){
 			return this.index;
+		},
+		hasFocus: function(){
+			return this.hasFocus;
 		}
 		
-    }
+		
+    },
 }
 
+function findAncestor (el, cls) {
+    while ((el = el.parentNode) && el.className.indexOf(cls) < 0);
+    return el;
+}
 
 Vue.directive('focus', {
   // The `componentUpdated` hook get's called everytime the component & it's children has been updated.
-  componentUpdated: function(el, binding, vnode) {
+  componentUpdated: function(el, binding, vnode) {  
     /*
      `binding.value` is the result of the expression passed to the directive. 
      In this case if it's true, the textfield should be focused. 
 		 */
-    if (binding.value) {
+	if(findAncestor(event.target, 'carousel') != undefined && binding.value){
       el.focus();
     }
   }
