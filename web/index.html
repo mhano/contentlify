@@ -105,6 +105,7 @@
         // fires only when new content entity has been loaded (company code change, locale change, but not spa-page/anchor/scroll changes)
         var contentlifyUpdateCallback = function () {
             document.title = contentlifyViewModel.content.eep.title;
+			setTimeout(function(){dragElement(document.getElementById('debugTools'));}, 600);
         }
 
         // var contentlifyNavigationCallback = function () { /* fires per page/route/anchor change */ }
@@ -113,6 +114,50 @@
 	<script src="carousel.js"></script>
 	<script src="css-vars-ponyfill.min.js"></script>
 	
+	<!-- TODO DELETE -->
+	<script language="javascript" type="text/javascript">
+	function dragElement(elmnt) {
+	  var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+	  if (document.getElementById(elmnt.id + "Header")) {
+		// if present, the header is where you move the DIV from:
+		document.getElementById(elmnt.id + "Header").onmousedown = dragMouseDown;
+	  } else {
+		// otherwise, move the DIV from anywhere inside the DIV: 
+		elmnt.onmousedown = dragMouseDown;
+	  }
+
+	  function dragMouseDown(e) {
+		e = e || window.event;
+		e.preventDefault();
+		// get the mouse cursor position at startup:
+		pos3 = e.clientX;
+		pos4 = e.clientY;
+		document.onmouseup = closeDragElement;
+		// call a function whenever the cursor moves:
+		document.onmousemove = elementDrag;
+	  }
+
+	  function elementDrag(e) {
+		e = e || window.event;
+		e.preventDefault();
+		// calculate the new cursor position:
+		pos1 = pos3 - e.clientX;
+		pos2 = pos4 - e.clientY;
+		pos3 = e.clientX;
+		pos4 = e.clientY;
+		// set the element's new position:
+		elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+		elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+	  }
+
+	  function closeDragElement() {
+		// stop moving when mouse button is released:
+		document.onmouseup = null;
+		document.onmousemove = null;
+	  }
+	}
+	</script>
+
     <!-- TODO: delete -->
     <style>
         .demo {
@@ -142,9 +187,9 @@
 		.debugViews {
 			z-index: 1000;
 			position: fixed;
-			top: 130px;
+			top: 390px;
 			left: 30px;
-			width: 53px;
+			width: 107px;
 			height: 24px;
 			clip: initial;
 			overflow: hidden;
@@ -157,6 +202,7 @@
 			border: 1px solid black;
 		}
     </style>
+
 </head>
 <body>
 <div id="app">
@@ -547,6 +593,7 @@
         <section class="container waypoint" tabindex="-1">
             <!-- TODO: review - moved anchor for scrolling to from menu links -->
             <div style="position: relative; display: block; top: -110px;" id="FAQs"></div>
+            <div style="position: relative; display: block; top: -110px;" id="FAQDates"></div>
 
             <div class="flex-row-md">
                 <div class="content-box dark-bg">
@@ -588,35 +635,41 @@
 
         </main>
         <footer class="footer">
-
             <!-- TODO: delete -->
             <div v-if="showDiagnostics">
-				<div class="debugViews">
-					<div style="background-color: yellow; padding: 3px;">Debug</div>
-					<div style="text-align: center; color: #333; padding: 3px;">
-						Company:
-						<router-link class="demo" v-bind:to="'/template/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">template</router-link> &nbsp;
-						<router-link class="demo" v-bind:to="'/ycc/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">ycc</router-link> &nbsp;
-						<router-link class="demo" v-bind:to="'/xe3/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">xe3</router-link> &nbsp;
-						<router-link class="demo" v-bind:to="'/xe4/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">xe4 (unpublished)</router-link> &nbsp;
-					</div>
-					<div style="text-align: center; color: #333; padding: 3px;">
-						Language:
-						<span v-for="locale in locales"><router-link class="demo" v-bind:to="'/' + entryCode + '/' + locale.code + '/' + (pageCode ? pageCode : 'Home')">{{ locale.name }}</router-link> &nbsp; </span>
-						(ca broken)
-					</div>
-					<div style="text-align: center; color: #333; padding: 3px;">
-						View Draft Content:
-						<input type="checkbox" v-model="previewMode" />
-					</div>
-				</div>
-				
-                <h3>Diagnostics</h3>
-                <pre>{{JSON.stringify(content, null, 2)}}</pre>
+                <h3 v-if="showDiagnostics">Diagnostics</h3>
+                <pre v-if="showDiagnostics">{{JSON.stringify(content, null, 2)}}</pre>
             </div>
-
         </footer>
     </div>
+	
+	<div class="always">
+		<div class="debugViews" id="debugTools">
+			<div style="background-color: yellow; padding: 3px;" id="debugToolsHeader">&nbsp;&equiv; Debug Tools</div>
+			<div style="text-align: center; color: #333; padding: 3px;">
+				Company:
+				<router-link class="demo" v-bind:to="'/template/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">template</router-link> &nbsp;
+				<router-link class="demo" v-bind:to="'/ycc/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">ycc</router-link> &nbsp;
+				<router-link class="demo" v-bind:to="'/xe3/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">xe3</router-link> &nbsp;
+				<router-link class="demo" v-bind:to="'/xe4/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">xe4 (unpublished)</router-link> &nbsp;
+				<router-link class="demo" v-bind:to="'/xe5/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">xe5</router-link> &nbsp;
+			</div>
+			<div style="text-align: center; color: #333; padding: 3px;">
+				Language:
+				<span v-for="locale in locales"><router-link class="demo" v-bind:to="'/' + entryCode + '/' + locale.code + '/' + (pageCode ? pageCode : 'Home')">{{ locale.name }}</router-link> &nbsp; </span>
+				(ca broken)
+			</div>
+			<div style="text-align: center; color: #333; padding: 3px;">
+				<label for="draftcontent">View Draft Content:</label>
+				<input type="checkbox" id="draftcontent" v-model="previewMode" />
+				
+				&nbsp; &nbsp; 
+				
+				<label for="diagnostics">View Diagnostics:</label>
+				<input type="checkbox" id="diagnostics" v-model="showDiagnostics" />
+			</div>
+		</div>
+	</div>
 </div>
 <script language="javascript" type="text/javascript">
     contentlifyInit();
