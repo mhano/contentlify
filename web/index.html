@@ -13,26 +13,23 @@
             crossorigin="anonymous" integrity="sha256-pfXWzm1MRINMGCDZtp94lO2+OYNFFiQ4oZihf5+FapQ="></script>
     <script src="https://cdn.jsdelivr.net/npm/vue-router@3.0.2/dist/vue-router.min.js"
             crossorigin="anonymous" integrity="sha256-DbgluxFcJqBgeVJwF1idcvA2aeayczQBWJPGn4KZIEc="></script>
-			
     <script src="https://cdn.jsdelivr.net/npm/showdown@1.9.0/dist/showdown.min.js"
             crossorigin="anonymous" integrity="sha256-LSUpTY0kkXGKvcBC9kbmgibmx3NVVgJvAEfTZbs51mU="></script>
     <script src="https://cdn.jsdelivr.net/npm/zenscroll@4.0.2/zenscroll-min.js"
             crossorigin="anonymous" integrity="sha256-P3WAuks0zjjUNJHAQsa3qo5fMU1+d3flCMCI9vGK9So="></script>
-
-	<script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" 
+			crossorigin="anonymous" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="></script>
 	
-			
-			
     <script language="javascript" type="text/javascript">
         var exports = {}; // quick fix because 'exports' is not defined in 'rich-text-html-renderer' below
     </script>
-
+	
     <!-- TODO: add SRI hashes and fall-back to local webpacked version -->
     <script src="https://cdn.jsdelivr.net/npm/@contentful/rich-text-html-renderer@13.1.0/dist/rich-text-html-renderer.es5.js"
             crossorigin="anonymous" integrity="sha256-2RWAhYMukzDFe9G0HItQccfrU5jOBItdJ5+JMiQgJ30="></script>
-
+	
     <script language="javascript" type="text/javascript">
-
+		
         var contentlifyViewModel;
 
         var contentlifySlugField = 'slug';
@@ -141,21 +138,39 @@
             white-space: -o-pre-wrap; /* Opera 7 */
             word-wrap: break-word; /* Internet Explorer 5.5+ */
         }
+		
+		.debugViews {
+			z-index: 1000;
+			position: fixed;
+			top: 130px;
+			left: 30px;
+			width: 53px;
+			height: 24px;
+			clip: initial;
+			overflow: hidden;
+			background-color: lightyellow;
+			border: 1px solid black;
+		}
+		.debugViews:hover {
+			width: 600px;
+			height: 95px;
+			border: 1px solid black;
+		}
     </style>
 </head>
 <body>
 <div id="app">
     <div v-html="styles"></div>
 
-    <div style="padding-top: 20px;" v-if="entryCode === undefined || entryCode === ''">
+    <div style="padding: 20px;" v-if="entryCode === undefined || entryCode === ''">
         Nothing to see here, something went wrong with the link you followed (clicked)...
     </div>
-    <div style="padding-top: 20px;" v-else-if="error">
+    <div style="padding: 20px;" v-else-if="error">
         Error loading content (attempt {{errorCount}})... <span v-if="willTryErrorAgain">trying again...</span><span v-else>given up.</span><br/><br/>
         <pre>Details: {{errorMessage}}</pre>
         <pre>JSON: {{JSON.stringify(errorDetails, null, 2)}}</pre>
     </div>
-    <div style="padding-top: 20px;" v-else-if="loading">
+    <div style="padding: 20px;" v-else-if="loading">
         Loading...
     </div>
     <div v-else>
@@ -203,7 +218,7 @@
         <nav class="main-menu">
             <div class="container flex-row flex-center">
                 <router-link class="company-logo" v-bind:to="anchorLink('Home', 'Top')">{{ content.eep.labelHome }}</router-link>
-                <div class="badge-wrapper">
+                <div class="badge-wrapper" v-if="content.eep.planHasBonusShares">
                     <a class="badge badge-square" href="#">
                         <div class="badge__content badge-text" v-html="content.eep.discountBadgeText"></div>
                     </a>
@@ -576,23 +591,27 @@
 
             <!-- TODO: delete -->
             <div v-if="showDiagnostics">
+				<div class="debugViews">
+					<div style="background-color: yellow; padding: 3px;">Debug</div>
+					<div style="text-align: center; color: #333; padding: 3px;">
+						Company:
+						<router-link class="demo" v-bind:to="'/template/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">template</router-link> &nbsp;
+						<router-link class="demo" v-bind:to="'/ycc/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">ycc</router-link> &nbsp;
+						<router-link class="demo" v-bind:to="'/xe3/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">xe3</router-link> &nbsp;
+						<router-link class="demo" v-bind:to="'/xe4/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">xe4 (unpublished)</router-link> &nbsp;
+					</div>
+					<div style="text-align: center; color: #333; padding: 3px;">
+						Language:
+						<span v-for="locale in locales"><router-link class="demo" v-bind:to="'/' + entryCode + '/' + locale.code + '/' + (pageCode ? pageCode : 'Home')">{{ locale.name }}</router-link> &nbsp; </span>
+						(ca broken)
+					</div>
+					<div style="text-align: center; color: #333; padding: 3px;">
+						View Draft Content:
+						<input type="checkbox" v-model="previewMode" />
+					</div>
+				</div>
+				
                 <h3>Diagnostics</h3>
-                <div style="text-align: center; color: #333; padding: 3px;">
-                    Company:
-                    <router-link class="demo" v-bind:to="'/template/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">template</router-link> &nbsp;
-                    <router-link class="demo" v-bind:to="'/ycc/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">ycc</router-link> &nbsp;
-                    <router-link class="demo" v-bind:to="'/xe3/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">xe3</router-link> &nbsp;
-                    <router-link class="demo" v-bind:to="'/xe4/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">xe4 (unpublished)</router-link> &nbsp;
-                </div>
-                <div style="text-align: center; color: #333; padding: 3px;">
-                    Language:
-                    <span v-for="locale in locales"><router-link class="demo" v-bind:to="'/' + entryCode + '/' + locale.code + '/' + (pageCode ? pageCode : 'Home')">{{ locale.name }}</router-link> &nbsp; </span>
-                    (ca broken)
-                </div>
-                <div style="text-align: center; color: #333; padding: 3px;">
-                    View Draft Content:
-                    <input type="checkbox" v-model="previewMode" />
-                </div>
                 <pre>{{JSON.stringify(content, null, 2)}}</pre>
             </div>
 

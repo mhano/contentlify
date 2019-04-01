@@ -47,6 +47,7 @@ var carousel = {
 }
 
 
+
 Vue.directive('focus', {
   // The `componentUpdated` hook get's called everytime the component & it's children has been updated.
   componentUpdated: function(el, binding, vnode) {
