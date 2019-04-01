@@ -635,40 +635,41 @@
 
         </main>
         <footer class="footer">
-			<div class="debugViews" id="debugTools">
-				<div style="background-color: yellow; padding: 3px;" id="debugToolsHeader">&nbsp;&equiv; Debug Tools</div>
-				<div style="text-align: center; color: #333; padding: 3px;">
-					Company:
-					<router-link class="demo" v-bind:to="'/template/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">template</router-link> &nbsp;
-					<router-link class="demo" v-bind:to="'/ycc/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">ycc</router-link> &nbsp;
-					<router-link class="demo" v-bind:to="'/xe3/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">xe3</router-link> &nbsp;
-					<router-link class="demo" v-bind:to="'/xe4/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">xe4 (unpublished)</router-link> &nbsp;
-					<router-link class="demo" v-bind:to="'/xe5/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">xe5</router-link> &nbsp;
-				</div>
-				<div style="text-align: center; color: #333; padding: 3px;">
-					Language:
-					<span v-for="locale in locales"><router-link class="demo" v-bind:to="'/' + entryCode + '/' + locale.code + '/' + (pageCode ? pageCode : 'Home')">{{ locale.name }}</router-link> &nbsp; </span>
-					(ca broken)
-				</div>
-				<div style="text-align: center; color: #333; padding: 3px;">
-					<label for="draftcontent">View Draft Content:</label>
-					<input type="checkbox" id="draftcontent" v-model="previewMode" />
-					
-					&nbsp; &nbsp; 
-					
-					<label for="diagnostics">View Diagnostics:</label>
-					<input type="checkbox" id="diagnostics" v-model="showDiagnostics" />
-				</div>
-			</div>
-
             <!-- TODO: delete -->
             <div v-if="showDiagnostics">
                 <h3 v-if="showDiagnostics">Diagnostics</h3>
                 <pre v-if="showDiagnostics">{{JSON.stringify(content, null, 2)}}</pre>
             </div>
-
         </footer>
     </div>
+	
+	<div class="always">
+		<div class="debugViews" id="debugTools">
+			<div style="background-color: yellow; padding: 3px;" id="debugToolsHeader">&nbsp;&equiv; Debug Tools</div>
+			<div style="text-align: center; color: #333; padding: 3px;">
+				Company:
+				<router-link class="demo" v-bind:to="'/template/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">template</router-link> &nbsp;
+				<router-link class="demo" v-bind:to="'/ycc/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">ycc</router-link> &nbsp;
+				<router-link class="demo" v-bind:to="'/xe3/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">xe3</router-link> &nbsp;
+				<router-link class="demo" v-bind:to="'/xe4/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">xe4 (unpublished)</router-link> &nbsp;
+				<router-link class="demo" v-bind:to="'/xe5/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">xe5</router-link> &nbsp;
+			</div>
+			<div style="text-align: center; color: #333; padding: 3px;">
+				Language:
+				<span v-for="locale in locales"><router-link class="demo" v-bind:to="'/' + entryCode + '/' + locale.code + '/' + (pageCode ? pageCode : 'Home')">{{ locale.name }}</router-link> &nbsp; </span>
+				(ca broken)
+			</div>
+			<div style="text-align: center; color: #333; padding: 3px;">
+				<label for="draftcontent">View Draft Content:</label>
+				<input type="checkbox" id="draftcontent" v-model="previewMode" />
+				
+				&nbsp; &nbsp; 
+				
+				<label for="diagnostics">View Diagnostics:</label>
+				<input type="checkbox" id="diagnostics" v-model="showDiagnostics" />
+			</div>
+		</div>
+	</div>
 </div>
 <script language="javascript" type="text/javascript">
     contentlifyInit();
