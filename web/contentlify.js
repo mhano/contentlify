@@ -106,7 +106,6 @@ function contentlifyContentLoaded(results) {
     }
 
     contentlifyViewModel.pageCode = contentlifyViewModel.pageCode;
-    contentlifyViewModel.showDiagnostics = true;
     contentlifyViewModel.errorDetails = {};
     contentlifyViewModel.content = content;
     contentlifyViewModel.loading = false;
@@ -152,12 +151,6 @@ function contentlifyShowLoadingOnSlowNetworksAfterMs(delay) {
 }
 
 function contentlifyLoadContent() {
-    contentlifyShowLoadingOnSlowNetworksAfterMs(1500);
-	
-    if (!(window.contentlifySlugField && window.contentlifyEntityTypes && window.contentlifyBaseTemplateSlug)) {
-        console.error("contentlifySlugField, contentlifyEntityTypes and contentlifyBaseTemplateSlug need to be defined");
-    };
-	
 	window.contentlifyLastLoadedPreviewMode = contentlifyViewModel.previewMode;
 	
 	if(contentfulClientPreview === undefined && contentlifyViewModel.previewMode) {
@@ -170,6 +163,12 @@ function contentlifyLoadContent() {
 			contentlifyViewModel.previewMode = false;
 		}
 	}
+	
+    contentlifyShowLoadingOnSlowNetworksAfterMs(1500);
+	
+    if (!(window.contentlifySlugField && window.contentlifyEntityTypes && window.contentlifyBaseTemplateSlug)) {
+        console.error("contentlifySlugField, contentlifyEntityTypes and contentlifyBaseTemplateSlug need to be defined");
+    };
 	
     var client = contentlifyViewModel.previewMode ? contentfulClientPreview : contentfulClientLive;
 	

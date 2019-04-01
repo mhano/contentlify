@@ -48,7 +48,7 @@ var carousel = {
 
 
 function findAncestor (el, cls) {
-    while ((el = el.parentNode) && el.className.indexOf(cls) < 0);
+    while ((el = el.parentNode) && el && el.className && typeof(el.className.indexOf) === 'function' && el.className.indexOf(cls) < 0);
     return el;
 }
 
