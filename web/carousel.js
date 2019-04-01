@@ -47,6 +47,10 @@ var carousel = {
 }
 
 
+function findAncestor (el, cls) {
+    while ((el = el.parentNode) && el.className.indexOf(cls) < 0);
+    return el;
+}
 
 Vue.directive('focus', {
   // The `componentUpdated` hook get's called everytime the component & it's children has been updated.
@@ -55,7 +59,7 @@ Vue.directive('focus', {
      `binding.value` is the result of the expression passed to the directive. 
      In this case if it's true, the textfield should be focused. 
 		 */
-    if (binding.value) {
+    if(findAncestor(event.target, 'carousel') != undefined && binding.value){
       el.focus();
     }
   }
