@@ -55,7 +55,7 @@ Vue.directive('focus', {
      `binding.value` is the result of the expression passed to the directive. 
      In this case if it's true, the textfield should be focused. 
 		 */
-    if (binding.value) {
+    if(findAncestor(event.target, 'carousel') != undefined && binding.value){
       el.focus();
     }
   }
