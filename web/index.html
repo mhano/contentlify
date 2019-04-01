@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta name="robots" content="noindex, nofollow" />
-	<meta name="copyright" content="Copyright Computershare 2019" />
     <title>ShareSave 2019</title>
+	<meta http-equiv="x-ua-compatible" content="IE=Edge">
     <meta name="viewport" content="width=device-width" />
     <link rel="stylesheet" href="styles/styles.css" />
     <!-- TODO: add SRI hashes and fall-back to local webpacked version -->
@@ -17,17 +17,19 @@
             crossorigin="anonymous" integrity="sha256-LSUpTY0kkXGKvcBC9kbmgibmx3NVVgJvAEfTZbs51mU="></script>
     <script src="https://cdn.jsdelivr.net/npm/zenscroll@4.0.2/zenscroll-min.js"
             crossorigin="anonymous" integrity="sha256-P3WAuks0zjjUNJHAQsa3qo5fMU1+d3flCMCI9vGK9So="></script>
-
+	<script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" 
+			crossorigin="anonymous" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="></script>
+	
     <script language="javascript" type="text/javascript">
         var exports = {}; // quick fix because 'exports' is not defined in 'rich-text-html-renderer' below
     </script>
-
+	
     <!-- TODO: add SRI hashes and fall-back to local webpacked version -->
     <script src="https://cdn.jsdelivr.net/npm/@contentful/rich-text-html-renderer@13.1.0/dist/rich-text-html-renderer.es5.js"
             crossorigin="anonymous" integrity="sha256-2RWAhYMukzDFe9G0HItQccfrU5jOBItdJ5+JMiQgJ30="></script>
-
+	
     <script language="javascript" type="text/javascript">
-
+		
         var contentlifyViewModel;
 
         var contentlifySlugField = 'slug';
@@ -51,12 +53,37 @@
             } : null;
         }
 
+		
+		//use to calculate tints and shades from hex colours
+		function ColorLuminance(hex, lum) {
+			// validate hex string
+			hex = String(hex).replace(/[^0-9a-f]/gi, '');
+			if (hex.length < 6) {
+				hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+			}
+			lum = lum || 0;
+			// convert to decimal and change luminosity
+			var rgb = "#", c, i;
+			for (i = 0; i < 3; i++) {
+				c = parseInt(hex.substr(i*2,2), 16);
+				c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);
+				rgb += ("00"+c).substr(c.length);
+			}
+			return rgb;
+		}
+
+		
+		
         var contentlifyStyleOverrides = function (content) {
             // here we calculate some styles for the purpose of the demo
             // this could be allowing a user to specify a small block of style overrides in the CMS
 
             var primary = hexToRgb(content.eep.primaryBackgroundColor === undefined ? "#e97325" : content.eep.primaryBackgroundColor);
             var secondary = hexToRgb(content.eep.secondaryBackgroundColor === undefined ? "#00afe5" : content.eep.secondaryBackgroundColor);
+			var primaryLighter = ColorLuminance(content.eep.primaryBackgroundColor, 0.25);
+			var primaryDarker = ColorLuminance(content.eep.primaryBackgroundColor, -0.05);
+			var secondaryLighter = ColorLuminance(content.eep.secondaryBackgroundColor, 0.25);
+			var secondaryDarker = ColorLuminance(content.eep.secondaryBackgroundColor, -0.05);
 
             return "<style>\r\n" +
                 // TODO: add in branding color styles - e.g. primaryBackgroundColor
@@ -64,14 +91,14 @@
                 // TODO: MOVE COMPANY LOGO TO TEMPLATED HTML ELEMENT WITH ALT/DESCRIPTION FROM CMS ETC.
                 // TODO: EASIER TEMPLATE EDITING AND BETTER ACCESSIBILITY
                 // skips configuring if not in CMS, alternatively make mandatory in CMS
-                (content.eep.headerLogo === undefined ? "" : ":root { --company-logo: url('" + content.eep.headerLogo.fields.file.url + "');}\r\n") + "" +
-                (content.eep.headerGraphic === undefined ? "" : ":root { --header-img-01: url('" + content.eep.headerGraphic.fields.file.url + "');}\r\n") + "" +
-                (content.eep.heroImage === undefined ? "" : ":root { --content-img-01: url('" + content.eep.heroImage.fields.file.url + "');}\r\n") + "" +
-                (content.eep.contentImage === undefined ? "" : ":root { --content-img-02: url('" + content.eep.contentImage.fields.file.url + "');}\r\n") + "" +
-                (content.eep.secondaryContentImage === undefined ? "" : ":root { --content-img-03: url('" + content.eep.secondaryContentImage.fields.file.url + "');}\r\n") + "" +
+                (content.eep.headerLogo === undefined ? "" : ":root { --company-logo: url('https:" + content.eep.headerLogo.fields.file.url + "');}\r\n") + "" +
+                (content.eep.headerGraphic === undefined ? "" : ":root { --header-img-01: url('https:" + content.eep.headerGraphic.fields.file.url + "');}\r\n") + "" +
+                (content.eep.heroImage === undefined ? "" : ":root { --content-img-01: url('https:" + content.eep.heroImage.fields.file.url + "');}\r\n") + "" +
+                (content.eep.contentImage === undefined ? "" : ":root { --content-img-02: url('https:" + content.eep.contentImage.fields.file.url + "');}\r\n") + "" +
+                (content.eep.secondaryContentImage === undefined ? "" : ":root { --content-img-03: url('https:" + content.eep.secondaryContentImage.fields.file.url + "');}\r\n") + "" +
                 
-                ":root { --primary-R: " + primary.r + "; --primary-G: " + primary.g + "; --primary-B: " + primary.b + "; --secondary-R: " + secondary.r + "; --secondary-G: " + secondary.g + "; --secondary-B: " + secondary.b + "; }\r\n" +
-
+                ":root { --primary-R: " + primary.r + "; --primary-G: " + primary.g + "; --primary-B: " + primary.b + "; --secondary-R: " + secondary.r + "; --secondary-G: " + secondary.g + "; --secondary-B: " + secondary.b + "; \r\n" +
+				"--primary-lighter: " + primaryLighter + "; --primary-darker: " + primaryDarker +  "; --secondary-lighter: " + secondaryLighter + "; --seoncdary-darker: " + secondaryDarker + "; } \r\n" +
                 "</style>";
         }
 
@@ -83,7 +110,9 @@
         // var contentlifyNavigationCallback = function () { /* fires per page/route/anchor change */ }
     </script>
     <script src="contentlify.js"></script>
-
+	<script src="carousel.js"></script>
+	<script src="css-vars-ponyfill.min.js"></script>
+	
     <!-- TODO: delete -->
     <style>
         .demo {
@@ -109,21 +138,39 @@
             white-space: -o-pre-wrap; /* Opera 7 */
             word-wrap: break-word; /* Internet Explorer 5.5+ */
         }
+		
+		.debugViews {
+			z-index: 1000;
+			position: fixed;
+			top: 130px;
+			left: 30px;
+			width: 53px;
+			height: 24px;
+			clip: initial;
+			overflow: hidden;
+			background-color: lightyellow;
+			border: 1px solid black;
+		}
+		.debugViews:hover {
+			width: 600px;
+			height: 95px;
+			border: 1px solid black;
+		}
     </style>
 </head>
 <body>
 <div id="app">
     <div v-html="styles"></div>
 
-    <div style="padding-top: 20px;" v-if="entryCode === undefined || entryCode === ''">
+    <div style="padding: 20px;" v-if="entryCode === undefined || entryCode === ''">
         Nothing to see here, something went wrong with the link you followed (clicked)...
     </div>
-    <div style="padding-top: 20px;" v-else-if="error">
+    <div style="padding: 20px;" v-else-if="error">
         Error loading content (attempt {{errorCount}})... <span v-if="willTryErrorAgain">trying again...</span><span v-else>given up.</span><br/><br/>
         <pre>Details: {{errorMessage}}</pre>
         <pre>JSON: {{JSON.stringify(errorDetails, null, 2)}}</pre>
     </div>
-    <div style="padding-top: 20px;" v-else-if="loading">
+    <div style="padding: 20px;" v-else-if="loading">
         Loading...
     </div>
     <div v-else>
@@ -139,6 +186,31 @@
         <symbol id="icon-tick" viewBox="0 0 1024 1024">
 	        <path d="M428.748 287.509l-129.041 135.978-37.001-35.151 165.579-174.367 375.559 388.047-36.538 35.613-338.558-350.121zM512 960.925c-282.77 0-512-229.23-512-512s229.23-512 512-512c282.77 0 512 229.23 512 512-0.263 282.664-229.336 511.737-511.975 512zM974.511 448.925c0-255.438-207.073-462.511-462.511-462.511s-462.511 207.073-462.511 462.511c0 255.438 207.073 462.511 462.511 462.511 254.642-1.051 460.662-207.72 460.662-462.508 0-0.327 0-0.653-0.001-0.98z" />
         </symbol>
+		<symbol id="icon-calculator" viewBox="0 0 103.24 141.847">
+			<g transform="translate(-0.656 -0.974)"><path d="M92.085,141.847H11.157A11.168,11.168,0,0,1,0,130.695V11.16A11.171,11.171,0,0,1,11.157,0H92.085A11.17,11.17,0,0,1,103.24,11.16V130.695A11.166,11.166,0,0,1,92.085,141.847ZM70.507,80.681V136.8H92.085a6.189,6.189,0,0,0,6.108-6.106V80.681ZM37.83,111.249V136.8H65.455l0-25.552Zm-32.784,0v19.448a6.19,6.19,0,0,0,6.111,6.106H32.781l0-25.554ZM37.83,80.681V106.2H65.455l0-25.518Zm-32.784,0V106.2H32.779l0-25.518Zm65.46-30.575V75.632H98.191l0-25.525Zm-32.676,0V75.632H65.455l0-25.525Zm-32.784,0V75.632H32.779l0-25.525Zm6.111-45.06A6.194,6.194,0,0,0,5.047,11.16v33.9H98.193V11.16a6.192,6.192,0,0,0-6.108-6.113Z" transform="translate(0.656 0.974)" /><path d="M0,11.688H5.047V0H0Z" transform="translate(79.435 20.859)" /><path d="M0,11.688H5.047V0H0Z" transform="translate(60.841 20.859)" /></g>
+		</symbol>
+
+		<symbol id="icon-laptop" viewBox="0 0 87.918 80.5">
+			<g transform="translate(0.25 0.25)"><path d="M80.5,80H6.915A6.923,6.923,0,0,1,0,73.085l.045-.343,6.945-25.9V6.915A6.923,6.923,0,0,1,13.906,0H72.114a6.923,6.923,0,0,1,6.915,6.915V46.806l8.389,26.279A6.923,6.923,0,0,1,80.5,80ZM13.906,2.654A4.266,4.266,0,0,0,9.645,6.915L9.6,47.358,2.657,73.248a4.266,4.266,0,0,0,4.258,4.1H80.5a4.254,4.254,0,0,0,4.256-4.067L76.375,47.014V6.915a4.266,4.266,0,0,0-4.261-4.261Z" transform="translate(0 0)" /><path d="M0,2.872H67.906V0H0Z" transform="translate(9.756 45.558)" /><path d="M1.268,2.872A1.361,1.361,0,0,1,0,1.436,1.361,1.361,0,0,1,1.268,0h51.5a1.361,1.361,0,0,1,1.268,1.436,1.361,1.361,0,0,1-1.268,1.436Z" transform="translate(16.691 52.618)" /><path d="M1.276,2.872A1.364,1.364,0,0,1,0,1.436,1.364,1.364,0,0,1,1.276,0H55.785a1.364,1.364,0,0,1,1.276,1.436,1.364,1.364,0,0,1-1.276,1.436Z" transform="translate(15.178 60.778)" /><path d="M1.283,2.872A1.367,1.367,0,0,1,0,1.436,1.367,1.367,0,0,1,1.283,0H58.8a1.368,1.368,0,0,1,1.284,1.436A1.368,1.368,0,0,1,58.8,2.872Z" transform="translate(13.665 68.242)" /><path d="M56.908,34.109H0V0H56.908V34.109ZM2.552,2.509V31.6h51.8V2.509Z" transform="translate(15.254 7.126)" /></g>
+		</symbol>
+		<symbol id="icon-mobile" viewBox="0 0 51.651 90.979">
+			<g transform="translate(-0.135 0.068)"><path d="M1046.731,2734.979a6.2,6.2,0,0,1-6.2-6.195V2650.7a6.2,6.2,0,0,1,6.2-6.2h38.759a6.2,6.2,0,0,1,6.2,6.2v78.089a6.2,6.2,0,0,1-6.2,6.195Zm-3.393-6.195a3.438,3.438,0,0,0,3.393,3.392h38.759a3.438,3.438,0,0,0,3.393-3.392v-12.768h-45.544Zm0-15.571h45.542l0-53.073h-45.543v0Zm0-62.518v6.64h45.543l0-6.64a3.438,3.438,0,0,0-3.393-3.393h-38.759A3.438,3.438,0,0,0,1043.338,2650.7Zm20.633,73.088a2.139,2.139,0,1,1,2.138,2.137A2.142,2.142,0,0,1,1063.971,2723.783Z" transform="translate(-1040.15 -2644.317)" /></g>
+		</symbol>
+		<symbol id="icon-return">
+			<g transform="translate(-12.294 -19.532)"><path d="M0,2.473H37.113V0H0Z" transform="translate(12.794 31.639)" /><path d="M0,2.388H12.829V0H0Z" transform="translate(15.184 20.032) rotate(90)" stroke-width="1"/><path d="M.9,16.793,0,15.9,7.5,8.4,0,.9.9,0l8.4,8.4Z" transform="translate(41.937 24.478)" /></g>
+		</symbol>
+		<symbol id="icon-chat" viewBox="0 0 117.09 99.716">
+			<g transform="translate(-1489.041 -5604.818)"><text transform="translate(1545.147 5640.343)"font-size="40" font-family="Roboto-Regular, Roboto"><tspan x="16.104" y="37">?</tspan></text><g transform="translate(1489.04 5604.818)"><path d="M13.965,68.685V51.319H9.513A9.524,9.524,0,0,1,0,41.806V9.513A9.524,9.524,0,0,1,9.513,0H60.467a9.525,9.525,0,0,1,9.514,9.513V27.047H66.942V9.513a6.482,6.482,0,0,0-6.475-6.475H9.513A6.481,6.481,0,0,0,3.039,9.513V41.806A6.48,6.48,0,0,0,9.513,48.28H17v13l12.832-13H42.67v3.039H31.1Z" transform="translate(0 0)" /><path d="M56.014,68.685l0,0L38.876,51.317H9.513A9.523,9.523,0,0,1,0,41.8V9.513A9.523,9.523,0,0,1,9.513,0H60.467a9.523,9.523,0,0,1,9.513,9.513V41.8a9.523,9.523,0,0,1-9.513,9.513H56.014V68.685ZM9.513,3.038A6.482,6.482,0,0,0,3.038,9.513V41.8a6.482,6.482,0,0,0,6.475,6.475H40.145l12.831,13v-13h7.491A6.482,6.482,0,0,0,66.942,41.8V9.513a6.482,6.482,0,0,0-6.475-6.475Z" transform="translate(47.112 31.032)" /></g></g>
+		</symbol>
+		<symbol id="icon-mail"  viewBox="0 0 46.254 34.334">
+			<g transform="translate(0.25 0.25)"><path d="M42.353,33.834H3.4a3.406,3.406,0,0,1-3.4-3.4V3.4A3.406,3.406,0,0,1,3.4,0H42.353a3.406,3.406,0,0,1,3.4,3.4V30.433A3.405,3.405,0,0,1,42.353,33.834ZM12.523,18.661a.752.752,0,0,1,.491.179.769.769,0,0,1,.1,1.084L2.775,32.3H43.457L31.791,20.216a.769.769,0,0,1,.554-1.3.761.761,0,0,1,.553.235L44.215,30.863V2.093L23.445,18.736l-.023.01-.085.074a1.242,1.242,0,0,1-.162.076.871.871,0,0,1-.277.06.745.745,0,0,1-.213-.036.878.878,0,0,1-.238-.114l-.063-.047-.013,0L1.54,2.895V31.374L11.932,18.937A.765.765,0,0,1,12.523,18.661ZM2.3,1.539h0L22.886,17.211,42.445,1.539H2.3Z" transform="translate(0 0)" /></g>
+		</symbol>
+		<symbol id="icon-download" viewBox="0 0 39.121 31.322">
+			<g transform="translate(0.384 0.355)"><path d="M19445.975-2812.533v-15h1.311v13.682h35.5v-13.682h1.311v15Zm10.352-18.391.93-.924,7.119,7.12v-18.127h1.316v18.132l7.123-7.125.93.924-8.709,8.714Z" transform="translate(-19445.859 2843)"  /></g>
+		</symbol>
+		<symbol id="icon-calendar" viewBox="0 0 79.701 80.693">
+			<g transform="translate(0.333 0.242)"><path d="M19482.967-2582.809a6.146,6.146,0,0,1-6.141-6.14v-59.5a6.146,6.146,0,0,1,6.141-6.14h10.5v-6.527a1.391,1.391,0,0,1,1.389-1.389,1.391,1.391,0,0,1,1.389,1.389v6.527h.014v2.778l-.014,1.168v6.547a1.391,1.391,0,0,1-1.389,1.389,1.391,1.391,0,0,1-1.389-1.389v-7.715h-10.5a3.407,3.407,0,0,0-3.363,3.362v14.64h73.146v-14.64a3.41,3.41,0,0,0-3.367-3.362h-6.605v-2.778h6.605a6.149,6.149,0,0,1,6.145,6.14v59.5a6.149,6.149,0,0,1-6.145,6.14Zm-3.363-6.14a3.407,3.407,0,0,0,3.363,3.362h66.416a3.41,3.41,0,0,0,3.367-3.362v-42.079H19479.6Zm46.586-5.879v-3.509h3.508v3.509Zm-11.662,0v-3.509h3.51v3.509Zm-11.66,0v-3.509h3.51v3.509Zm-11.656,0v-3.509h3.51v3.509Zm46.635-11.671v-3.509h3.508v3.509Zm-11.656,0v-3.509h3.508v3.509Zm-11.662,0v-3.509h3.51v3.509Zm-11.66,0v-3.509h3.51v3.509Zm-11.656,0v-3.509h3.51v3.509Zm46.635-11.671v-3.509h3.508v3.509Zm-11.656,0v-3.509h3.508v3.509Zm-11.662,0v-3.509h3.51v3.509Zm-11.66,0v-3.509h3.51v3.509Zm28.971-25.923v-7.715h-8.211v-2.778h8.211v-6.527a1.391,1.391,0,0,1,1.389-1.389,1.391,1.391,0,0,1,1.389,1.389v17.02a1.391,1.391,0,0,1-1.389,1.389A1.391,1.391,0,0,1,19531.838-2644.092Zm-19.184,0v-7.715h-8.211v-2.778h8.211v-6.527a1.389,1.389,0,0,1,1.383-1.389,1.391,1.391,0,0,1,1.389,1.389v6.527h.01v2.778l-.01,1.168v6.547a1.391,1.391,0,0,1-1.389,1.389A1.389,1.389,0,0,1,19512.654-2644.092Z" transform="translate(-19476.656 2662.76)" /></g></svg>
+		</symbol>
         </defs>
         </svg>
 
@@ -159,7 +231,7 @@
                         <li><a href="#">OTHER</a></li>
                     </ul>
                 </div>
-                <ul class="menu-list">
+                <ul class="menu-list" v-bind:class="{ active: hamburgerActive }">
                     <li><router-link class="router-link" v-bind:to="anchorLink('Home', 'Benefits')">{{ content.eep.labelBenefits }}</router-link></li>
                     <li><router-link class="router-link" v-bind:to="anchorLink('Home', 'HowItWorks')">{{ content.eep.labelHowItWorks }}</router-link></li>
                     <li><router-link class="router-link" v-bind:to="anchorLink('Home', 'Testimonials')">{{ content.eep.labelTestimonials }}</router-link></li>
@@ -167,6 +239,11 @@
                     <li><router-link class="router-link" v-bind:to="anchorLink('Home', 'FAQs')">{{ content.eep.labelFaQs }}</router-link></li>
                 </ul>
                 <router-link class="btn btn-narrow router-link" v-bind:to="anchorLink('Home', 'Top')">{{ content.eep.labelJoin }}</router-link>
+				
+				<button class="hamburger-button" v-on:click="hamburgerClick" :aria-expanded="hamburgerActive ? 'true' : 'false'" aria-haspopup="true" role="button">
+					<span class="hamburger-button-content">Navigation menu</span>
+				</button>
+				
             </div>
         </nav>
         <header class="header">
@@ -175,17 +252,16 @@
                 <div style="position: relative; display: block; top: -170px;" id="Top"></div>
 
                 <h1 class="mb-0">{{ content.eep.title }}</h1>
-                <h2 class="mt-0" v-html="content.eep.titleSubText"></h2>
+                <div class="page-sub-heading" v-html="content.eep.titleSubText"></div>
                 <a class="badge badge-circle" href="#">
-                    <div class="badge__content">
-                        <span class="badge-text-lge">{{ content.eep.joinByBadge1 }}</span>
-                        <span class="badge-text-lge">{{ content.eep.joinByBadge2 }}</span>
-                        <span class="badge-text-lge">{{ content.eep.joinByBadge3 }}</span>
+                    <div class="badge__content badge-text">
+                        <h2>{{ content.eep.joinByBadge1 }}</h2>
+                        <h2>{{ content.eep.joinByBadge2 }}</h2>
+                        <h2>{{ content.eep.joinByBadge3 }}</h2>
                     </div>
                 </a>
-                <div class="text-center">
-                    <router-link class="btn btn-lge" v-bind:to="anchorLink('Home', 'Top')">{{ content.eep.labelJoin }}</router-link>
-                </div>
+                <router-link class="btn btn-lge" v-bind:to="anchorLink('Home', 'Top')">{{ content.eep.labelJoin }}</router-link>
+
             </div>
         </header>
         <main class="main">
@@ -201,9 +277,9 @@
             <div style="position: relative; display: block; top: -100px;" id="Benefits"></div>
 
             <h2 class="text-center">{{ content.eep.titleBenefits }}</h2>
-            <div class="flex-row">
+            <div class="flex-row-md">
 
-                <div class="block-img content-img-01 mr-5">
+                <div class="block-img content-img-01 mr-5-md">
                 </div>
 
                 <div v-html="content.eep.benefitsContent"></div>
@@ -212,106 +288,141 @@
             <div v-html="content.eep.benefitsContentFooter"></div>
 
         </section>
-
-        <section class="carousel dark-bg waypoint" aria-labeledby="CarouselHeading" tabindex="-1">
+		<carousel>
+        <section class="carousel dark-bg waypoint" slot-scope="state" aria-labeledby="HowItWorksCarouselHeading" id="HowItWorksCarousel" tabindex="-1">
             <!-- TODO: review - moved anchor for scrolling to from menu links -->
             <div style="position: relative; display: block; top: -70px;" id="HowItWorks"></div>
 
-            <h2 class="sr-only" id="CarouselHeading">Plan overview carousel</h2>
-            <span id="A11yUpdates" class="sr-only a11y-updates" aria-live="polite">slide 1 is currently active</span>
-
+            <h2 class="sr-only" id="HowItWorksCarouselHeading">Plan overview carousel</h2>
+            <span class="sr-only a11y-updates" aria-live="polite">slide {{state.curIndex() + 1}} is currently active</span>
             <div class="container">
-                <div id="CarouselContent" class="carousel-content" tabindex="-1">
-                    <div class="carousel-item active" id="slide01">
+                <div id="HowItWorksCarouselContent" class="carousel-content">
+                    <div class="carousel-item" v-bind:class="{ active: state.curIndex() == 0 }" v-focus="state.curIndex() == 0" tabindex="-1">
                         <div class="text-center">
                             <h2 class="mb-0">{{ content.eephowitworks.title}}</h2>
                             <h3 class="mt-0">{{ content.eephowitworks.subTitle}}</h3>
                         </div>
-                        <div class="flex-row">
+                        <div class="flex-row-md">
                             <div class="block-img content-img-02"></div>
                             <div class="step-block">
-                                <h2 class="mb-0"><span class="step-number"><span>1</span></span>{{content.eephowitworks.step1Label}}</h2>
+                                <h2 class="mb-0 mt-0 flex-row">
+									<span class="step-number flex-none"><span>1</span></span>
+									<span class="d-inline-block">{{content.eephowitworks.step1Label}}</span></h2>
                                 <ul class="step-list lead">
-                                    <li><svg class="icon icon-tick"><use xlink:href="#icon-tick"></use></svg>{{content.eephowitworks.step1Point1Label}}</li>
-                                    <li><svg class="icon icon-tick"><use xlink:href="#icon-tick"></use></svg>{{content.eephowitworks.step1Point2Label}}</li>
-                                    <li><span class="text-primary">{{content.eephowitworks.step1KeyFact}}</span></li>
+                                    <li class="flex-row valign-center">
+										<svg class="icon icon-tick flex-none"><use xlink:href="#icon-tick"></use></svg>
+										<span>{{content.eephowitworks.step1Point1Label}}</span>
+									</li>
+                                    <li class="flex-row valign-center">
+										<svg class="icon icon-tick flex-none"><use xlink:href="#icon-tick"></use></svg>
+										<span>{{content.eephowitworks.step1Point2Label}}</span></li>
+                                    <li class="flex-row pt-5">
+										<svg class="icon icon-return flex-none"><use xlink:href="#icon-return"></use></svg>
+										<span class="text-secondary h3">{{content.eephowitworks.step1KeyFact}}</span>
+									</li>
                                 </ul>
                             </div>
                         </div>
                     </div>
-                    <div class="carousel-item hidden" id="slide02">
+                    <div class="carousel-item" v-bind:class="{ active: state.curIndex() == 1 }" v-focus="state.curIndex() == 1" tabindex="-1">
                         <div class="text-center">
                             <h2 class="mb-0">{{ content.eephowitworks.title}}</h2>
                             <h3 class="mt-0">{{ content.eephowitworks.subTitle}}</h3>
                         </div>
-                        <div class="flex-row">
+                        <div class="flex-row-md">
                             <div class="block-img content-img-02"></div>
                             <div class="step-block">
-                                <h2 class="mb-0"><span class="step-number"><span>2</span></span>You save money for 3 years</h2>
+                                <h2 class="mb-0 mt-0 flex-row">
+									<span class="step-number flex-none"><span>2</span></span>
+									<span>You save money for 3 years</span>
+								</h2>
                                 <ul class="step-list lead">
-                                    <li><svg class="icon icon-tick"><use xlink:href="#icon-tick"></use></svg>You can save from &#163;5 - &#163;500 per month</li>
-                                    <li><svg class="icon icon-tick"><use xlink:href="#icon-tick"></use></svg>Choose an amount you'll be comfortable with - <span class="text-primary">You can't change it</span></li>
-                                    <li>
-                                        <span class="text-primary">Want to take a payment break?</span><br>
-                                        You can delay making up to twelve monthly payments
+                                    <li class="flex-row valign-center">
+										<svg class="icon icon-tick flex-none"><use xlink:href="#icon-tick"></use></svg>
+										<span>You can save from &#163;5 - &#163;500 per month</span>
+									</li>
+                                    <li class="flex-row valign-center">
+										<svg class="icon icon-tick flex-none"><use xlink:href="#icon-tick"></use></svg>
+										<span>Choose an amount you'll be comfortable with - <span class="text-secondary">You can't change it</span></span>
+									</li>
+                                    <li class="flex-row valign-top">
+										<svg class="icon icon-return flex-none"><use xlink:href="#icon-return"></use></svg>
+                                        <span><span class="text-secondary">Want to take a payment break?</span><br>
+                                        You can delay making up to twelve monthly payments</span>
                                     </li>
-                                    <li>
-                                        <span class="text-primary">Need your money back?</span><br>
-                                        You can get your money back in full at any time
+                                    <li class="flex-row valign-top">
+										<svg class="icon icon-return flex-none"><use xlink:href="#icon-return"></use></svg>
+                                        <span><span class="text-secondary">Need your money back?</span><br>
+                                        You can get your money back in full at any time</span>
                                     </li>
-                                    <li>
-                                        <span class="text-primary">Already in ShareSave?</span><br>
-                                        You can't save more than &#163;500 per month across all your plans
+                                    <li class="flex-row valign-top">
+										<svg class="icon icon-return flex-none"><use xlink:href="#icon-return"></use></svg>
+                                        <span><span class="text-secondary">Already in ShareSave?</span><br>
+                                        You can't save more than &#163;500 per month across all your plans</span>
                                     </li>
                                 </ul>
                             </div>
                         </div>
 
                     </div>
-                    <div class="carousel-item hidden" id="slide03">
+                    <div class="carousel-item" v-bind:class="{ active: state.curIndex() == 2 }" v-focus="state.curIndex() == 2" tabindex="-1">
                         <div class="text-center">
                             <h2 class="mb-0">{{ content.eephowitworks.title}}</h2>
                             <h3 class="mt-0">{{ content.eephowitworks.subTitle}}</h3>
                         </div>
-                        <div class="flex-row">
+                        <div class="flex-row-md">
                             <div class="block-img content-img-02"></div>
                             <div class="step-block">
-                                <h2 class="mb-0"><span class="step-number"><span>3</span></span>You choose whether to buy discounted shares</h2>
+                                <h2 class="mb-0 mt-0 flex-row">
+									<span class="step-number flex-none"><span>3</span></span>
+									<span>You choose whether to buy discounted shares</span>
+								</h2>
                                 <ul class="step-list lead">
-                                    <li>
-                                        <svg class="icon icon-tick"><use xlink:href="#icon-tick"></use></svg>After 3 years you choose whether to use your savings to buy discounted shares. <br>
-                                        If our share price is...
-                                        <ul>
-                                            <li>
-                                                <span class="text-primary">Higher than the Option Price</span><br>
-                                                You can buy the shares and be in profit
-                                            </li>
-                                            <li>
-                                                <span class="text-primary">Lower than the Option Price</span><br>
-                                                You can simply take back all the money you've saved
-                                            </li>
-                                        </ul>
+                                    <li class="flex-row valign-top">
+                                        <svg class="icon icon-tick flex-none"><use xlink:href="#icon-tick"></use></svg>
+										
+										<span>After 3 years you choose whether to use your savings to buy discounted shares. <br>
+											If our share price is...
+											<ul class="step-list pl-0">
+												<li class="flex-row valign-top">
+													<svg class="icon icon-return flex-none"><use xlink:href="#icon-return"></use></svg>
+													<span>
+														<span class="text-secondary">Higher than the Option Price</span><br>
+														You can buy the shares and be in profit
+													</span>
+												</li>
+												<li class="flex-row valign-top">
+													<svg class="icon icon-return flex-none"><use xlink:href="#icon-return"></use></svg>
+													<span>
+														<span class="text-secondary">Lower than the Option Price</span><br>
+														You can simply take back all the money you've saved
+													</span>
+												</li>
+											</ul>
+										</span>
                                     </li>
                                 </ul>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div aria-controls="CarouselContent">
+                <div aria-controls="HowItWorksCarouselContent">
                     <div class="carousel-nav">
-                        <button class="btn-carousel carousel-back"><span class="sr-only">Previous slide</span><svg class="icon"><use xlink:href="#icon-chevron-left"></use></svg></button>
-                        <button class="btn-carousel carousel-next"><span class="sr-only">Next slide</span><svg class="icon"><use xlink:href="#icon-chevron-right"></use></svg></a></button>
+                        <button class="btn-carousel carousel-back" v-if="state.curIndex() > 0" v-on:click="state.back"><span class="sr-only">Previous slide</span><svg class="icon"><use xlink:href="#icon-chevron-left"></use></svg></button>
+                        <button class="btn-carousel carousel-next" v-if="state.curIndex() < 2" v-on:click="state.next"><span class="sr-only">Next slide</span><svg class="icon"><use xlink:href="#icon-chevron-right"></use></svg></a></button>
                     </div>
                     <div>
                         <ul class="carousel-dots">
-                            <li><a href="#slide01" class="active">Slide 1</a></li>
-                            <li><a href="#slide02">Slide 2</a></li>
-                            <li><a href="#slide03">Slide 3</a></li>
+                            <li><a href="#slide01" v-on:click.stop.prevent="state.jump(0)" v-bind:class="{ active: state.curIndex() == 0 }">Slide 1</a></li>
+                            <li><a href="#slide02" v-on:click.stop.prevent="state.jump(1)" v-bind:class="{ active: state.curIndex() == 1 }">Slide 2</a></li>
+                            <li><a href="#slide03" v-on:click.stop.prevent="state.jump(2)" v-bind:class="{ active: state.curIndex() == 2 }">Slide 3</a></li>
                         </ul>
                     </div>
                 </div>
+				 
             </div>
         </section>
+		</carousel>
 
         <section class="waypoint testimonials" tabindex="-1">
             <!-- TODO: review - moved anchor for scrolling to from menu links -->
@@ -329,45 +440,78 @@
             </div>
         </section>
 
-
-        <section class="carousel dark-bg waypoint" aria-labeledby="HowToJoinHeading" tabindex="-1">
+		<carousel slides="2">
+        <section class="carousel dark-bg waypoint" id="HowToJoinCarousel" slot-scope="state" aria-labeledby="HowToJoinCarouselHeading" tabindex="-1">
             <!-- TODO: review - moved anchor for scrolling to from menu links -->
             <div style="position: relative; display: block; top: -100px;" id="HowToJoin"></div>
 
-            <h2 class="sr-only" id="HowToJoinHeading">How to Join carousel</h2>
-            <span id="A11yUpdates" class="sr-only a11y-updates" aria-live="polite">slide 1 is currently active</span>
+            <h2 class="sr-only" id="HowToJoinCarouselHeading">How to Join carousel</h2>
+            <span class="sr-only a11y-updates" aria-live="polite">slide {{state.curIndex() -1}} is currently active</span>
             <div class="container">
-                <div id="CarouselContent" class="carousel-content" tabindex="-1">
-                    <div class="carousel-item active" id="slide01">
+                <div id="HowToJoinCarouselContent" class="carousel-content">
+                    <div class="carousel-item" v-bind:class="{ active: state.curIndex() == 0 }" v-focus="state.curIndex() == 0" tabindex="-1">
                         <div class="text-center">
                             <h2>{{ content.eephowtojoin.title }}</h2>
                             <h3>{{ content.eephowtojoin.subTitle }}</h3>
                         </div>
 
-                        <h2 class="mb-0"><span class="step-number"><span>1</span></span>Online</h2>
-                        <ul class="step-list">
-                            <li><svg class="icon icon-tick"><use xlink:href="#icon-tick"></use></svg><span class="join-options-text" v-html="content.eephowtojoin.option1Point1"></span></li>
-                            <li><svg class="icon icon-tick"><use xlink:href="#icon-tick"></use></svg><span class="join-options-text" v-html="content.eephowtojoin.option1Point2"></span></li>
-                            <li><svg class="icon icon-tick"><use xlink:href="#icon-tick"></use></svg><span class="join-options-text" v-html="content.eephowtojoin.option1Point3"></span></li>
+                        <h2 class="mb-0 flex-row valign-center">
+							<span class="step-number"><span>1</span></span>
+							<span>Online</span>
+							<svg class="icon icon-laptop"><use xlink:href="#icon-laptop"></use></svg>
+						</h2>
+                        <ul class="step-list lead">
+                            <li class="flex-row valign-center">
+								<svg class="icon icon-tick flex-none"><use xlink:href="#icon-tick"></use></svg>
+								<span class="join-options-text" v-html="content.eephowtojoin.option1Point1"></span>
+							</li>
+                            <li class="flex-row valign-center">
+								<svg class="icon icon-tick flex-none"><use xlink:href="#icon-tick"></use></svg>
+								<span class="join-options-text" v-html="content.eephowtojoin.option1Point2"></span>
+							</li>
+                            <li class="flex-row valign-center">
+								<svg class="icon icon-tick flex-none"><use xlink:href="#icon-tick"></use></svg>
+								<span class="join-options-text" v-html="content.eephowtojoin.option1Point3"></span>
+							</li>
                         </ul>
 
-                        <div v-html="content.eephowtojoin.option1Footer"></div>
-                        <div v-html="content.eephowtojoin.footer2"></div>
-                        <div v-html="content.eephowtojoin.footer3"></div>
+						<div class="note">
+                        	<svg class="icon icon-mail flex-none"><use xlink:href="#icon-mail"></use></svg>
+							<div v-html="content.eephowtojoin.option1Footer"></div>
+						</div>
+                        <div class="fineprint" v-html="content.eephowtojoin.footer2"></div>
                     </div>
-                    <div class="carousel-item hidden" id="slide02">
+                    <div class="carousel-item" v-bind:class="{ active: state.curIndex() == 1 }" v-focus="state.curIndex() == 1" tabindex="-1">
                         <div class="text-center">
                             <h2>It's easy to join... with two simple options</h2>
                             <h3>It will only take a couple of minutes</h3>
                         </div>
 
-                        <h2 class="mb-0"><span class="step-number"><span>2</span></span>By text</h2>
-                        <ul class="step-list">
-                            <li><svg class="icon icon-tick"><use xlink:href="#icon-tick"></use></svg>SAYE followed by a space.</li>
-                            <li><svg class="icon icon-tick"><use xlink:href="#icon-tick"></use></svg>Your SRN followed by a space. Your SRN is shown on your invitation.</li>
-                            <li><svg class="icon icon-tick"><use xlink:href="#icon-tick"></use></svg>The number 3 followed by a space. This confirms that your saving period is three years.</li>
-                            <li><svg class="icon icon-tick"><use xlink:href="#icon-tick"></use></svg>How much you want to save each month in pounds.</li>
-                            <li><svg class="icon icon-tick"><use xlink:href="#icon-tick"></use></svg>Send your message to 076860 xxxxx*</li>
+                        <h2 class="mb-0 flex-row valign-center">
+							<span class="step-number"><span>2</span></span>
+							<span>By text</span>
+							<svg class="icon icon-mobile"><use xlink:href="#icon-mobile"></use></svg>
+						</h2>
+                        <ul class="step-list lead">
+                            <li class="flex-row valign-center">
+								<svg class="icon icon-tick flex-none"><use xlink:href="#icon-tick"></use></svg>
+								<span>SAYE followed by a space.</span></li>
+                            <li class="flex-row valign-center">
+								<svg class="icon icon-tick flex-none"><use xlink:href="#icon-tick"></use></svg>
+								<span>Your SRN followed by a space. Your SRN is shown on your invitation.</span>
+							</li>
+                            <li class="flex-row valign-center">
+								<svg class="icon icon-tick flex-none"><use xlink:href="#icon-tick"></use></svg>
+								<span>The number 3 followed by a space. This confirms that your saving period is three years.</span>
+							</li>
+                            <li class="flex-row valign-center">
+								<svg class="icon icon-tick flex-none"><use xlink:href="#icon-tick"></use></svg>
+								<span>How much you want to save each month in pounds.</span>
+							</li>
+                            <li class="flex-row valign-center">
+								<svg class="icon icon-tick flex-none"><use xlink:href="#icon-tick"></use></svg>
+								<span>Send your message to 076860 xxxxx*</span>
+							</li>
                         </ul>
 
                         <div class="fineprint">
@@ -375,24 +519,28 @@
                         </div>
                     </div>
                 </div>
-                <div aria-controls="CarouselContent">
+                <div aria-controls="HowToJoinCarouselContent">
                     <div class="carousel-nav">
-                        <button class="btn-carousel carousel-back"><span class="sr-only">Previous slide</span><svg class="icon"><use xlink:href="#icon-chevron-left"></use></svg></button>
-                        <button class="btn-carousel carousel-next"><span class="sr-only">Next slide</span><svg class="icon"><use xlink:href="#icon-chevron-right"></use></svg></a></button>
+                        <button class="btn-carousel carousel-back" v-if="state.curIndex() > 0" v-on:click="state.back"><span class="sr-only">Previous slide</span><svg class="icon"><use xlink:href="#icon-chevron-left"></use></svg></button>
+                        <button class="btn-carousel carousel-next" v-if="state.curIndex() < 1" v-on:click="state.next"><span class="sr-only">Next slide</span><svg class="icon"><use xlink:href="#icon-chevron-right"></use></svg></a></button>
                     </div>
                     <div>
                         <ul class="carousel-dots">
-                            <li><a href="#slide01" class="active">Slide 1</a></li>
-                            <li><a href="#slide02">Slide 2</a></li>
+                            <li><a href="#" v-on:click.stop.prevent="state.jump(0)" v-bind:class="{ active: state.curIndex() == 0 }">Slide 1</a></li>
+                            <li><a href="#" v-on:click.stop.prevent="state.jump(1)" v-bind:class="{ active: state.curIndex() == 1 }">Slide 2</a></li>
                         </ul>
                     </div>
                 </div>
             </div>
         </section>
+		</carousel>
 
-        <section class="text-center">
-	        <h2>{{content.eep.calculatorSectionTitle}}</h2>
-            <button class="btn btn-primary btn-block">{{content.eep.calculatorLinkText}}</button>
+        <section class="text-center narrow flex-row-md valign-top">
+			<svg class="icon icon-calculator"><use xlink:href="#icon-calculator"></use></svg>
+	        <div>
+				<h2 class="mt-1">{{content.eep.calculatorSectionTitle}}</h2>
+				<button class="btn btn-primary btn-block">{{content.eep.calculatorLinkText}}</button>
+			</div>
 	
         </section>
 
@@ -400,8 +548,9 @@
             <!-- TODO: review - moved anchor for scrolling to from menu links -->
             <div style="position: relative; display: block; top: -110px;" id="FAQs"></div>
 
-            <div class="flex-row">
+            <div class="flex-row-md">
                 <div class="content-box dark-bg">
+					<svg class="icon icon-calendar"><use xlink:href="#icon-calendar"></use></svg>
                     <h2>{{content.eepfaq.faqKeyDatesTitle}}</h2>
                     <div v-html="content.eepfaq.faqKeyDatesHeroMessage"></div>
                     <div class="text-center">
@@ -409,7 +558,8 @@
                     </div>
                 </div>
 
-                <div class="content-box primary-bg">
+                <div class="content-box primary-bg mt-5-sm">
+					<svg class="icon icon-chat"><use xlink:href="#icon-chat"></use></svg>
                     <h2>{{ content.eep.labelFaQs }}</h2>
                     <ul class="step-list">
                         <li>
@@ -441,30 +591,33 @@
 
             <!-- TODO: delete -->
             <div v-if="showDiagnostics">
+				<div class="debugViews">
+					<div style="background-color: yellow; padding: 3px;">Debug</div>
+					<div style="text-align: center; color: #333; padding: 3px;">
+						Company:
+						<router-link class="demo" v-bind:to="'/template/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">template</router-link> &nbsp;
+						<router-link class="demo" v-bind:to="'/ycc/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">ycc</router-link> &nbsp;
+						<router-link class="demo" v-bind:to="'/xe3/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">xe3</router-link> &nbsp;
+						<router-link class="demo" v-bind:to="'/xe4/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">xe4 (unpublished)</router-link> &nbsp;
+					</div>
+					<div style="text-align: center; color: #333; padding: 3px;">
+						Language:
+						<span v-for="locale in locales"><router-link class="demo" v-bind:to="'/' + entryCode + '/' + locale.code + '/' + (pageCode ? pageCode : 'Home')">{{ locale.name }}</router-link> &nbsp; </span>
+						(ca broken)
+					</div>
+					<div style="text-align: center; color: #333; padding: 3px;">
+						View Draft Content:
+						<input type="checkbox" v-model="previewMode" />
+					</div>
+				</div>
+				
                 <h3>Diagnostics</h3>
-                <div style="text-align: center; color: #333; padding: 3px;">
-                    Company:
-                    <router-link class="demo" v-bind:to="'/template/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">template</router-link> &nbsp;
-                    <router-link class="demo" v-bind:to="'/ycc/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">ycc</router-link> &nbsp;
-                    <router-link class="demo" v-bind:to="'/xe3/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">xe3</router-link> &nbsp;
-                    <router-link class="demo" v-bind:to="'/xe4/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">xe4 (unpublished)</router-link> &nbsp;
-                </div>
-                <div style="text-align: center; color: #333; padding: 3px;">
-                    Language:
-                    <span v-for="locale in locales"><router-link class="demo" v-bind:to="'/' + entryCode + '/' + locale.code + '/' + (pageCode ? pageCode : 'Home')">{{ locale.name }}</router-link> &nbsp; </span>
-                    (ca broken)
-                </div>
-                <div style="text-align: center; color: #333; padding: 3px;">
-                    View Draft Content:
-                    <input type="checkbox" v-model="previewMode" />
-                </div>
                 <pre>{{JSON.stringify(content, null, 2)}}</pre>
             </div>
 
         </footer>
     </div>
 </div>
-<div>Copyright Computershare 2019</div>
 <script language="javascript" type="text/javascript">
     contentlifyInit();
 
@@ -477,6 +630,11 @@
             contentlifyRouter.push('/' + hostSplit[hostSplit.length - 1] + '/en-AU/Home');
         }
     }
+	
+	
+	setTimeout(function(){
+		cssVars();
+	},1400);
 </script>
 </body>
 </html>
