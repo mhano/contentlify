@@ -11,13 +11,17 @@ var contentfulClientLive = contentful.createClient({
     accessToken: "899769f9000215ba2d755e43bb5c4e525282c18553ec28b6faccf820f7a38258"
 });
 
-var contentfulClientPreview = contentful.createClient({
+var contentfulClientPreviewArgs = {
     space: "1mv2u22omsld",
-    accessToken: "93a721fc09d37876ff1ef30c4af0f28dfb2dfc7e5d30c799c28e175a1c4c08fe",
+    accessToken: "NA",
     host: "preview.contentful.com"
-});
+};
+
+var contentfulClientPreview = undefined;
 
 var contentfulClient = contentfulClientLive;
+
+var contentlifyLastLoadedPreviewMode = false;
 
 var contentLifyOriginalScrollTo;
 function contentlifyScrollTo(x, y) {
@@ -147,19 +151,34 @@ function contentlifyShowLoadingOnSlowNetworksAfterMs(delay) {
     }, delay);
 }
 
-function contentlifyPartialResultReceive() {
-
-    
-}
-
 function contentlifyLoadContent() {
     contentlifyShowLoadingOnSlowNetworksAfterMs(1500);
-
+	
     if (!(window.contentlifySlugField && window.contentlifyEntityTypes && window.contentlifyBaseTemplateSlug)) {
         console.error("contentlifySlugField, contentlifyEntityTypes and contentlifyBaseTemplateSlug need to be defined");
     };
-
+	
+	window.contentlifyLastLoadedPreviewMode = contentlifyViewModel.previewMode;
+	
+	if(contentfulClientPreview === undefined && contentlifyViewModel.previewMode) {
+		var token = prompt("Please provide preview access token");
+		if(token != null)
+		{
+			contentfulClientPreviewArgs.accessToken = token;
+			contentfulClientPreview = contentful.createClient(contentfulClientPreviewArgs);
+		} else {
+			contentlifyViewModel.previewMode = false;
+		}
+	}
+	
     var client = contentlifyViewModel.previewMode ? contentfulClientPreview : contentfulClientLive;
+	
+	if(client === undefined) {
+		contentlifyContentLoadError({
+			response: { data: { message: "Content preview access not available.", results: {} } }
+		});
+		return;
+	}
 
     var promises = new Array(window.contentlifyEntityTypes.length * 2);
 
@@ -227,7 +246,9 @@ function contentlifyInit() {
         },
         methods: {
             previewModeUpdate: function() {
-                contentlifyLoadContent();
+				if(this.previewMode != window.contentlifyLastLoadedPreviewMode) {
+					contentlifyLoadContent();
+				}
             },
             reloadContentOrRoute: function () {
                 var old_entryCode = this.entryCode;
@@ -271,6 +292,10 @@ function contentlifyInit() {
     });
 
     if (contentlifyViewModel.$route.query.preview) {
+		if(!(contentfulClientPreviewArgs.accessToken === contentlifyViewModel.$route.query.preview)) {
+			contentfulClientPreviewArgs.accessToken = contentlifyViewModel.$route.query.preview;
+			contentfulClientPreview = contentful.createClient(contentfulClientPreviewArgs);
+		}
         contentlifyViewModel.previewMode = true;
     }
 
