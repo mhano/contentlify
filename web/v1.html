@@ -62,7 +62,8 @@
         // var contentlifyNavigationCallback = function () { /* fires per page/route/anchor change */ }
     </script>
     <script src="contentlify.js"></script>
-
+	<script src="carousel.js"></script>
+	
     <!-- TODO: delete -->
     <style>
         .demo {
@@ -112,6 +113,7 @@
                 <router-link class="demo" v-bind:to="'/ycc/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">ycc</router-link> &nbsp;
                 <router-link class="demo" v-bind:to="'/xe3/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">xe3</router-link> &nbsp;
                 <router-link class="demo" v-bind:to="'/xe4/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">xe4 (unpublished)</router-link> &nbsp;
+                <router-link class="demo" v-bind:to="'/xe5/' + (localeCode ? localeCode : 'en-US') + '/' + (pageCode ? pageCode : 'Home')">xe5</router-link> &nbsp;
             </div>
             <div style="text-align: center; color: #333; padding: 3px;">
                 Language:
