@@ -339,8 +339,8 @@
             <!-- TODO: review - moved anchor for scrolling to from menu links -->
             <div style="position: relative; display: block; top: -70px;" id="HowItWorks"></div>
 
-            <h2 class="sr-only" id="HowItWorksCarouselHeading">Plan overview carousel</h2>
-            <span class="sr-only a11y-updates" aria-live="polite">slide {{state.curIndex() + 1}} is currently active</span>
+            <h2 class="sr-only" id="HowItWorksCarouselHeading">{{ content.eephowitworks.screenReaderCarouselTitle }}</h2>
+            <span class="sr-only a11y-updates" aria-live="polite">{{ content.eephowitworks.screenReaderCarouselCurrentSlide }} {{state.curIndex() + 1}}</span>
             <div class="container">
                 <div id="HowItWorksCarouselContent" class="carousel-content">
                     <div class="carousel-item" v-bind:class="{ active: state.curIndex() == 0 }" v-focus="state.curIndex() == 0" tabindex="-1">
@@ -380,31 +380,28 @@
                             <div class="step-block">
                                 <h2 class="mb-0 mt-0 flex-row">
 									<span class="step-number flex-none"><span>2</span></span>
-									<span>You save money for 3 years</span>
+									<span>{{content.eephowitworks.step2Label}}</span>
 								</h2>
                                 <ul class="step-list lead">
                                     <li class="flex-row valign-center">
 										<svg class="icon icon-tick flex-none"><use xlink:href="#icon-tick"></use></svg>
-										<span>You can save from &#163;5 - &#163;500 per month</span>
+										<span>{{content.eephowitworks.step2Point1Label}}</span>
 									</li>
                                     <li class="flex-row valign-center">
 										<svg class="icon icon-tick flex-none"><use xlink:href="#icon-tick"></use></svg>
-										<span>Choose an amount you'll be comfortable with - <span class="text-secondary">You can't change it</span></span>
+										<span v-html="content.eephowitworks.step2Point2" class="text-secondary-highlightable"></span>
 									</li>
                                     <li class="flex-row valign-top">
 										<svg class="icon icon-return flex-none"><use xlink:href="#icon-return"></use></svg>
-                                        <span><span class="text-secondary">Want to take a payment break?</span><br>
-                                        You can delay making up to twelve monthly payments</span>
+										<span v-html="content.eephowitworks.step2Point3" class="text-secondary-highlightable"></span>
                                     </li>
                                     <li class="flex-row valign-top">
 										<svg class="icon icon-return flex-none"><use xlink:href="#icon-return"></use></svg>
-                                        <span><span class="text-secondary">Need your money back?</span><br>
-                                        You can get your money back in full at any time</span>
+										<span v-html="content.eephowitworks.step2Point4" class="text-secondary-highlightable"></span>
                                     </li>
                                     <li class="flex-row valign-top">
 										<svg class="icon icon-return flex-none"><use xlink:href="#icon-return"></use></svg>
-                                        <span><span class="text-secondary">Already in ShareSave?</span><br>
-                                        You can't save more than &#163;500 per month across all your plans</span>
+										<span v-html="content.eephowitworks.step2Point5" class="text-secondary-highlightable"></span>
                                     </li>
                                 </ul>
                             </div>
@@ -421,28 +418,22 @@
                             <div class="step-block">
                                 <h2 class="mb-0 mt-0 flex-row">
 									<span class="step-number flex-none"><span>3</span></span>
-									<span>You choose whether to buy discounted shares</span>
+									<span>{{content.eephowitworks.step3Label}}</span>
 								</h2>
                                 <ul class="step-list lead">
                                     <li class="flex-row valign-top">
                                         <svg class="icon icon-tick flex-none"><use xlink:href="#icon-tick"></use></svg>
 										
-										<span>After 3 years you choose whether to use your savings to buy discounted shares. <br>
-											If our share price is...
+										<span>
+											<span v-html="content.eephowitworks.step3Point1" class="text-secondary-highlightable"></span><br/>
 											<ul class="step-list pl-0">
 												<li class="flex-row valign-top">
 													<svg class="icon icon-return flex-none"><use xlink:href="#icon-return"></use></svg>
-													<span>
-														<span class="text-secondary">Higher than the Option Price</span><br>
-														You can buy the shares and be in profit
-													</span>
+													<span v-html="content.eephowitworks.step3Point2" class="text-secondary-highlightable"></span>
 												</li>
 												<li class="flex-row valign-top">
 													<svg class="icon icon-return flex-none"><use xlink:href="#icon-return"></use></svg>
-													<span>
-														<span class="text-secondary">Lower than the Option Price</span><br>
-														You can simply take back all the money you've saved
-													</span>
+													<span v-html="content.eephowitworks.step3Point3" class="text-secondary-highlightable"></span>
 												</li>
 											</ul>
 										</span>
@@ -454,14 +445,14 @@
                 </div>
                 <div aria-controls="HowItWorksCarouselContent">
                     <div class="carousel-nav">
-                        <button class="btn-carousel carousel-back" v-if="state.curIndex() > 0" v-on:click="state.back"><span class="sr-only">Previous slide</span><svg class="icon"><use xlink:href="#icon-chevron-left"></use></svg></button>
-                        <button class="btn-carousel carousel-next" v-if="state.curIndex() < 2" v-on:click="state.next"><span class="sr-only">Next slide</span><svg class="icon"><use xlink:href="#icon-chevron-right"></use></svg></a></button>
+                        <button class="btn-carousel carousel-back" v-if="state.curIndex() > 0" v-on:click="state.back"><span class="sr-only">{{ content.eephowitworks.previousSlide }}</span><svg class="icon"><use xlink:href="#icon-chevron-left"></use></svg></button>
+                        <button class="btn-carousel carousel-next" v-if="state.curIndex() < 2" v-on:click="state.next"><span class="sr-only">{{ content.eephowitworks.nextSlide }}</span><svg class="icon"><use xlink:href="#icon-chevron-right"></use></svg></a></button>
                     </div>
                     <div>
                         <ul class="carousel-dots">
-                            <li><a href="#slide01" v-on:click.stop.prevent="state.jump(0)" v-bind:class="{ active: state.curIndex() == 0 }">Slide 1</a></li>
-                            <li><a href="#slide02" v-on:click.stop.prevent="state.jump(1)" v-bind:class="{ active: state.curIndex() == 1 }">Slide 2</a></li>
-                            <li><a href="#slide03" v-on:click.stop.prevent="state.jump(2)" v-bind:class="{ active: state.curIndex() == 2 }">Slide 3</a></li>
+                            <li><a href="#slide01" v-on:click.stop.prevent="state.jump(0)" v-bind:class="{ active: state.curIndex() == 0 }">{{ content.eephowitworks.slide}} 1 - {{ content.eephowitworks.step1Label}} </a></li>
+                            <li><a href="#slide02" v-on:click.stop.prevent="state.jump(1)" v-bind:class="{ active: state.curIndex() == 1 }">{{ content.eephowitworks.slide}} 2 - {{ content.eephowitworks.step2Label}}</a></li>
+                            <li><a href="#slide03" v-on:click.stop.prevent="state.jump(2)" v-bind:class="{ active: state.curIndex() == 2 }">{{ content.eephowitworks.slide}} 3 - {{ content.eephowitworks.step3Label}}</a></li>
                         </ul>
                     </div>
                 </div>
@@ -491,8 +482,8 @@
             <!-- TODO: review - moved anchor for scrolling to from menu links -->
             <div style="position: relative; display: block; top: -100px;" id="HowToJoin"></div>
 
-            <h2 class="sr-only" id="HowToJoinCarouselHeading">How to Join carousel</h2>
-            <span class="sr-only a11y-updates" aria-live="polite">slide {{state.curIndex() -1}} is currently active</span>
+            <h2 class="sr-only" id="HowToJoinCarouselHeading">{{content.eephowtojoin.screenReaderCarousel}}</h2>
+            <span class="sr-only a11y-updates" aria-live="polite">{{content.eephowtojoin.screenReaderActiveSlide }} {{state.curIndex() +1}} </span>
             <div class="container">
                 <div id="HowToJoinCarouselContent" class="carousel-content">
                     <div class="carousel-item" v-bind:class="{ active: state.curIndex() == 0 }" v-focus="state.curIndex() == 0" tabindex="-1">
@@ -503,7 +494,7 @@
 
                         <h2 class="mb-0 flex-row valign-center">
 							<span class="step-number"><span>1</span></span>
-							<span>Online</span>
+							<span>{{content.eephowtojoin.option1Label}}</span>
 							<svg class="icon icon-laptop"><use xlink:href="#icon-laptop"></use></svg>
 						</h2>
                         <ul class="step-list lead">
@@ -529,51 +520,51 @@
                     </div>
                     <div class="carousel-item" v-bind:class="{ active: state.curIndex() == 1 }" v-focus="state.curIndex() == 1" tabindex="-1">
                         <div class="text-center">
-                            <h2>It's easy to join... with two simple options</h2>
-                            <h3>It will only take a couple of minutes</h3>
+                            <h2>{{ content.eephowtojoin.title }}</h2>
+                            <h3>{{ content.eephowtojoin.subTitle }}</h3>
                         </div>
 
                         <h2 class="mb-0 flex-row valign-center">
 							<span class="step-number"><span>2</span></span>
-							<span>By text</span>
+							<span>{{content.eephowtojoin.option2Label}}</span>
 							<svg class="icon icon-mobile"><use xlink:href="#icon-mobile"></use></svg>
 						</h2>
                         <ul class="step-list lead">
                             <li class="flex-row valign-center">
 								<svg class="icon icon-tick flex-none"><use xlink:href="#icon-tick"></use></svg>
-								<span>SAYE followed by a space.</span></li>
+								<span class="join-options-text" v-html="content.eephowtojoin.option2Point1"></span>
                             <li class="flex-row valign-center">
 								<svg class="icon icon-tick flex-none"><use xlink:href="#icon-tick"></use></svg>
-								<span>Your SRN followed by a space. Your SRN is shown on your invitation.</span>
+								<span class="join-options-text" v-html="content.eephowtojoin.option2Point2"></span>
 							</li>
                             <li class="flex-row valign-center">
 								<svg class="icon icon-tick flex-none"><use xlink:href="#icon-tick"></use></svg>
-								<span>The number 3 followed by a space. This confirms that your saving period is three years.</span>
+								<span class="join-options-text" v-html="content.eephowtojoin.option2Point3"></span>
 							</li>
                             <li class="flex-row valign-center">
 								<svg class="icon icon-tick flex-none"><use xlink:href="#icon-tick"></use></svg>
-								<span>How much you want to save each month in pounds.</span>
+								<span class="join-options-text" v-html="content.eephowtojoin.option2Point4"></span>
 							</li>
                             <li class="flex-row valign-center">
 								<svg class="icon icon-tick flex-none"><use xlink:href="#icon-tick"></use></svg>
-								<span>Send your message to 076860 xxxxx*</span>
+								<span class="join-options-text" v-html="content.eephowtojoin.option2Point5"></span>
 							</li>
                         </ul>
 
                         <div class="fineprint">
-                            <p>Text messages will be charged at your standard network rate. You will receive a text message confirming that your application has been accepted. If you have not received a text confirmation within two hours, please call +44 (0)XXX - XXXXX. The helpline is open 8:30 - 5:30 (UK time) Monday to Friday excluding UK public holidays.
+                            <div v-html="content.eephowtojoin.option2Footer"></div>
                         </div>
                     </div>
                 </div>
                 <div aria-controls="HowToJoinCarouselContent">
                     <div class="carousel-nav">
-                        <button class="btn-carousel carousel-back" v-if="state.curIndex() > 0" v-on:click="state.back"><span class="sr-only">Previous slide</span><svg class="icon"><use xlink:href="#icon-chevron-left"></use></svg></button>
-                        <button class="btn-carousel carousel-next" v-if="state.curIndex() < 1" v-on:click="state.next"><span class="sr-only">Next slide</span><svg class="icon"><use xlink:href="#icon-chevron-right"></use></svg></a></button>
+                        <button class="btn-carousel carousel-back" v-if="state.curIndex() > 0" v-on:click="state.back"><span class="sr-only">{{ content.eephowtojoin.previousSlide</span><svg class="icon"><use xlink:href="#icon-chevron-left"></use></svg></button>
+                        <button class="btn-carousel carousel-next" v-if="state.curIndex() < 1" v-on:click="state.next"><span class="sr-only">{{ content.eephowtojoin.nextSlide</span><svg class="icon"><use xlink:href="#icon-chevron-right"></use></svg></a></button>
                     </div>
                     <div>
                         <ul class="carousel-dots">
-                            <li><a href="#" v-on:click.stop.prevent="state.jump(0)" v-bind:class="{ active: state.curIndex() == 0 }">Slide 1</a></li>
-                            <li><a href="#" v-on:click.stop.prevent="state.jump(1)" v-bind:class="{ active: state.curIndex() == 1 }">Slide 2</a></li>
+                            <li><a href="#" v-on:click.stop.prevent="state.jump(0)" v-bind:class="{ active: state.curIndex() == 0 }">{{ content.eephowtojoin.slide }} 1 - {{ content.eephowtojoin.option1Label }}</a></li>
+                            <li><a href="#" v-on:click.stop.prevent="state.jump(1)" v-bind:class="{ active: state.curIndex() == 1 }">{{ content.eephowtojoin.slide }} 2 - {{ content.eephowtojoin.option1Label }}</a></li>
                         </ul>
                     </div>
                 </div>

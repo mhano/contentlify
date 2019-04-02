@@ -1079,6 +1079,13 @@ h2 b { color: var(--brand-primary); font-weight: normal; }
 .text-secondary {
 	color: var(--brand-secondary);
 }
+.text-secondary-highlightable p {
+	margin-block-start: 0;
+	margin-block-end: 0;
+}
+.text-secondary-highlightable b {
+	color: var(--brand-secondary);
+}
 
 
 
