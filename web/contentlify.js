@@ -112,16 +112,41 @@ function contentlifyContentLoaded(results) {
     contentlifyViewModel.error = false;
     contentlifyViewModel.errorCount = 0;
 
-    if (typeof (window.contentlifyStyleOverrides) === 'function') {
-        contentlifyViewModel.styles = window.contentlifyStyleOverrides(content);
-    }
+    contentlifyViewModel.styles = contentlifyStyleOverridesWrapped(content);
+	
+	contentlifyUpdateCallbackWrapped(content);
 
+    contentlifyNavigationCallbackWrapped();
+}
+
+function contentlifyStyleOverridesWrapped(content) {
+    if (typeof(window.contentlifyStyleOverrides) === 'function') {
+		try {
+			return window.contentlifyStyleOverrides(content);
+		} catch (err) {
+			console.error("contentlifyStyleOverrides threw exception", err);
+			return "";
+		}
+    }
+}
+
+function contentlifyNavigationCallbackWrapped() {
+    if (typeof(window.contentlifyNavigationCallback) === 'function') {
+		try {
+			window.contentlifyNavigationCallback();
+		} catch (err) {
+			console.error("contentlifyNavigationCallback threw exception", err);
+		}
+    }
+}
+
+function contentlifyUpdateCallbackWrapped(content) {
     if (typeof(window.contentlifyUpdateCallback) === 'function') {
-        window.contentlifyUpdateCallback();
-    }
-
-    if (typeof (window.contentlifyNavigationCallback) === 'function') {
-        window.contentlifyNavigationCallback();
+		try {
+			window.contentlifyUpdateCallback(content);
+		} catch (err) {
+			console.error("contentlifyUpdateCallback threw exception", err);
+		}
     }
 }
 
@@ -260,8 +285,8 @@ function contentlifyInit() {
                 if (!(old_entryCode == this.entryCode && old_localeCode == this.localeCode)) {
                     contentlifyLoadContent();
                 }
-                else if (typeof (window.contentlifyNavigationCallback) === 'function') {
-                    window.contentlifyNavigationCallback();
+                else {
+					contentlifyNavigationCallbackWrapped();
                 }
             },
             anchorLink: function (page, anchor) {
