@@ -1635,10 +1635,7 @@ exports.handler = async (event, context) => {
   var sigInput = "GET" + apiEndpoint;
   var sigHmac = "xx";
   
-  return fetch(apiEndpoint, {
-	  key: JOOMAG_API_ID,
-	  sig: sigHmac
-	})
+  return fetch(apiEndpoint, {headers: new Headers({key: JOOMAG_API_ID, sig: sigHmac })})
     .then(response => response.json())
     .then(data => ({
       statusCode: 200,
