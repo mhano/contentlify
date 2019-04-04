@@ -1,5 +1,5 @@
-import sha256 from 'js-sha256';
 import fetch from "node-fetch";
+import sha256 from "js-sha256";
 
 const { JOOMAG_API_ENDPOINT } = process.env;
 const { JOOMAG_API_ID } = process.env;
