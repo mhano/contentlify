@@ -82,7 +82,7 @@
 			
 			// return;
 			
-			fetch("https://staging--eep.netlify.com/.netlify/functions/joomag?pubid=" + content.republivision.jooMagPublicationId)
+			fetch(".netlify/functions/joomag?pubid=" + content.republivision.jooMagPublicationId)
 				.then((resp) => resp.json())
 				.then(secondaryItemsLoaded)
 				.catch(secondaryItemsLoadError);
