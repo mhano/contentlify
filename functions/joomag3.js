@@ -503,6 +503,7 @@ const { JOOMAG_API_SECRET } = process.env;
   
   root.sha256 = createMethod();
   root.sha256.hmac = createHmacMethod();
+  root.hmacSha256 = createHmacMethod();
   
   /*
   var exports = createMethod();
