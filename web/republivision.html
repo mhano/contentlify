@@ -49,7 +49,7 @@
         var contentlifyEntityTypes = ["republivision"];
 		
 		function secondaryItemsLoaded(data) {
-			contentlify.secondaryItems = data.data;
+			contentlifyViewModel.secondaryItems = data.data;
 		}
 		
 		function secondaryItemsLoadError(error) {
@@ -78,7 +78,10 @@
         var contentlifyUpdateCallback = function (content) {
             document.title = content.republivision.title;
 			
+			// return;
+			
 			fetch("https://staging--eep.netlify.com/.netlify/functions/joomag?pubid=" + content.republivision.jooMagPublicationId)
+				.then((resp) => resp.json())
 				.then(secondaryItemsLoaded)
 				.catch(secondaryItemsLoadError);
         }
@@ -225,18 +228,26 @@
 		<div class="report-bg"> 
 		<div class="container">
 		<div class="row" align="center">
-			
-			<div class="box-reports" style="width: 100%; display: inline-block;" v-for="item in secondaryItems">
+			<div v-if="secondaryItems.length == 0" style="display: inline-block; padding: 10px; margin: 10px; background-color: #fff;">
 				<ul>
-				<li class="box-icon"><span class="black box-reports-text">Computershare 2017 Annual Report</span></li>
-				<li class="box-icon"><a href="#" target="_blank" tabindex="0"><img src="./republivision/icon-view.png" style="vertical-align: middle;" class="box-icon-margin"></a></li>
-				<li class="box-icon"><a href="#" target="_blank" tabindex="0"><img src="./republivision/icon-download.png" style="vertical-align: middle;" class="box-icon-margin"></a></li>
+					<li class="box-icon"><span class="black box-reports-text">Loading...</span></li>
+				</ul>
+				<div style="width:325px; height: 500px;" >Loading...</div>
+			</div>
+			
+			<div v-for="publication in secondaryItems" style="display: inline-block; padding: 10px; margin: 10px; background-color: #fff;">
+				<ul>
+				<li class="box-icon"><span class="black box-reports-text">{{ publication.title }}</span></li>
+				<li class="box-icon"><a v-bind:href="publication.url" target="_blank" tabindex="0"><img src="./republivision/icon-view.png" style="vertical-align: middle;" class="box-icon-margin"></a></li>
+				<li class="box-icon"><a v-bind:href="publication.pdf_url" tabindex="0"><img src="./republivision/icon-download.png" style="vertical-align: middle;" class="box-icon-margin"></a></li>
 				</ul>
 				<br><br>
 				
-				<a id="joomag-embed-f744964a-0d87-4ee0-8efd-c521597a2c5a" href="//view.joomag.com/mypub003-cpu-annual-report-fy2017/0349244001554340865" target="_blank"><img style="width:325px;" title="MyPub003 CPU_Annual_Report_FY2017" alt="MyPub003 CPU_Annual_Report_FY2017" src="https://www.joomag.com/Frontend/embed/cover/issue_cover.php?UID=0349244001554340865" /></a>
+				<a v-bind:href="publication.url" target="_blank">
+					<img style="width:325px;" title="{{ publication.title }}" alt="{{ publication.title }}" v-bind:src="publication.cover" />
+				</a>
 				
-			  </div>
+			</div>
 			  
 		</div><!-- End of Row -->
 		</div><!-- End of Container -->
