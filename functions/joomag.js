@@ -1,6 +1,11 @@
 // import fetch from "node-fetch";
 // import sha256 from "js-sha256";
 
+const { JOOMAG_API_ENDPOINT } = process.env;
+const { JOOMAG_API_ID } = process.env;
+const { JOOMAG_API_SECRET } = process.env;
+
+
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -2164,11 +2169,7 @@ exports.FetchError = FetchError;
 
 
 
-const { JOOMAG_API_ENDPOINT } = process.env;
-const { JOOMAG_API_ID } = process.env;
-const { JOOMAG_API_SECRET } = process.env;
-
-exports.handler = async (event, context) => {
+root.handler = async (event, context) => {
   
   var pubid = event.queryStringParameters.pubid; // M0805154001554340774
   var apiEndpoint = JOOMAG_API_ENDPOINT + "/magazines/" + pubid + "/issues"
