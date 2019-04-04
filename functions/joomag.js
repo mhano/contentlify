@@ -2169,7 +2169,7 @@ exports.FetchError = FetchError;
 
 
 
-root.handler = async (event, context) => {
+exports.handler = async (event, context) => {
   
   var pubid = event.queryStringParameters.pubid; // M0805154001554340774
   var apiEndpoint = JOOMAG_API_ENDPOINT + "/magazines/" + pubid + "/issues"
