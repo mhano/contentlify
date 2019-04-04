@@ -28,13 +28,15 @@
             crossorigin="anonymous" integrity="sha256-P3WAuks0zjjUNJHAQsa3qo5fMU1+d3flCMCI9vGK9So="></script>
 	<script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" 
 			crossorigin="anonymous" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="></script>
-	
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.js" 
 		crossorigin="anonymous" integrity="sha256-pl1bSrtlqtN/MCyW8XUTYuJCKohp9/iJESVW1344SBM=" ></script>
 		
     <script language="javascript" type="text/javascript">
         var exports = {}; // quick fix because 'exports' is not defined in 'rich-text-html-renderer' below
     </script>
+	
+	<script src="https://cdn.jsdelivr.net/npm/fetch-polyfill@0.8.2/fetch.js" 
+			crossorigin="anonymous" integrity="sha256-QXtqADw56Q2thxpr3XoDFHmHijMtjpQ7PA5ewq7wx6Y="></script>
 	
     <!-- TODO: add SRI hashes and fall-back to local webpacked version -->
     <script src="https://cdn.jsdelivr.net/npm/@contentful/rich-text-html-renderer@13.1.0/dist/rich-text-html-renderer.es5.js"
@@ -80,10 +82,10 @@
         var contentlifyUpdateCallback = function (content) {
             document.title = content.republivision.title;
 			
-			// return;
+			contentlifyViewModel.secondaryItems = [];
 			
-			fetch(".netlify/functions/joomag?pubid=" + content.republivision.jooMagPublicationId)
-				.then((resp) => resp.json())
+			window.fetch(".netlify/functions/joomag?pubid=" + content.republivision.jooMagPublicationId)
+				.then(function(resp){return resp.json();})
 				.then(secondaryItemsLoaded)
 				.catch(secondaryItemsLoadError);
         }
@@ -405,11 +407,6 @@
             contentlifyRouter.push('/' + hostSplit[hostSplit.length - 1] + '/en-US/Home');
         }
     }
-	
-	// TODO: this is bad - should be cleaned up
-	setTimeout(function(){
-		cssVars();
-	},1400);
 	
 	setTimeout(fullStoryInit, 2000);
 </script>
