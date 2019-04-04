@@ -2157,7 +2157,7 @@ exports.handler = async (event, context) => {
   var pubid = event.queryStringParameters.pubid; // M0805154001554340774
   var apiEndpoint = JOOMAG_API_ENDPOINT + "/magazines/" + pubid + "/issues"
   var sigInput = "GET" + apiEndpoint;
-  var sigHmac = "xx";
+  var sigHmac = sha256.hmac(JOOMAG_API_SECRET, query);
   
   return fetch(apiEndpoint, {headers: new Headers({key: JOOMAG_API_ID, sig: sigHmac })})
     .then(response => response.json())
