@@ -309,7 +309,7 @@ function contentlifyInit() {
             loading: true, error: false, showDiagnostics: false, errorMessage: "", entryCode: undefined,
             localeCode: undefined, pageCode: undefined, anchor: undefined, anchorTick: 0, errorDetails: {},
             errorCount: 0, willTryErrorAgain: true, content: {}, locales: [], styles: '<style></style>',
-            previewMode: false,
+			secondaryItems: [], previewMode: false,
 			
 			hamburgerActive: false
         }

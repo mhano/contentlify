@@ -1,0 +1,214 @@
+/* =Reset
+-------------------------------------------------------------- */
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+	border: 0;
+	font-size: 100%;
+	vertical-align: middle;
+}
+body {
+	line-height: 1;
+}
+ol,
+ul {
+	list-style: none;
+}
+blockquote,
+q {
+	quotes: none;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+caption,
+th,
+td {
+	font-weight: normal;
+	text-align: left;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	clear: both;
+}
+html {
+	/*overflow-y: scroll;*/
+	font-size: 100%;
+	-webkit-text-size-adjust: 100%;
+	-ms-text-size-adjust: 100%;
+}
+
+a {
+    text-decoration:none;
+	
+}
+a:focus {
+	outline: thin dotted;
+}
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+nav,
+section {
+	display: block;
+}
+audio,
+canvas,
+video {
+	display: inline-block;
+}
+audio:not([controls]) {
+	display: none;
+}
+del {
+	color: #333;
+}
+ins {
+	background: #fff9c0;
+	text-decoration: none;
+}
+hr {
+	background-color: #ccc;
+	border: 0;
+	height: 1px;
+	margin: 24px;
+	margin-bottom: 1.714285714rem;
+}
+sub,
+sup {
+	font-size: 75%;
+	line-height: 0;
+	position: relative;
+	vertical-align: baseline;
+}
+sup {
+	top: -0.5em;
+}
+sub {
+	bottom: -0.25em;
+}
+small {
+	font-size: smaller;
+}
+img {
+	border: 0;
+	-ms-interpolation-mode: bicubic;
+    max-width:100%;
+    height:auto;
+}
+a:focus {
+	outline:none;
+}
+
+html, body		{margin:0; padding:0; width: 100%; height: 100%; font-family: 'Source Sans Pro', sans-serif; background:#fff; color:#fff; font-size: 16px; /*line-height: 22px;*/}
+
+/* = Background Image
+-------------------------------------------------------------- */
+.background	{/* Preserve aspet ratio */ min-width: 100%; min-height:100%; max-width:100%; max-height:100%; overflow:auto;}
+
+/* = Header - Body
+-------------------------------------------------------------- */
+.header				{padding:0px 0px; line-height: 130px;}
+#body-wrapper		{min-height:100%; position:relative;}
+#body				{padding-bottom:45px;}
+
+
+/* = Content
+-------------------------------------------------------------- */
+a				{color: #fff; font-size: 14px; text-decoration: none;}
+a:link, a:visited, a:hover, a:active {text-decoration: none;}
+p				{line-height: 20px;}
+p.top-margin	{padding: 10px 0px 0px 0px;}
+a:hover			{text-decoration: none; color: #fff;}
+.logo			{padding:0px 0px; /*width:20%;*/ height:auto;}	
+
+.report-bg		{background:#eaeaea; padding:10px; text-align: left;}
+.report-icon	{float: right; clear:both; padding: 3px 0px; position: relative; top: 480px;}
+.report-margin 	{padding:50px 10px;}
+.sub-report-bg	{background:#fff; border-radius: 10px; padding:10px; text-align: left; padding:20px;}
+
+.services-bg	{background:#fff; padding:10px; text-align: left;}
+.services-icon	{vertical-align: middle; max-width: 172px;}
+.box 			{display: flex; align-items:center;}
+.margin-text	{padding: 0px 10px;}
+.footer-text	{font-size: 14px; line-height: 20px;}
+
+.banner-bg		{background-color: #650a4f; background:url(banner-bg.jpg); width: 100%; height: auto; background-size: cover;}
+.banner-vote	{padding-top: 50px;}
+
+.vote-now-text	{font-size: 36px; color: #000; font-weight: bold; text-decoration: none;}
+.vote-now-img	{vertical-align: middle;}
+
+.divider-bg		{background:#e0282f; padding: 20px 0px;}
+
+.footer-bg		{background:#292d36; padding: 0px 0px;} 
+
+.white			{color: #fff;}
+.black			{color: #000;}
+.purple			{color: #93186c;}
+
+ul li.logo-vote	{display: inline-block;}
+
+h1	{font-size: 40px; line-height: 46px; font-weight:400;}
+h2	{font-size: 30px; line-height: 36px; font-weight:400;}
+h3	{font-size: 24px; line-height: 30px; font-weight:400;}
+h4	{font-size: 21px; line-height: 27px; font-weight:400;}
+h5	{font-size: 18px; line-height: 24px;}
+h6	{font-size: 16px; 16px!important;}
+.footer-header-title	{font-size: 16px; line-height: 18px;}
+
+.img-report			{border: 1px solid #131313;}
+.box-reports		{background: #fff; padding: 15px; border-radius: 8px; max-width: 450px; display: inline-block; margin: 15px;} 
+.box-reports-text	{font-size: 14px;}
+.box-icon-margin	{margin: 0px 2px;}
+li.box-icon			{display: inline-block;}
+
+.slick-dots li.slick-active button:before, .slick-dots li button:before {display: none!important;}
+.slick-prev:before, .slick-next:before {color: #93186c!important; opacity: 1!important;}
+
+
+/*==========  Non-Mobile First Method  ==========*/
+
+/* Large Devices, Wide Screens */
+@media only screen and (max-width : 1200px) 
+{
+}
+
+/* Medium Devices, Desktops */
+@media only screen and (max-width : 992px)
+{
+}
+
+/* Small Devices, Tablets */
+@media only screen and (max-width : 768px)
+{
+}
+
+/* Extra Small Devices, Phones */ 
+@media only screen and (max-width : 480px)
+{
+}
+
+/* Custom, iPhone Retina */ 
+@media only screen and (max-width : 320px)
+{
+}
+
+

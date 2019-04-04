@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Republivision</title>
+	<meta http-equiv="x-ua-compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width" />
+    
+	<!-- Bootstrap Core CSS -->
+    <link href="./republivision/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="./republivision/style.css" rel="stylesheet">
+    
+    <link rel="stylesheet" type="text/css" href="./republivision/slick.css">
+    <link rel="stylesheet" type="text/css" href="./republivision/slick-theme.css">
+
+    <!-- TODO: add SRI hashes and fall-back to local webpacked version -->
+    <script src="https://cdn.jsdelivr.net/npm/contentful@7.4.3/dist/contentful.legacy.min.js"
+            crossorigin="anonymous" integrity="sha256-9AdqXm29mEIhGt6EDOdCHtmSWMH3gW3jj8xJGYQXFQs="></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.9/dist/vue.min.js"
+            crossorigin="anonymous" integrity="sha256-pfXWzm1MRINMGCDZtp94lO2+OYNFFiQ4oZihf5+FapQ="></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-router@3.0.2/dist/vue-router.min.js"
+            crossorigin="anonymous" integrity="sha256-DbgluxFcJqBgeVJwF1idcvA2aeayczQBWJPGn4KZIEc="></script>
+    <script src="https://cdn.jsdelivr.net/npm/showdown@1.9.0/dist/showdown.min.js"
+            crossorigin="anonymous" integrity="sha256-LSUpTY0kkXGKvcBC9kbmgibmx3NVVgJvAEfTZbs51mU="></script>
+    <script src="https://cdn.jsdelivr.net/npm/zenscroll@4.0.2/zenscroll-min.js"
+            crossorigin="anonymous" integrity="sha256-P3WAuks0zjjUNJHAQsa3qo5fMU1+d3flCMCI9vGK9So="></script>
+	<script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" 
+			crossorigin="anonymous" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="></script>
+	
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.js" 
+		crossorigin="anonymous" integrity="sha256-pl1bSrtlqtN/MCyW8XUTYuJCKohp9/iJESVW1344SBM=" ></script>
+		
+    <script language="javascript" type="text/javascript">
+        var exports = {}; // quick fix because 'exports' is not defined in 'rich-text-html-renderer' below
+    </script>
+	
+    <!-- TODO: add SRI hashes and fall-back to local webpacked version -->
+    <script src="https://cdn.jsdelivr.net/npm/@contentful/rich-text-html-renderer@13.1.0/dist/rich-text-html-renderer.es5.js"
+            crossorigin="anonymous" integrity="sha256-2RWAhYMukzDFe9G0HItQccfrU5jOBItdJ5+JMiQgJ30="></script>
+	
+    <script language="javascript" type="text/javascript">
+		
+        var contentlifyViewModel;
+
+        var contentlifySlugField = 'slug';
+        var contentlifyBaseTemplateSlug = 'template';
+        var contentlifyEntityTypes = ["republivision"];
+		
+		function secondaryItemsLoaded(data) {
+			contentlify.secondaryItems = data.data;
+		}
+		
+		function secondaryItemsLoadError(error) {
+			console.error(error);
+		}
+		
+		var contentlifyStyleOverrides = function(content) {
+			// here we calculate some styles for the purpose of the demo
+			// this could be allowing a user to specify a small block of style overrides in the CMS
+
+			return "<style>\r\n" +
+				// TODO: add in branding color styles - e.g. primaryBackgroundColor
+
+				// TODO: MOVE COMPANY LOGO TO TEMPLATED HTML ELEMENT WITH ALT/DESCRIPTION FROM CMS ETC.
+				// TODO: EASIER TEMPLATE EDITING AND BETTER ACCESSIBILITY
+				// skips configuring if not in CMS, alternatively make mandatory in CMS
+				
+				// (content.eep.headerLogo === undefined || content.eep.headerLogo.fields === undefined || content.eep.headerLogo.fields.filex === undefined || content.eep.headerLogo.fields.filex.url === undefined ? "" : ":root { --company-logo: url('https:" + content.eep.headerLogo.fields.filex.url + "');}\r\n") +
+				
+				// ":root { --primary-R: " + primary.r + "; --primary-G: " + primary.g + "; --primary-B: " + primary.b + "; --secondary-R: " + secondary.r + "; --secondary-G: " + secondary.g + "; --secondary-B: " + secondary.b + "; \r\n" + "--primary-lighter: " + primaryLighter + "; --primary-darker: " + primaryDarker +  "; --secondary-lighter: " + secondaryLighter + "; --seoncdary-darker: " + secondaryDarker + "; } \r\n" +
+				
+				"</style>";
+		}
+
+        // fires only when new content entity has been loaded (company code change, locale change, but not spa-page/anchor/scroll changes)
+        var contentlifyUpdateCallback = function (content) {
+            document.title = content.republivision.title;
+			
+			fetch("https://staging--eep.netlify.com/.netlify/functions/joomag?pubid=" + content.republivision.jooMagPublicationId)
+				.then(secondaryItemsLoaded)
+				.catch(secondaryItemsLoadError);
+        }
+
+        // var contentlifyNavigationCallback = function () { /* fires per page/route/anchor change */ }
+    </script>
+    <script src="contentlify.js"></script>
+	<script src="carousel.js"></script>
+	<script src="css-vars-ponyfill.min.js"></script>
+	
+	<script>
+		window['_fs_debug'] = false;
+		window['_fs_host'] = 'fullstory.com';
+		window['_fs_org'] = 'KA4XY';
+		window['_fs_namespace'] = 'FS';
+		var fullStoryInit = function() {
+			(function(m,n,e,t,l,o,g,y){
+				if (e in m) {if(m.console && m.console.log) { m.console.log('FullStory namespace conflict. Please set window["_fs_namespace"].');} return;}
+				g=m[e]=function(a,b,s){g.q?g.q.push([a,b,s]):g._api(a,b,s);};g.q=[];
+				o=n.createElement(t);o.async=1;o.src='https://'+_fs_host+'/s/fs.js';
+				y=n.getElementsByTagName(t)[0];
+				y.parentNode.insertBefore(o,y);
+				g.identify=function(i,v,s){g(l,{uid:i},s);if(v)g(l,v,s)};g.setUserVars=function(v,s){g(l,v,s)};g.event=function(i,v,s){g('event',{n:i,p:v},s)};
+				g.shutdown=function(){g("rec",!1)};g.restart=function(){g("rec",!0)};
+				g.consent=function(a){g("consent",!arguments.length||a)};
+				g.identifyAccount=function(i,v){o='account';v=v||{};v.acctId=i;g(o,v)};
+				g.clearUserCookie=function(){};
+			})(window,document,window['_fs_namespace'],'script','user');
+		};
+		</script>
+</head>
+<body>
+<div id="app">
+    <div v-html="styles"></div>
+
+    <div style="padding: 20px;" v-if="entryCode === undefined || entryCode === ''">
+        Nothing to see here, something went wrong with the link you followed (clicked)...
+    </div>
+    <div style="padding: 20px;" v-else-if="error">
+        Error loading content (attempt {{errorCount}})... <span v-if="willTryErrorAgain">trying again...</span><span v-else>given up.</span><br/><br/>
+        <pre>Details: {{errorMessage}}</pre>
+        <pre>JSON: {{JSON.stringify(errorDetails, null, 2)}}</pre>
+    </div>
+    <div style="padding: 20px;" v-else-if="loading">
+        Loading...
+    </div>
+    <div v-else>
+		
+		<!-- Header -->
+		<div class="container header">
+		<div class="row">
+		
+			<!-- Logo -->
+			<div class="col-md-6 col-md-12" align="left">
+				<a href="https://www.computershare.com/us" target="_blank"><img src="./republivision/logo-computershare.png"></a>
+			</div><!-- End of Logo -->
+			
+			<!-- Vote Now -->
+			<div class="col-md-6 col-md-12" align="right">
+				<a href="#" target="_blank"><img src="./republivision/header-vote-now.png"> <span class="vote-now-text">Vote Now</span></a>
+			</div><!-- End of Vote Now -->
+		
+		</div>
+		</div><!-- End of Header -->
+		
+		<!-- Banner -->
+		<div class="banner-bg" align="center"> 
+		<div class="container">
+		<div class="row">
+		
+			<!-- Filler 1-->
+			<div class="col-md-1 col-md-12 report-margin" align="center">
+			</div><!-- End of Filler 1 -->
+		
+			<!-- Proxy Statement -->
+			<div class="col-md-2 col-md-12 report-margin" align="center">
+				
+				<div align="center">
+				<a href="#" target="_blank">
+				<img src="./republivision/icon-proxy-statement.png" class="img-responsive">
+				<p class="white top-margin">2018 Interactive Proxy Statement</p>
+				</a>
+				</div>
+			
+			</div><!-- End of Proxy Statment -->
+			
+			<!-- Solicitation -->
+			<div class="col-md-2 col-md-12 report-margin" align="center">
+				
+				<div align="center">
+				<a href="#" target="_blank">
+				<img src="./republivision/icon-solicitation.png" class="img-responsive">
+				<p class="white top-margin">Additional Solicitation Material</p>
+				</a>
+				</div>
+			
+			</div><!-- End of Solicitation -->
+			
+			<!-- Investor Telecom -->
+			<div class="col-md-2 col-md-12 report-margin" align="center">
+				
+				<div align="center">
+				<a href="#" target="_blank">
+				<img src="./republivision/icon-investor-telecom.png" class="img-responsive">
+				<p class="white top-margin">Computershare Investor Telecom</p>
+				</a>
+				</div>
+			
+			</div><!-- End of Investor Telecom -->
+			
+			<!-- Company Website -->
+			<div class="col-md-2 col-md-12 report-margin" align="center">
+				
+				<div align="center">
+				<a href="#" target="_blank">
+				<img src="./republivision/icon-website.png" class="img-responsive">
+				<p class="white top-margin">Company Website</p>
+				</a>
+				</div>
+			
+			</div><!-- End of Company Website -->
+			
+			<!-- Board Members -->
+			<div class="col-md-2 col-md-12 report-margin" align="center">
+				
+				<div align="center">
+				<a href="#" target="_blank">
+				<img src="./republivision/icon-board-members.png" class="img-responsive">
+				<p class="white top-margin">Board Members</p>
+				</a>
+				</div>
+			
+			</div><!-- End of Board Members -->
+			
+			<!-- Filler 2-->
+			<div class="col-md-1 col-md-12 report-margin" align="center">
+			</div><!-- End of Filler 2 -->
+		
+		</div><!-- End of Row -->
+		</div><!-- End of Container -->
+		</div><!-- End of End of Banner -->
+
+		<!-- Report -->
+		<div class="report-bg"> 
+		<div class="container">
+		<div class="row" align="center">
+			
+			<div class="box-reports" style="width: 100%; display: inline-block;" v-for="item in secondaryItems">
+				<ul>
+				<li class="box-icon"><span class="black box-reports-text">Computershare 2017 Annual Report</span></li>
+				<li class="box-icon"><a href="#" target="_blank" tabindex="0"><img src="./republivision/icon-view.png" style="vertical-align: middle;" class="box-icon-margin"></a></li>
+				<li class="box-icon"><a href="#" target="_blank" tabindex="0"><img src="./republivision/icon-download.png" style="vertical-align: middle;" class="box-icon-margin"></a></li>
+				</ul>
+				<br><br>
+				
+				<a id="joomag-embed-f744964a-0d87-4ee0-8efd-c521597a2c5a" href="//view.joomag.com/mypub003-cpu-annual-report-fy2017/0349244001554340865" target="_blank"><img style="width:325px;" title="MyPub003 CPU_Annual_Report_FY2017" alt="MyPub003 CPU_Annual_Report_FY2017" src="https://www.joomag.com/Frontend/embed/cover/issue_cover.php?UID=0349244001554340865" /></a>
+				
+			  </div>
+			  
+		</div><!-- End of Row -->
+		</div><!-- End of Container -->
+		</div><!-- End of Report -->
+		
+		<!-- Services -->
+		<div class="services-bg"> 
+		<div class="container">
+		<div class="row">
+		
+			<!-- Cast Vote -->
+			<div class="col-md-6 col-md-12 report-margin" align="center">
+				
+				<div align="left" class="black box" style="padding: 0px 0px 10px 0px;">
+				<a href="#" target="_blank"><img src="./republivision/icon-cast-vote.png" class="img-responsive services-icon"></a> <span class="margin-text"><span class="footer-header-title"><b class="purple">Cast Your Vote or Request Materials</b></span>
+				<br><span class="footer-text">Click on the icon to go online voting. In order to vote, you will need identifying numbers from the proxy card, notice document or email you received. Your vote is important to us, so please vote at your earliest convenience. Note: Online voting is available until 1:00 a.m. ET, the day of the meeting.</span></span>
+				</div>
+			
+			</div><!-- End of Cast Vote -->
+			
+			<!-- Annual Meeting -->
+			<div class="col-md-6 col-md-12 report-margin" align="center">
+				
+				<div align="left" class="black box" style="padding: 0px 0px 10px 0px;">
+				<a href="#" target="_blank"><img src="./republivision/icon-location.png" class="img-responsive services-icon"></a> <span class="margin-text"><span class="footer-header-title"><b class="purple">Annual Meeting Information</b></span>
+				<br><span class="footer-text">The 2016 Annual Meeting of Shareholders of Computershare will be held at Yarra Falls, 452 Johnson Street, Abbotsford, Victoria 3067 Australia, on Wednesday, November 12th, 2016 at 10:00 am.<br><br>Click here to visit the company's website</span></span>
+				</div>
+			
+			</div><!-- End of Annual Meeting -->
+			
+			<!-- Phone Voting -->
+			<div class="col-md-4 col-md-12 report-margin" align="center">
+				
+				<div align="left" class="black box" style="padding: 0px 0px 10px 0px;">
+				<img src="./republivision/icon-phone-voting.png" class="img-responsive services-icon"> <span class="margin-text"><span class="footer-header-title"><b class="purple">Phone Voting</b></span>
+				<br><span class="footer-text">1-800-652-VOTE (8683)</span></span>
+				</div>
+			
+			</div><!-- End of Phone Voting -->
+			
+			<!-- View Update -->
+			<div class="col-md-4 col-md-12 report-margin" align="center">
+				
+				<div align="left" class="black box" style="padding: 0px 0px 10px 0px;">
+				<a href="#" target="_blank"><img src="./republivision/icon-view-update.png" class="img-responsive services-icon"></a> <span class="margin-text"><span class="footer-header-title"><b class="purple">View And Update Your Shareholding</b></span></span>
+				</div>
+			
+			</div><!-- End of View Update -->
+			
+			<!-- View Update -->
+			<div class="col-md-4 col-md-12 report-margin" align="center">
+				
+				<div align="left" class="black box" style="padding: 0px 0px 10px 0px;">
+				<a href="#" target="_blank"><img src="./republivision/icon-view-update.png" class="img-responsive services-icon"></a> <span class="margin-text"><span class="footer-header-title"><b class="purple">View And Update Your Shareholding</b></span></span>
+				</div>
+			
+			</div><!-- End of View Update -->
+			
+		</div><!-- End of Row -->
+		</div><!-- End of Container -->
+		</div><!-- End of End of Services -->
+		
+		
+		<!-- Social Media -->
+		<div class="footer-bg" align="center"> 
+		<div class="container">
+		<div class="row">
+		
+			<!-- Filler 1 -->
+			<div class="col-md-2 col-md-12 report-margin" align="center">
+			</div><!-- End of Filler 1 -->
+		
+			<!-- Twitter -->
+			<div class="col-md-2 col-md-12 report-margin" align="center">
+				
+				<div align="center">
+				<a href="#" target="_blank">
+				<img src="./republivision/socialmedia-twitter.png" class="img-responsive">
+				<p class="white top-margin">Follow Us on Twitter</p>
+				</a>
+				</div>
+			
+			</div><!-- End of Twitter -->
+			
+			<!-- Facebook -->
+			<div class="col-md-2 col-md-12 report-margin" align="center">
+				
+				<div align="center">
+				<a href="#" target="_blank">
+				<img src="./republivision/socialmedia-facebook.png" class="img-responsive">
+				<p class="white top-margin">Find Us on Facebook</p>
+				</a>
+				</div>
+			
+			</div><!-- End of Facebook -->
+			
+			<!-- LinkedIn -->
+			<div class="col-md-2 col-md-12 report-margin" align="center">
+				
+				<div align="center">
+				<a href="#" target="_blank">
+				<img src="./republivision/socialmedia-linkedin.png" class="img-responsive">
+				<p class="white top-margin">Follow Us on LinkedIn</p>
+				</a>
+				</div>
+			
+			</div><!-- End of LinkedIn -->
+			
+			<!-- Youtube -->
+			<div class="col-md-2 col-md-12 report-margin" align="center">
+				
+				<div align="center">
+				<a href="#" target="_blank">
+				<img src="./republivision/socialmedia-youtube.png" class="img-responsive">
+				<p class="white top-margin">View our Youtube Channel</p>
+				</a>
+				</div>
+			
+			</div><!-- End of Company Website -->
+			
+			<!-- Filler 2 -->
+			<div class="col-md-2 col-md-12 report-margin" align="center">
+			</div><!-- End of Filler 2 -->
+		
+		</div><!-- End of Row -->
+		</div><!-- End of Container -->
+		</div><!-- End of End of Social Media -->
+		
+		<script type="text/javascript">
+			$(document).on('ready', function() {
+			  $(".regular").slick({
+				dots: true,
+				infinite: true,
+				slidesToShow: 2,
+				slidesToScroll: 1
+			  });
+			});
+		</script>
+
+	</div>
+</div>
+<script language="javascript" type="text/javascript">
+    contentlifyInit();
+
+    if (contentlifyViewModel.entryCode == undefined) {
+        var hostSplit = document.location.hostname.split('.')[0].split('-');
+
+        var company = hostSplit[hostSplit.length - 1];
+
+        if(company === "localhost") {
+			contentlifyRouter.push('/template/en-US/Home');
+		} else if (!(company === "republivision")) {
+            contentlifyRouter.push('/' + hostSplit[hostSplit.length - 1] + '/en-US/Home');
+        }
+    }
+	
+	// TODO: this is bad - should be cleaned up
+	setTimeout(function(){
+		cssVars();
+	},1400);
+	
+	setTimeout(fullStoryInit, 2000);
+</script>
+</body>
+</html>

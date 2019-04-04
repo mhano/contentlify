@@ -2160,11 +2160,18 @@ exports.Request = Request;
 exports.Response = Response;
 exports.FetchError = FetchError;
 
+
+
+
+
+
+
+
 exports.handler = async (event, context) => {
   
   var regex = /^[A-Za-z0-9]{5,100}$/;
   
-  var pubid = event.queryStringParameters.pubid; // M0805154001554340774
+  var pubid = event.queryStringParameters.pubid;
   
   if(! pubid || !pubid.match(regex)) {
 	  throw "pubid must be ^[a-zA-Z0-9]{5,100}$";
@@ -2178,7 +2185,10 @@ exports.handler = async (event, context) => {
     .then(response => response.json())
     .then(data => ({
       statusCode: 200,
-	  contentType: "application/vnd.cpu.republivision.v1+json",
+	  "headers": {
+		  "Content-Type": "application/vnd.cpu.republivision.v1+json",
+		  "Access-Control-Allow-Origin": "*"
+	  },
       body: JSON.stringify(data)
     }))
     .catch(error => ({ statusCode: 422, body: String(error) }));
