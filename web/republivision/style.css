@@ -150,7 +150,7 @@ a:hover			{text-decoration: none; color: #fff;}
 .margin-text	{padding: 0px 10px;}
 .footer-text	{font-size: 14px; line-height: 20px;}
 
-.banner-bg		{background-color: #650a4f; background:url(banner-bg.jpg); width: 100%; height: auto; background-size: cover;}
+.banner-bg		{background-color: #ba008c; background-image:url(banner-bg-overlay.png); width: 100%; height: auto; background-size: cover;}
 .banner-vote	{padding-top: 50px;}
 
 .vote-now-text	{font-size: 36px; color: #000; font-weight: bold; text-decoration: none;}
