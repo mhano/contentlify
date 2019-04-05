@@ -2195,7 +2195,7 @@ exports.handler = async (event, context) => {
 			body: responseJson
 			}); */
 		
-		return 
+		var result = 
 		{
 		  statusCode: 200,
 		  headers: {
@@ -2204,6 +2204,8 @@ exports.handler = async (event, context) => {
 		  },
 		  body: responseJson
 		};
+		
+		return result;
 	})
     .catch(function(error){
 		var err = String(error);
