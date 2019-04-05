@@ -62,8 +62,6 @@
 		}
 		
 		function secondaryItemsLoadError(error) {
-			return;
-			
 			contentlifyViewModel.error = true;
 			contentlifyViewModel.errorCount++;
 			contentlifyViewModel.errorDetails = error;
@@ -262,8 +260,9 @@
 		<div class="row" align="center">
 			<div v-if="secondaryItems.length == 0" style="display: inline-block; padding: 10px; margin: 10px; background-color: #fff;">
 				<ul>
-					<li class="box-icon"><span class="black box-reports-text">Loading...</span></li>
+					<li class="box-icon"><span class="black box-reports-text" style="height: 37px; display: inline-block;">Loading...</span></li>
 				</ul>
+				<br><br>
 				<div v-bind:style="{width: '325px', height: content.republivision.publicationHeight }"> </div>
 			</div>
 			
@@ -274,7 +273,6 @@
 				<li class="box-icon"><a v-bind:href="publication.pdf_url" tabindex="0"><img src="./republivision/icon-download.png" style="vertical-align: middle;" class="box-icon-margin"></a></li>
 				</ul>
 				<br><br>
-				
 				<a v-bind:href="publication.url" target="_blank">
 					<img v-bind:style="{ height: content.republivision.publicationHeight }" v-bind:title="publication.title" v-bind:alt="publication.title" v-bind:src="publication.cover" />
 				</a>
