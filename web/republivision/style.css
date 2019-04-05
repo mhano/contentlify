@@ -173,6 +173,8 @@ h4	{font-size: 21px; line-height: 27px; font-weight:400;}
 h5	{font-size: 18px; line-height: 24px;}
 h6	{font-size: 16px; 16px!important;}
 .footer-header-title	{font-size: 16px; line-height: 18px;}
+.footer-text b	{font-size: 16px; line-height: 18px;}
+.footer-text a	{font-size: 14px; line-height: 14px; color: #000; text-decoration: underline;}
 
 .img-report			{border: 1px solid #131313;}
 .box-reports		{background: #fff; padding: 15px; border-radius: 8px; max-width: 450px; display: inline-block; margin: 15px;} 

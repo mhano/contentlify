@@ -77,6 +77,8 @@
 				
 				".purple {color: " + content.republivision.brandColour + ";}\r\n" +
 				
+				".footer-text b, .footer-text a {color: " + content.republivision.brandColour + ";}\r\n" +
+				
 				// ":root { --primary-R: " + primary.r + "; --primary-G: " + primary.g + "; --primary-B: " + primary.b + "; --secondary-R: " + secondary.r + "; --secondary-G: " + secondary.g + "; --secondary-B: " + secondary.b + "; \r\n" + "--primary-lighter: " + primaryLighter + "; --primary-darker: " + primaryDarker +  "; --secondary-lighter: " + secondaryLighter + "; --seoncdary-darker: " + secondaryDarker + "; } \r\n" +
 				
 				"</style>";
@@ -170,7 +172,7 @@
 				<div align="center">
 				<a href="#" target="_blank">
 				<img src="./republivision/icon-proxy-statement.png" class="img-responsive">
-				<p class="white top-margin">2018 Interactive Proxy Statement</p>
+				<p class="white top-margin">{{ content.republivision.labelProxy }}</p>
 				</a>
 				</div>
 			
@@ -182,7 +184,7 @@
 				<div align="center">
 				<a href="#" target="_blank">
 				<img src="./republivision/icon-solicitation.png" class="img-responsive">
-				<p class="white top-margin">Additional Solicitation Material</p>
+				<p class="white top-margin">{{ content.republivision.labelSolicitation }}</p>
 				</a>
 				</div>
 			
@@ -194,7 +196,7 @@
 				<div align="center">
 				<a href="#" target="_blank">
 				<img src="./republivision/icon-investor-telecom.png" class="img-responsive">
-				<p class="white top-margin">Computershare Investor Telecom</p>
+				<p class="white top-margin">{{ content.republivision.labelTelecom }}</p>
 				</a>
 				</div>
 			
@@ -206,7 +208,7 @@
 				<div align="center">
 				<a href="#" target="_blank">
 				<img src="./republivision/icon-website.png" class="img-responsive">
-				<p class="white top-margin">Company Website</p>
+				<p class="white top-margin">{{ content.republivision.labelWebsite }}</p>
 				</a>
 				</div>
 			
@@ -218,7 +220,7 @@
 				<div align="center">
 				<a href="#" target="_blank">
 				<img src="./republivision/icon-board-members.png" class="img-responsive">
-				<p class="white top-margin">Board Members</p>
+				<p class="white top-margin">{{ content.republivision.labelBoard }}</p>
 				</a>
 				</div>
 			
@@ -270,8 +272,8 @@
 			<div class="col-md-6 col-md-12 report-margin" align="center">
 				
 				<div align="left" class="black box" style="padding: 0px 0px 10px 0px;">
-				<a href="#" target="_blank"><img src="./republivision/icon-cast-vote.png" class="img-responsive services-icon brand-bg-color"></a> <span class="margin-text"><span class="footer-header-title"><b class="purple">Cast Your Vote or Request Materials</b></span>
-				<br><span class="footer-text">Click on the icon to go online voting. In order to vote, you will need identifying numbers from the proxy card, notice document or email you received. Your vote is important to us, so please vote at your earliest convenience. Note: Online voting is available until 1:00 a.m. ET, the day of the meeting.</span></span>
+				<a href="#" target="_blank"><img src="./republivision/icon-cast-vote.png" class="img-responsive services-icon brand-bg-color"></a> <span class="margin-text">
+				<span class="footer-text" v-html="content.republivision.footerVote"></span></span>
 				</div>
 			
 			</div><!-- End of Cast Vote -->
@@ -280,8 +282,8 @@
 			<div class="col-md-6 col-md-12 report-margin" align="center">
 				
 				<div align="left" class="black box" style="padding: 0px 0px 10px 0px;">
-				<a href="#" target="_blank"><img src="./republivision/icon-location.png" class="img-responsive services-icon brand-bg-color"></a> <span class="margin-text"><span class="footer-header-title"><b class="purple">Annual Meeting Information</b></span>
-				<br><span class="footer-text">The 2016 Annual Meeting of Shareholders of Computershare will be held at Yarra Falls, 452 Johnson Street, Abbotsford, Victoria 3067 Australia, on Wednesday, November 12th, 2016 at 10:00 am.<br><br>Click here to visit the company's website</span></span>
+				<a href="#" target="_blank"><img src="./republivision/icon-location.png" class="img-responsive services-icon brand-bg-color"></a> <span class="margin-text">
+				<span class="footer-text" v-html="content.republivision.footerMeetingInformation"></span></span>
 				</div>
 			
 			</div><!-- End of Annual Meeting -->
@@ -290,8 +292,8 @@
 			<div class="col-md-4 col-md-12 report-margin" align="center">
 				
 				<div align="left" class="black box" style="padding: 0px 0px 10px 0px;">
-				<img src="./republivision/icon-phone-voting.png" class="img-responsive services-icon brand-bg-color"> <span class="margin-text"><span class="footer-header-title"><b class="purple">Phone Voting</b></span>
-				<br><span class="footer-text">1-800-652-VOTE (8683)</span></span>
+				<img src="./republivision/icon-phone-voting.png" class="img-responsive services-icon brand-bg-color"> <span class="margin-text">
+				<span class="footer-text" v-html="content.republivision.footerPhone"></span></span>
 				</div>
 			
 			</div><!-- End of Phone Voting -->
@@ -300,7 +302,8 @@
 			<div class="col-md-4 col-md-12 report-margin" align="center">
 				
 				<div align="left" class="black box" style="padding: 0px 0px 10px 0px;">
-				<a href="#" target="_blank"><img src="./republivision/icon-view-update.png" class="img-responsive services-icon brand-bg-color"></a> <span class="margin-text"><span class="footer-header-title"><b class="purple">View And Update Your Shareholding</b></span></span>
+				<a href="#" target="_blank"><img src="./republivision/icon-view-update.png" class="img-responsive services-icon brand-bg-color"></a> <span class="margin-text">
+				<span class="footer-text" v-html="content.republivision.footerMouse1"></span></span>
 				</div>
 			
 			</div><!-- End of View Update -->
@@ -309,7 +312,8 @@
 			<div class="col-md-4 col-md-12 report-margin" align="center">
 				
 				<div align="left" class="black box" style="padding: 0px 0px 10px 0px;">
-				<a href="#" target="_blank"><img src="./republivision/icon-view-update.png" class="img-responsive services-icon brand-bg-color"></a> <span class="margin-text"><span class="footer-header-title"><b class="purple">View And Update Your Shareholding</b></span></span>
+				<a href="#" target="_blank"><img src="./republivision/icon-view-update.png" class="img-responsive services-icon brand-bg-color"></a> <span class="margin-text">
+				<span class="footer-text" v-html="content.republivision.footerMouse2"></span></span>
 				</div>
 			
 			</div><!-- End of View Update -->
@@ -334,7 +338,7 @@
 				<div align="center">
 				<a href="#" target="_blank">
 				<img src="./republivision/socialmedia-twitter.png" class="img-responsive">
-				<p class="white top-margin">Follow Us on Twitter</p>
+				<p class="white top-margin">{{ content.republivision.labelTwitter }}</p>
 				</a>
 				</div>
 			
@@ -346,7 +350,7 @@
 				<div align="center">
 				<a href="#" target="_blank">
 				<img src="./republivision/socialmedia-facebook.png" class="img-responsive">
-				<p class="white top-margin">Find Us on Facebook</p>
+				<p class="white top-margin">{{ content.republivision.labelFacebook }}</p>
 				</a>
 				</div>
 			
@@ -358,7 +362,7 @@
 				<div align="center">
 				<a href="#" target="_blank">
 				<img src="./republivision/socialmedia-linkedin.png" class="img-responsive">
-				<p class="white top-margin">Follow Us on LinkedIn</p>
+				<p class="white top-margin">{{ content.republivision.labelLinkedIn }}</p>
 				</a>
 				</div>
 			
@@ -370,7 +374,7 @@
 				<div align="center">
 				<a href="#" target="_blank">
 				<img src="./republivision/socialmedia-youtube.png" class="img-responsive">
-				<p class="white top-margin">View our Youtube Channel</p>
+				<p class="white top-margin">{{ content.republivision.labelYoutube }}</p>
 				</a>
 				</div>
 			
