@@ -2200,7 +2200,8 @@ exports.handler = async (event, context) => {
 			  "Access-Control-Allow-Origin": "*"
 		  },
 		  body: responseJson
-		}};
+		};
+	}
 	)
     .catch(error => {
 		console.error({
