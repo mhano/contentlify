@@ -2162,7 +2162,7 @@ exports.FetchError = FetchError;
 
 
 
-// console.log({ts: (new Date()).toISOString(), message: "loaded"});
+console.log({ts: (new Date()).toISOString(), message: "loaded"});
 
 exports.handler = async (event, context) => {
   var startDate = new Date();
@@ -2186,7 +2186,7 @@ exports.handler = async (event, context) => {
     .then(data => {
 		var responseJson = JSON.stringify(data);
 		console.log({
-			ts: startDate.toISOString,
+			ts: startDate.toISOString(),
 			duration: (Date.now() - start),
 			pubid: pubid, 
 			status: "OK",
@@ -2204,12 +2204,13 @@ exports.handler = async (event, context) => {
 	})
     .catch(error => {
 		console.error({
-			ts: startDate.toISOString,
+			ts: startDate.toISOString(),
 			duration: (Date.now() - start),
-			pubid: {pubid}, 
+			pubid: pubid, 
 			status: "ERROR",
 			"error": error
 			});
+		
 		return ({ statusCode: 500, body: String(error) });
 	});
 };
