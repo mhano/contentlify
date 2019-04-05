@@ -2186,19 +2186,19 @@ exports.handler = async (event, context) => {
     .then(function(data){
 		var responseJson = JSON.stringify(data);
 		
-		console.log({
+		/* console.log({
 			ts: startDate.toISOString(),
 			duration: (Date.now() - start),
 			pubid: pubid, 
 			status: "OK",
 			length: responseJson.length,
 			body: responseJson
-			});
+			}); */
 		
 		return 
 		{
 		  statusCode: 200,
-		  "headers": {
+		  headers: {
 			  "Content-Type": "application/vnd.cpu.republivision.v1+json",
 			  "Access-Control-Allow-Origin": "*"
 		  },
