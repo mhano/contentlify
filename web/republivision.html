@@ -51,11 +51,12 @@
         var contentlifyEntityTypes = ["republivision"];
 		
 		function secondaryItemsLoaded(data) {
-			contentlifyViewModel.secondaryItems = data.data;
+			contentlifyViewModel.secondaryItems = data;
 		}
 		
 		function secondaryItemsLoadError(error) {
 			console.error(error);
+			contentlifyContentLoadError(error);
 		}
 		
 		var contentlifyStyleOverrides = function(content) {
