@@ -2162,7 +2162,7 @@ exports.FetchError = FetchError;
 
 
 
-console.log({ts: (new Date()).toISOString(), message: "deployed"});
+// console.log({ts: (new Date()).toISOString(), message: "loaded"});
 
 exports.handler = async (event, context) => {
   var startDate = new Date();
