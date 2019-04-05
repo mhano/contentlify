@@ -2164,10 +2164,8 @@ exports.FetchError = FetchError;
 
 
 
-
-
-
 exports.handler = async (event, context) => {
+  var startDate = new Date();
   
   var regex = /^[A-Za-z0-9]{5,100}$/;
   
@@ -2181,15 +2179,37 @@ exports.handler = async (event, context) => {
   var sigInput = "GET" + apiEndpoint;
   var sigHmac = sha256.hmac(JOOMAG_API_SECRET, sigInput);
   
+  var start = Date.now();
+  
   return fetch(apiEndpoint, {headers: new Headers({key: JOOMAG_API_ID, sig: sigHmac })})
     .then(response => response.json())
-    .then(data => ({
-      statusCode: 200,
-	  "headers": {
-		  "Content-Type": "application/vnd.cpu.republivision.v1+json",
-		  "Access-Control-Allow-Origin": "*"
-	  },
-      body: JSON.stringify(data)
-    }))
-    .catch(error => ({ statusCode: 422, body: String(error) }));
+    .then(data => {
+		var responseJson = JSON.stringify(data);
+		console.log({
+			ts: startDate.toISOString,
+			duration: ${(Date.now() - start)},
+			pubid: "${pubid}", 
+			status: "OK",
+			length: responseJson.length
+			});
+		return 
+		{
+		  statusCode: 200,
+		  "headers": {
+			  "Content-Type": "application/vnd.cpu.republivision.v1+json",
+			  "Access-Control-Allow-Origin": "*"
+		  },
+		  body: responseJson
+		}};
+	)
+    .catch(error => {
+		console.log({
+			ts: startDate.toISOString,
+			duration: ${(Date.now() - start)},
+			pubid: "${pubid}", 
+			status: "ERROR",
+			"error": error
+			});
+		return { statusCode: 500, body: String(error) };
+	});
 };
