@@ -2184,7 +2184,7 @@ exports.handler = async (event, context) => {
   return fetch(apiEndpoint, {headers: new Headers({key: JOOMAG_API_ID, sig: sigHmac })})
     .then(response => response.json())
     .then(function(data){
-		var responseJson = JSON.stringify(data);
+		var responseJson = JSON.stringify(data.data);
 		
 		console.log({
 			ts: startDate.toISOString(),
@@ -2192,7 +2192,9 @@ exports.handler = async (event, context) => {
 			pubid: pubid, 
 			status: "OK",
 			length: responseJson.length,
-			body: responseJson
+			jmStatus: data.error,
+			jmMsg: data.message,
+			rsp150: responseJson.substr(0, 150)
 			});
 		
 		var result = 
