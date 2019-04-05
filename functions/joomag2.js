@@ -2186,14 +2186,14 @@ exports.handler = async (event, context) => {
     .then(function(data){
 		var responseJson = JSON.stringify(data);
 		
-		/* console.log({
+		console.log({
 			ts: startDate.toISOString(),
 			duration: (Date.now() - start),
 			pubid: pubid, 
 			status: "OK",
 			length: responseJson.length,
 			body: responseJson
-			}); */
+			});
 		
 		var result = 
 		{
@@ -2218,6 +2218,8 @@ exports.handler = async (event, context) => {
 			"error": err
 			});
 		
-		return { statusCode: 500, body: err };
+		var result = { statusCode: 500, body: err };
+		
+		return result;
 	});
 };
