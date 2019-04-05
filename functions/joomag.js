@@ -2175,7 +2175,7 @@ exports.handler = async (event, context) => {
 	  throw "pubid must be ^[a-zA-Z0-9]{5,100}$";
   }
   
-  var apiEndpoint = "https://" + JOOMAG_API_ENDPOINT + "/magazines/" + pubid + "/issues"
+  var apiEndpoint = JOOMAG_API_ENDPOINT + "/magazines/" + pubid + "/issues"
   var sigInput = "GET" + apiEndpoint;
   var sigHmac = sha256.hmac(JOOMAG_API_SECRET, sigInput);
   
