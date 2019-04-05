@@ -2185,6 +2185,7 @@ exports.handler = async (event, context) => {
     .then(response => response.json())
     .then(function(data){
 		var responseJson = JSON.stringify(data);
+		
 		console.log({
 			ts: startDate.toISOString(),
 			duration: (Date.now() - start),
@@ -2193,25 +2194,28 @@ exports.handler = async (event, context) => {
 			length: responseJson.length,
 			body: responseJson
 			});
+		
 		return 
-		({
+		{
 		  statusCode: 200,
 		  "headers": {
 			  "Content-Type": "application/vnd.cpu.republivision.v1+json",
 			  "Access-Control-Allow-Origin": "*"
 		  },
 		  body: responseJson
-		});
+		};
 	})
     .catch(function(error){
+		var err = String(error);
+		
 		console.error({
 			ts: startDate.toISOString(),
 			duration: (Date.now() - start),
 			pubid: pubid, 
 			status: "ERROR",
-			"error": error
+			"error": err
 			});
 		
-		return ({ statusCode: 500, body: String(error) });
+		return { statusCode: 500, body: err };
 	});
 };
