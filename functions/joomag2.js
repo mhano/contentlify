@@ -2190,7 +2190,8 @@ exports.handler = async (event, context) => {
 			duration: (Date.now() - start),
 			pubid: pubid, 
 			status: "OK",
-			length: responseJson.length
+			length: responseJson.length,
+			body: responseJson
 			});
 		return 
 		({
