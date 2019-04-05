@@ -2162,7 +2162,7 @@ exports.FetchError = FetchError;
 
 
 
-console.log({ts: (new Date()).toISOString(), message: "loaded"});
+console.log({ts: (new Date()).toISOString(), message: "joomag loaded."});
 
 exports.handler = async (event, context) => {
   var startDate = new Date();
@@ -2175,7 +2175,7 @@ exports.handler = async (event, context) => {
 	  throw "pubid must be ^[a-zA-Z0-9]{5,100}$";
   }
   
-  var apiEndpoint = JOOMAG_API_ENDPOINT + "/magazines/" + pubid + "/issues"
+  var apiEndpoint = "https://" + JOOMAG_API_ENDPOINT + "/magazines/" + pubid + "/issues"
   var sigInput = "GET" + apiEndpoint;
   var sigHmac = sha256.hmac(JOOMAG_API_SECRET, sigInput);
   
@@ -2184,33 +2184,44 @@ exports.handler = async (event, context) => {
   return fetch(apiEndpoint, {headers: new Headers({key: JOOMAG_API_ID, sig: sigHmac })})
     .then(response => response.json())
     .then(function(data){
-		var responseJson = JSON.stringify(data);
+		var responseJson = JSON.stringify(data.data);
+		
 		console.log({
 			ts: startDate.toISOString(),
 			duration: (Date.now() - start),
 			pubid: pubid, 
 			status: "OK",
-			length: responseJson.length
+			length: responseJson.length,
+			jmStatus: data.error,
+			jmMsg: data.message,
+			rsp100: responseJson.substr(0, 100)
 			});
-		return 
-		({
+		
+		var result = 
+		{
 		  statusCode: 200,
-		  "headers": {
+		  headers: {
 			  "Content-Type": "application/vnd.cpu.republivision.v1+json",
 			  "Access-Control-Allow-Origin": "*"
 		  },
 		  body: responseJson
-		});
+		};
+		
+		return result;
 	})
     .catch(function(error){
+		var err = String(error);
+		
 		console.error({
 			ts: startDate.toISOString(),
 			duration: (Date.now() - start),
 			pubid: pubid, 
 			status: "ERROR",
-			"error": error
+			"error": err
 			});
 		
-		return ({ statusCode: 500, body: String(error) });
+		var result = { statusCode: 500, body: err };
+		
+		return result;
 	});
 };
