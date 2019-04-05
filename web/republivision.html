@@ -54,11 +54,27 @@
 			contentlifyViewModel.secondaryItems = data;
 		}
 		
-		function secondaryItemsLoadError(error) {
-			console.error(error);
-			contentlifyContentLoadError(error);
+		function secondaryItemsLoad(){
+			window.fetch(".netlify/functions/joomag?pubid=" + contentlifyViewModel.content.republivision.jooMagPublicationId)
+				.then(function(resp){return resp.json();})
+				.then(secondaryItemsLoaded)
+				.catch(secondaryItemsLoadError);
 		}
 		
+		function secondaryItemsLoadError(error) {
+			contentlifyViewModel.error = true;
+			contentlifyViewModel.errorCount++;
+			contentlifyViewModel.errorDetails = error;
+			
+			contentlifyViewModel.errorMessage = "Unexpected / unknown error loading documents.";
+			
+			if (contentlifyViewModel.errorCount < 3) {
+				setTimeout(secondaryItemsLoad, 3000);
+			} else {
+				contentlifyViewModel.willTryErrorAgain = false;
+			}
+		}
+
 		var contentlifyStyleOverrides = function(content) {
 			// here we calculate some styles for the purpose of the demo
 			// this could be allowing a user to specify a small block of style overrides in the CMS
@@ -91,10 +107,7 @@
 			
 			contentlifyViewModel.secondaryItems = [];
 			
-			window.fetch(".netlify/functions/joomag?pubid=" + content.republivision.jooMagPublicationId)
-				.then(function(resp){return resp.json();})
-				.then(secondaryItemsLoaded)
-				.catch(secondaryItemsLoadError);
+			secondaryItemsLoad();
         }
 
         // var contentlifyNavigationCallback = function () { /* fires per page/route/anchor change */ }
@@ -129,15 +142,21 @@
     <div v-html="styles"></div>
 
     <div style="padding: 20px;" v-if="entryCode === undefined || entryCode === ''">
-        Nothing to see here, something went wrong with the link you followed (clicked)...
+        <span style="background: #fff; color: #000;">
+			Nothing to see here, something went wrong with the link you followed (clicked)...
+		</span>
     </div>
     <div style="padding: 20px;" v-else-if="error">
-        Error loading content (attempt {{errorCount}})... <span v-if="willTryErrorAgain">trying again...</span><span v-else>given up.</span><br/><br/>
-        <pre>Details: {{errorMessage}}</pre>
-        <pre>JSON: {{JSON.stringify(errorDetails, null, 2)}}</pre>
+        <span style="background: #fff; color: #000;">
+			Error loading content (attempt {{errorCount}})... <span v-if="willTryErrorAgain">trying again...</span><span v-else>given up.</span><br/><br/>
+			<pre>Details: {{errorMessage}}</pre>
+			<pre>JSON: {{JSON.stringify(errorDetails, null, 2)}}</pre>
+		</span>
     </div>
     <div style="padding: 20px;" v-else-if="loading">
-        Loading...
+        <span style="background: #fff; color: #000;">
+			Loading...
+		</span>
     </div>
     <div v-else>
 		
