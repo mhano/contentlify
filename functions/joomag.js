@@ -2187,8 +2187,8 @@ exports.handler = async (event, context) => {
 		var responseJson = JSON.stringify(data);
 		console.log({
 			ts: startDate.toISOString,
-			duration: ${(Date.now() - start)},
-			pubid: "${pubid}", 
+			duration: (Date.now() - start),
+			pubid: pubid, 
 			status: "OK",
 			length: responseJson.length
 			});
@@ -2203,10 +2203,10 @@ exports.handler = async (event, context) => {
 		}};
 	)
     .catch(error => {
-		console.log({
+		console.error({
 			ts: startDate.toISOString,
-			duration: ${(Date.now() - start)},
-			pubid: "${pubid}", 
+			duration: (Date.now() - start),
+			pubid: {pubid}, 
 			status: "ERROR",
 			"error": error
 			});
