@@ -2162,7 +2162,7 @@ exports.FetchError = FetchError;
 
 
 
-
+console.log({ts: (new Date()).toISOString(), message: "deployed"});
 
 exports.handler = async (event, context) => {
   var startDate = new Date();
@@ -2193,16 +2193,15 @@ exports.handler = async (event, context) => {
 			length: responseJson.length
 			});
 		return 
-		{
+		({
 		  statusCode: 200,
 		  "headers": {
 			  "Content-Type": "application/vnd.cpu.republivision.v1+json",
 			  "Access-Control-Allow-Origin": "*"
 		  },
 		  body: responseJson
-		};
-	}
-	)
+		});
+	})
     .catch(error => {
 		console.error({
 			ts: startDate.toISOString,
@@ -2211,6 +2210,6 @@ exports.handler = async (event, context) => {
 			status: "ERROR",
 			"error": error
 			});
-		return { statusCode: 500, body: String(error) };
+		return ({ statusCode: 500, body: String(error) });
 	});
 };
