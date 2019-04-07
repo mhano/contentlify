@@ -160,6 +160,7 @@ function contentlifyContentLoadError(error) {
         contentlifyViewModel.errorMessage = "Unexpected / unknown error.";
     }
     if (contentlifyViewModel.errorCount < 3) {
+        contentlifyViewModel.willTryErrorAgain = true;
         setTimeout(contentlifyLoadContent, 3000);
     } else {
         contentlifyViewModel.willTryErrorAgain = false;
