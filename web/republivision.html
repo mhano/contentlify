@@ -69,6 +69,7 @@
 			contentlifyViewModel.errorMessage = "Unexpected / unknown error loading documents.";
 			
 			if (contentlifyViewModel.errorCount < 3) {
+				contentlifyViewModel.willTryErrorAgain = true;
 				setTimeout(secondaryItemsLoad, 3000);
 			} else {
 				contentlifyViewModel.willTryErrorAgain = false;
