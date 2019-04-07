@@ -70,7 +70,7 @@
 			contentlifyViewModel.errorCount++;
 			contentlifyViewModel.errorDetails = error;
 			
-			contentlifyViewModel.errorMessage = (data.errorMessage ? data.errorMessage : "Unexpected / unknown error loading documents.");
+			contentlifyViewModel.errorMessage = (error.errorMessage ? error.errorMessage : "Unexpected / unknown error loading documents.");
 			
 			if (contentlifyViewModel.errorCount < 3) {
 				contentlifyViewModel.willTryErrorAgain = true;
