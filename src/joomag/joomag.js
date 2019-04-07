@@ -53,7 +53,7 @@ exports.handler = async (event, context) => {
   
   var cresult = cache[pubid];
   
-  var cacheHit = (cresult && cresult.ts && cresult.ts > maxAge);
+  var cacheHit = ((cresult && cresult.ts && cresult.ts > maxAge) == true);
   console.log({pubid, cacheHit});
   
   // 30 second cache
