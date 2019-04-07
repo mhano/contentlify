@@ -25,7 +25,10 @@ async function removeOldCacheEntries(maxAge) {
 
 		if(deleteCount > 0) {
 			for(var i = 0; i < deleteCount; i++) {
-				delete cache[cacheByAge[i].key];
+				console.log(`Clearing: ${cacheByAge[i].key}, \n  ${cacheByAge[i].ts},\n  ${cache[cacheByAge[i].key].ts}`);
+				if(cache[cacheByAge[i].key] === cacheByAge[i]) {
+					delete cache[cacheByAge[i].key];
+				}
 			}
 			cacheByAge.splice(0, deleteCount);
 		}
