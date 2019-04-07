@@ -22,19 +22,19 @@ async function removeOldCacheEntries(maxAge) {
 		for(var i = 0; i< cacheByAge.length && cacheByAge[i].ts < maxAge; i ++) {
 		  deleteCount++;
 		}
-
+		
+		var deletedObjectCount = 0;
 		if(deleteCount > 0) {
 			for(var i = 0; i < deleteCount; i++) {
-				console.log(`Clearing: ${cacheByAge[i].key}, \n  ${cacheByAge[i].ts},\n  ${cache[cacheByAge[i].key].ts}`);
 				if(cache[cacheByAge[i].key] === cacheByAge[i]) {
-					console.log(`Deleting: ${cacheByAge[i].key}`);
 					delete cache[cacheByAge[i].key];
+					deletedObjectCount++;
 				}
 			}
 			cacheByAge.splice(0, deleteCount);
 		}
 		
-		console.log(`Cleared ${deleteCount} cache items.`);
+		console.log({cacheCleanup: {objects: deletedObjectCount, pointers: deleteCount}});
 	}
 }
 
@@ -53,9 +53,11 @@ exports.handler = async (event, context) => {
   
   var cresult = cache[pubid];
   
+  var cacheHit = (cresult && cresult.ts && cresult.ts > maxAge);
+  console.log({pubid, cacheHit});
+  
   // 30 second cache
-  if(cresult && cresult.ts && cresult.ts > maxAge) {
-	console.log(`Cache hit: ${pubid}`);
+  if(cacheHit) {
 	var result = 
 	{
 	  statusCode: 200,
@@ -68,8 +70,6 @@ exports.handler = async (event, context) => {
 	};
 	
 	return result;
-  } else {
-	console.log(`Cache miss: ${pubid}`);
   }
   
   var apiEndpoint = JOOMAG_API_ENDPOINT + "/magazines/" + pubid + "/issues"
@@ -110,6 +110,10 @@ exports.handler = async (event, context) => {
 		};
 		
 		var cacheItem = {ts: Date.now(), key: pubid, data: responseJson};
+		if(cache[pubid]) {
+			// if we are toabandon a copy in cacheByAge, delete the data component to save memory
+			delete cache[pubid].data;
+		}
 		cache[pubid] = cacheItem;
 		cacheByAge.push(cacheItem);
 		
