@@ -53,6 +53,8 @@
 		function secondaryItemsLoaded(data) {
 			if(Array.isArray(data)) {
 				contentlifyViewModel.secondaryItems = data;
+			} else if (data === "") {
+				secondaryItemsLoadError({errorMessage: "Documents not found for pubid: " + contentlifyViewModel.content.republivision.jooMagPublicationId, "data": data});
 			} else {
 				secondaryItemsLoadError(data);
 			}
