@@ -51,7 +51,11 @@
         var contentlifyEntityTypes = ["republivision"];
 		
 		function secondaryItemsLoaded(data) {
-			contentlifyViewModel.secondaryItems = data;
+			if(Array.isArray(data)) {
+				contentlifyViewModel.secondaryItems = data;
+			} else {
+				secondaryItemsLoadError(data);
+			}
 		}
 		
 		function secondaryItemsLoad(){
@@ -66,7 +70,7 @@
 			contentlifyViewModel.errorCount++;
 			contentlifyViewModel.errorDetails = error;
 			
-			contentlifyViewModel.errorMessage = "Unexpected / unknown error loading documents.";
+			contentlifyViewModel.errorMessage = (data.errorMessage ? data.errorMessage : "Unexpected / unknown error loading documents.");
 			
 			if (contentlifyViewModel.errorCount < 3) {
 				contentlifyViewModel.willTryErrorAgain = true;
