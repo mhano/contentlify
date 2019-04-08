@@ -1,9 +1,13 @@
 import fetch from "node-fetch";
 import sha256 from "js-sha256";
+import uuidv4 from "uuid/v4";
 
 const { JOOMAG_API_ENDPOINT } = process.env;
 const { JOOMAG_API_ID } = process.env;
 const { JOOMAG_API_SECRET } = process.env;
+
+var procid = uuidv4();
+console.log({ts: (new Date()).toISOString(), "event": "started", procid: procid});
 
 // cache mechanism assumes all cache items stored with same timeout/max age
 // this makes the cache removal very efficient, can find find all items that
@@ -34,7 +38,7 @@ async function removeOldCacheEntries(maxAge) {
 			cacheByAge.splice(0, deleteCount);
 		}
 		
-		console.log({cacheCleanup: {objects: deletedObjectCount, pointers: deleteCount}});
+		console.log({ts: (new Date()).toISOString(), "event": "cacheCleanup", procid, objects: deletedObjectCount, pointers: deleteCount});
 	}
 }
 
@@ -54,7 +58,7 @@ exports.handler = async (event, context) => {
   var cresult = cache[pubid];
   
   var cacheHit = ((cresult && cresult.ts && cresult.ts > maxAge) == true);
-  console.log({pubid, cacheHit});
+  console.log({ts: (new Date()).toISOString(), "event": "request", procid, pubid, cacheHit});
   
   if(cacheHit) {
 	var result = 
@@ -88,6 +92,8 @@ exports.handler = async (event, context) => {
 		
 		console.log({
 			ts: startDate.toISOString(),
+			"event": "apicallresult",
+			procid,
 			duration: (Date.now() - start),
 			pubid: pubid, 
 			status: "OK",
@@ -123,6 +129,8 @@ exports.handler = async (event, context) => {
 		
 		console.error({
 			ts: startDate.toISOString(),
+			"event": "apicallresult",
+			procid,
 			duration: (Date.now() - start),
 			pubid: pubid, 
 			status: "ERROR",
