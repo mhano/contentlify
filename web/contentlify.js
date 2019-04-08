@@ -151,6 +151,8 @@ function contentlifyUpdateCallbackWrapped(content) {
 }
 
 function contentlifyContentLoadError(error) {
+	console.error(error);
+	
     contentlifyViewModel.error = true;
     contentlifyViewModel.errorCount++;
     contentlifyViewModel.errorDetails = error;
