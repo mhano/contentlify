@@ -129,7 +129,7 @@ exports.handler = async (event, context) => {
 		
 		console.error({
 			ts: startDate.toISOString(),
-			"event": "apicallresult",
+			"event": "apicallerror",
 			procid,
 			duration: (Date.now() - start),
 			pubid: pubid, 
