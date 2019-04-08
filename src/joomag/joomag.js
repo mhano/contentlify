@@ -56,7 +56,6 @@ exports.handler = async (event, context) => {
   var cacheHit = ((cresult && cresult.ts && cresult.ts > maxAge) == true);
   console.log({pubid, cacheHit});
   
-  // 30 second cache
   if(cacheHit) {
 	var result = 
 	{
@@ -111,7 +110,7 @@ exports.handler = async (event, context) => {
 		
 		var cacheItem = {ts: Date.now(), key: pubid, data: responseJson};
 		if(cache[pubid]) {
-			// if we are toabandon a copy in cacheByAge, delete the data component to save memory
+			// if we are to abandon a copy in cacheByAge, delete the data component to save memory
 			delete cache[pubid].data;
 		}
 		cache[pubid] = cacheItem;
