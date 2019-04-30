@@ -2,7 +2,7 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/netlify.toml
+functions/**
 .vs/**
 .local/**
 node_modules

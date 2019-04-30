@@ -1,0 +1,5 @@
+[build]
+  base = "src/joomag"
+  command = "npm run build"
+  functions = "functions"
+  publish = "web"
