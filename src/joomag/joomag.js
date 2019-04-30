@@ -52,7 +52,7 @@ exports.handler = async (event, context) => {
   var pubid = event.queryStringParameters.pubid;
   
   if(! pubid || !pubid.match(regex)) {
-	  throw "pubid must be ^[a-zA-Z0-9]{5,100}$";
+	  throw `pubid must match ${regex}`;
   }
   
   var cresult = cache[pubid];
