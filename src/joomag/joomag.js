@@ -66,7 +66,7 @@ exports.handler = async (event, context) => {
 	  statusCode: 200,
 	  headers: {
 		  "Content-Type": "application/vnd.cpu.republivision.v1+json",
-		  "Access-Control-Allow-Origin": "*",
+		  // "Access-Control-Allow-Origin": "*", // no longer needed, was for dev only
 		  "x-joomag-cache-status": "hit"
 	  },
 	  body: cresult.data
@@ -108,7 +108,7 @@ exports.handler = async (event, context) => {
 		  statusCode: 200,
 		  headers: {
 			  "Content-Type": "application/vnd.cpu.republivision.v1+json",
-			  "Access-Control-Allow-Origin": "*",
+			  // "Access-Control-Allow-Origin": "*", // no longer needed, was for dev only
 			  "x-joomag-cache-status": "miss"
 		  },
 		  body: responseJson
