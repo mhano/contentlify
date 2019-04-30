@@ -52,7 +52,7 @@ exports.handler = async (event, context) => {
   var pubid = event.queryStringParameters.pubid;
   
   if(! pubid || !pubid.match(regex)) {
-	  throw "pubid must be ^[a-zA-Z0-9]{5,100}$";
+	  throw `pubid parameter must be a basic alpha-numeric publication ID from joomag matching the following regex: ${regex}`;
   }
   
   var cresult = cache[pubid];
