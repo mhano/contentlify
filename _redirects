@@ -1,2 +1,1 @@
 # Redirect default Netlify subdomain to primary domain
-http://myhjam.netlify.com/* http://jamstack.mhano.com/:splat 301!
