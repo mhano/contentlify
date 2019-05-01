@@ -1,97 +1,68 @@
 import fetch from "node-fetch";
 import sha256 from "js-sha256";
 import uuidv4 from "uuid/v4";
+import FaaSCache from "./faascache.js";
 
 const { JOOMAG_API_ENDPOINT } = process.env;
 const { JOOMAG_API_ID } = process.env;
 const { JOOMAG_API_SECRET } = process.env;
 
-var procid = uuidv4();
+const procid = uuidv4();
 console.log({ts: (new Date()).toISOString(), "event": "started", procid: procid});
 
-// cache mechanism assumes all cache items stored with same timeout/max age
-// this makes the cache removal very efficient, can find find all items that
-// need removing and then stop.
-var lastCacheCleanup = Date.now();
-var maxCacheCleanupInterval = 30000;
-var cacheMaxAgeMs = 30000;
-var cache = {};
-var cacheByAge = new Array();
-async function removeOldCacheEntries(maxAge) {
-	// only do a cache cleanup if we haven't in 
-	if(lastCacheCleanup < (Date.now() - maxCacheCleanupInterval)) {
-		lastCacheCleanup = Date.now();
-		
-		var deleteCount = 0;
-		for(var i = 0; i< cacheByAge.length && cacheByAge[i].ts < maxAge; i ++) {
-		  deleteCount++;
-		}
-		
-		var deletedObjectCount = 0;
-		if(deleteCount > 0) {
-			for(var i = 0; i < deleteCount; i++) {
-				if(cache[cacheByAge[i].key] === cacheByAge[i]) {
-					delete cache[cacheByAge[i].key];
-					deletedObjectCount++;
-				}
-			}
-			cacheByAge.splice(0, deleteCount);
-		}
-		
-		console.log({ts: (new Date()).toISOString(), "event": "cacheCleanup", procid, objects: deletedObjectCount, pointers: deleteCount});
-	}
+function nameOf(obj) {
+    return Object.keys(obj)[0];
 }
 
+const faasCache = new FaaSCache(30000, 30000, procid, 90000);
+
+const regex = /^[A-Za-z0-9]{5,100}$/;
+
 exports.handler = async (event, context) => {
-  var startDate = new Date();
+  const pubid = event.queryStringParameters.pubid;
   
-  var maxAge = Date.now() - cacheMaxAgeMs;
-  
-  var regex = /^[A-Za-z0-9]{5,100}$/;
-  
-  var pubid = event.queryStringParameters.pubid;
+  if(!(JOOMAG_API_ENDPOINT && JOOMAG_API_ID && JOOMAG_API_SECRET)) {
+	  throw `bad config/deployment, JOOMAG_API_* must be configured (${nameOf({JOOMAG_API_ENDPOINT})}, ${nameOf({JOOMAG_API_ID})}, ${nameOf({JOOMAG_API_SECRET})})`;
+  }
   
   if(! pubid || !pubid.match(regex)) {
 	  throw `pubid parameter must be a basic alpha-numeric publication ID from joomag matching the following regex: ${regex}`;
   }
   
-  var cresult = cache[pubid];
+  var cresult = faasCache.get(pubid);
   
-  var cacheHit = ((cresult && cresult.ts && cresult.ts > maxAge) == true);
+  const cacheHit = (cresult != null);
   console.log({ts: (new Date()).toISOString(), "event": "request", procid, pubid, cacheHit});
   
-  if(cacheHit) {
-	var result = 
-	{
+  if(cresult != null) {
+	return ({
 	  statusCode: 200,
 	  headers: {
 		  "Content-Type": "application/vnd.cpu.republivision.v1+json",
 		  // "Access-Control-Allow-Origin": "*", // no longer needed, was for dev only
 		  "x-joomag-cache-status": "hit"
 	  },
-	  body: cresult.data
-	};
-	
-	return result;
+	  body: cresult
+	});
   }
   
-  var apiEndpoint = JOOMAG_API_ENDPOINT + "/magazines/" + pubid + "/issues"
-  var sigInput = "GET" + apiEndpoint;
-  var sigHmac = sha256.hmac(JOOMAG_API_SECRET, sigInput);
+  const apiEndpoint = `${JOOMAG_API_ENDPOINT}/magazines/${pubid}/issues`;
+  const sigInput = `GET${apiEndpoint}`;
+  const sigHmac = sha256.hmac(JOOMAG_API_SECRET, sigInput);
   
-  var start = Date.now();
+  const start = Date.now();
   
   // in parallel fetch latest and clear out old cache items
   return Promise.all([
 	fetch(apiEndpoint, {headers: {key: JOOMAG_API_ID, sig: sigHmac }}),
-	removeOldCacheEntries(maxAge)
+	faasCache.removeOldCacheEntriesAsync()
   ])
 	.then(response => response[0].json())
     .then(function(data){
-		var responseJson = JSON.stringify(data.data);
+		const responseJson = JSON.stringify(data.data);
 		
 		console.log({
-			ts: startDate.toISOString(),
+            ts: (new Date()).toISOString(),
 			"event": "apicallresult",
 			procid,
 			duration: (Date.now() - start),
@@ -101,9 +72,9 @@ exports.handler = async (event, context) => {
 			jmStatus: data.error,
 			jmMsg: data.message,
 			rsp100: responseJson.substr(0, 100)
-			});
+		});
 		
-		var result = 
+		const result = 
 		{
 		  statusCode: 200,
 		  headers: {
@@ -113,22 +84,16 @@ exports.handler = async (event, context) => {
 		  },
 		  body: responseJson
 		};
-		
-		var cacheItem = {ts: Date.now(), key: pubid, data: responseJson};
-		if(cache[pubid]) {
-			// if we are to abandon a copy in cacheByAge, delete the data component to save memory
-			delete cache[pubid].data;
-		}
-		cache[pubid] = cacheItem;
-		cacheByAge.push(cacheItem);
-		
+
+        faasCache.addOrUpdate(pubid, responseJson);
+
 		return result;
 	})
     .catch(function(error){
-		var err = String(error);
+		const err = String(error);
 		
 		console.error({
-			ts: startDate.toISOString(),
+            ts: (new Date()).toISOString(),
 			"event": "apicallerror",
 			procid,
 			duration: (Date.now() - start),
@@ -137,7 +102,7 @@ exports.handler = async (event, context) => {
 			"error": err
 			});
 		
-		var result = { statusCode: 500, body: err };
+		const result = { statusCode: 500, body: err };
 		
 		return result;
 	});
