@@ -4,8 +4,9 @@
   "description": "",
   "main": "joomag.js",
   "dependencies": {
+    "abort-controller": "^3.0.0",
     "js-sha256": "^0.9.0",
-    "node-fetch": "^2.3.0",
+    "node-fetch": "^2.5.0",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
@@ -15,6 +16,6 @@
   "scripts": {
     "build": "webpack --mode production --target node --output ../../functions/joomag.js joomag.js"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "Computerhsare Ltd",
+  "license": "Copyright Computerhsare Ltd 2019, all rights reserved."
 }

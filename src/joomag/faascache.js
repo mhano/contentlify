@@ -16,10 +16,10 @@ class FaaSCache {
 	 * to be sensible to have a single FaaS caching more than this. If you need heavier weight / longer lived cache items suggest redis et.al. (which
 	 * you could use in combination with shorter lived caching in FaaS memory by FaaSCache).
 	 * 
-	 * @param {any} maxAgeMs - Cache item max age / cache duration (use seperate FaaSCache instances for different items with different expiry periods)
-	 * @param {any} minCleanupIntervalMs - Don't cleanup memory cache more often than this
-	 * @param {any} traceProcId - Process / FaaS instance ID for tracing / logging.
-	 * @param {any} forceSynchronousCleanupOnAddAfterMs - If cache cleanup is not being called regularly force a cleanup on add after this (to prevent never ending memory usage growth)
+	 * @param {Int} maxAgeMs - Cache item max age / cache duration (use seperate FaaSCache instances for different items with different expiry periods)
+	 * @param {Int} minCleanupIntervalMs - Don't cleanup memory cache more often than this
+	 * @param {String} traceProcId - Process / FaaS instance ID for tracing / logging.
+	 * @param {Int} forceSynchronousCleanupOnAddAfterMs - If cache cleanup is not being called regularly force a cleanup on add after this (to prevent never ending memory usage growth)
 	 */
 	constructor(maxAgeMs = 30000, minCleanupIntervalMs = 30000, traceProcId = null, forceSynchronousCleanupOnAddAfterMs = 90000) {
 		// cache mechanism assumes all cache items stored with same timeout/max age
@@ -45,7 +45,7 @@ class FaaSCache {
 		return null;
 	}
 
-	addOrUpdate(key, value) {
+	set(key, value) {
 		const cacheItem = { ts: Date.now(), key: key, value: value };
 
 		const currVal = this.cache[key];
