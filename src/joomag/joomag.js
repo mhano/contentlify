@@ -51,9 +51,9 @@ exports.handler = async (event, context) => {
 
     const start = Date.now();
 
-    // in parallel fetch latest and clear out old cache items
     return Promise.all([
             fetch(apiEndpoint, { headers: { key: JOOMAG_API_ID, sig: sigHmac } }),
+            // in parallel fetch latest and clear out old cache items (as in FaaS this is otherwise wasted paid for compute)
             faasCache.removeOldCacheEntriesAsync()
         ])
         .then(response => response[0].json())

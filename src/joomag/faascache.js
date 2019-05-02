@@ -3,6 +3,10 @@ import uuidv4 from "uuid/v4";
 
 class FaaSCache {
 	/**
+	 * Allows you to take advantage of otherwise wasted (but paid for) FaaS execution time whilst calling external services to perform
+	 * cache cleanup/maintenance. Use this to front an external cache like redis to take advantage of in memory caching in hot functions.
+	 * FaaS platforms cgroup freeze your function/process/container between calls so background work isn't possible.
+	 * 
 	 * Usage, construct a global instance of FaaSCache, add/get items from it per normal memory cache, when spare cycles are available
 	 * (such as during an async call like fetch typically just prior to adding the result to the cache) call removeOldCacheEntriesAsync 
 	 * to clear out old cache items. e.g. Promise.all([myFetch(args), faasCache.removeOldCacheEntriesAsync()]).then(...);
