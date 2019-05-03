@@ -110,7 +110,7 @@ exports.handler = async (event, context) => {
             const result = { statusCode: 500, body: err };
 
             return result;
-		}).finally(() => {
+		}).then(() => { // finally
             clearTimeout(timeout);
         });;
 };
