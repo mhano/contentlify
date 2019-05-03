@@ -15,7 +15,7 @@ function nameOf(obj) {
     return Object.keys(obj)[0];
 }
 
-const faasCache = new FaaSCache(60000, 30000, procid);
+const faasCache = new FaaSCache(30000, 30000, procid);
 
 const regex = /^[A-Za-z0-9]{5,100}$/;
 
