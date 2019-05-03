@@ -2,6 +2,7 @@ import fetch from "node-fetch";
 import sha256 from "js-sha256";
 import uuidv4 from "uuid/v4";
 import FaaSCache from "./faascache.js";
+import AbortController from 'abort-controller';
 
 const { JOOMAG_API_ENDPOINT } = process.env;
 const { JOOMAG_API_ID } = process.env;
@@ -49,10 +50,16 @@ exports.handler = async (event, context) => {
     const sigInput = `GET${apiEndpoint}`;
     const sigHmac = sha256.hmac(JOOMAG_API_SECRET, sigInput);
 
-    const start = Date.now();
+	const start = Date.now();
+
+    const controller = new AbortController();
+    const timeout = setTimeout(
+        () => { controller.abort(); },
+        1500,
+    );
 
     return Promise.all([
-            fetch(apiEndpoint, { headers: { key: JOOMAG_API_ID, sig: sigHmac } }),
+            fetch(apiEndpoint, { headers: { key: JOOMAG_API_ID, sig: sigHmac }, signal: controller.signal }),
             // in parallel fetch latest and clear out old cache items (as in FaaS this is otherwise wasted paid for compute)
             faasCache.removeOldCacheEntriesAsync()
         ])
@@ -103,6 +110,10 @@ exports.handler = async (event, context) => {
             const result = { statusCode: 500, body: err };
 
             return result;
-        });
+		}).finally(() => {
+            clearTimeout(timeout);
+        });;
 };
+
+// exports.handler({ queryStringParameters: { pubid: "M0045150001555469988" } });
 
