@@ -29,7 +29,7 @@ exports.handler = async (event, context) => {
     // reuqest variables
     const pubid = event.queryStringParameters.pubid;
     if (!pubid || !pubid.match(regex)) {
-        throw `Pubid parameter must be a basic alpha-numeric publication ID from joomag matching the following regex: ${regex}`;
+		throw `Parameter pubid must be a basic alpha-numeric publication ID from joomag matching the following regex: ${regex}`;
     }
 
     var cresult = faasCache.get(pubid);
