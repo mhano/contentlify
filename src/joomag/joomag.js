@@ -63,7 +63,7 @@ exports.handler = async (event, context) => {
 
             console.log({
                 ts: (new Date()).toISOString(),
-                "event": "apicallresult",
+                "event": "apiCallSuccess",
                 procid,
                 duration: (Date.now() - start),
                 pubid: pubid,
@@ -93,7 +93,7 @@ exports.handler = async (event, context) => {
 
             console.error({
                 ts: (new Date()).toISOString(),
-                "event": "apicallerror",
+                "event": "apicallError",
                 procid,
                 duration: (Date.now() - start),
                 pubid: pubid,
