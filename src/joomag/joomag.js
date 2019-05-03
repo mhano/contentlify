@@ -7,6 +7,7 @@ const { JOOMAG_API_ENDPOINT } = process.env;
 const { JOOMAG_API_ID } = process.env;
 const { JOOMAG_API_SECRET } = process.env;
 const { JOOMAG_API_TIMEOUT_MS } = process.env;
+const { JOOMAG_API_CACHE_MS } = process.env;
 
 const procid = uuidv4();
 console.log({ ts: (new Date()).toISOString(), "event": "started", procid: procid });
@@ -15,7 +16,7 @@ function nameOf(obj) {
     return Object.keys(obj)[0];
 }
 
-const faasCache = new FaaSCache(30000, 30000, procid);
+const faasCache = new FaaSCache(parseInt(JOOMAG_API_CACHE_MS) || 60000, 30000, procid);
 
 const regex = /^[A-Za-z0-9]{5,100}$/;
 
